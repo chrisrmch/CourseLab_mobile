@@ -31,11 +31,14 @@ class AuthRepository(
     private val client: HttpClient,
     private val baseUrl: String
 ) {
-    suspend fun login(email: String, password: String): ApiResponse<Unit> =
-        client.post("$baseUrl/auth/signin") {
+    suspend fun login(email: String, password: String): ApiResponse<Unit> {
+        print("se ha llegado aqui")
+        return client.post("$baseUrl/auth/signin") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, password))
         }.body()
+    }
+
 
     suspend fun signUp(request: SignUpRequest): ApiResponse<Unit> =
         client.post("$baseUrl/auth/signup/user") {

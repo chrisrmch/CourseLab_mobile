@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -39,6 +40,7 @@ kotlin {
             implementation(libs.androidx.compose.material3.adaptative)
             implementation(libs.androidx.compose.material3.adaptative.layout)
             implementation(libs.androidx.compose.material3.adaptative.navigation)
+            implementation(libs.okhttp.client)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -50,6 +52,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.ktor)
+            implementation(libs.ktor.negotiation)
+            implementation(libs.ktor.serialization)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

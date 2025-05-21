@@ -9,14 +9,17 @@ import org.courselab.app.ui.theme.AppTheme
 import org.courselab.app.viewmodel.AuthViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+expect fun createHttpClient(): HttpClient
+
 @Preview
 @Composable
 fun App(
-    logo: Painter
+    logo: Painter,
+    httpClient : HttpClient
 ) {
     val authViewModel = remember { AuthViewModel(
-        httpClient = HttpClient {} ,
-        baseUrl = "http://localhost:8081"
+        httpClient = httpClient,
+        baseUrl = "http://192.168.1.4:8081"
     ) }
     var currentScreen by remember { mutableStateOf("welcome") }
 

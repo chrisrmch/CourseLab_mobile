@@ -20,6 +20,7 @@ import org.courselab.app.viewmodel.AuthViewModel
 import org.courselab.app.viewmodel.AuthEvent
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
     logo: Painter,
@@ -43,8 +44,9 @@ fun WelcomeScreen(
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = Color.Transparent
-    ) { padding: PaddingValues ->
+        containerColor = Color.Transparent,
+    ) {
+        padding: PaddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

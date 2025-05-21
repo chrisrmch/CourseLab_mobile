@@ -80,6 +80,7 @@ class AuthViewModel(
                 when (event) {
                     is AuthEvent.Login -> {
                         val resp = repository.login(event.email, event.password)
+                        print(resp)
                         if (resp.success) onResult(true)
                         else _snackbarMsg.emit(resp.message ?: "Error en login")
                     }
@@ -104,6 +105,7 @@ class AuthViewModel(
                     }
                 }
             } catch (e: Exception) {
+                print(e)
                 _snackbarMsg.emit("Error de red: ${e.message}")
             } finally {
                 _isLoading.value = false
