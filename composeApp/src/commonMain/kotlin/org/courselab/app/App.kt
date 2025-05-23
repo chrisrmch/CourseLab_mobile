@@ -14,12 +14,12 @@ expect fun createHttpClient(): HttpClient
 @Preview
 @Composable
 fun App(
-    logo: Painter,
+    logo: Painter? = null,
     httpClient : HttpClient
 ) {
     val authViewModel = remember { AuthViewModel(
         httpClient = httpClient,
-        baseUrl = "http://192.168.1.4:8081"
+        baseUrl = "http://192.168.1.7:8081"
     ) }
     var currentScreen by remember { mutableStateOf("welcome") }
 

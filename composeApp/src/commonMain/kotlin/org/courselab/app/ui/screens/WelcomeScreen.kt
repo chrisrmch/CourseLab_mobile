@@ -18,12 +18,13 @@ import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.theme.*
 import org.courselab.app.viewmodel.AuthViewModel
 import org.courselab.app.viewmodel.AuthEvent
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    logo: Painter,
+    logo: Painter?,
     authViewModel: AuthViewModel,
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit
@@ -61,11 +62,13 @@ fun WelcomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = logo,
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(120.dp)
-                )
+                logo?.let {
+                    Image(
+                        painter = it,
+                        contentDescription = "Logo",
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
                 Spacer(Modifier.height(24.dp))
                 OutlinedTextField(
                     value = loginState.email,
@@ -149,7 +152,7 @@ fun WelcomeScreen(
         }
     }
 }
-
+@Preview
 @Composable
 fun ForgotPasswordDialog(
     initialEmail: String, onEmailChange: (String) -> Unit, onSend: () -> Unit, onDismiss: () -> Unit

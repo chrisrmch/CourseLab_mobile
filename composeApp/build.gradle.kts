@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.navigationSafeArgs)
 }
 
 kotlin {
@@ -17,7 +19,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,19 +30,23 @@ kotlin {
             isStatic = true
         }
     }
-    
+
+    jvm("desktop")
+
     sourceSets {
-        
+        val desktopMain by getting
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
-             implementation(libs.androidx.compose.material3)
+            implementation(libs.androidx.compose.material3)
             implementation(libs.androidx.compose.material3.wsc)
             implementation(libs.androidx.compose.material3.adaptative)
             implementation(libs.androidx.compose.material3.adaptative.layout)
             implementation(libs.androidx.compose.material3.adaptative.navigation)
             implementation(libs.okhttp.client)
+            implementation(libs.navigation.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -57,6 +63,11 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutinesSwing)
+            implementation(libs.okhttp.client)
         }
     }
 }
@@ -91,4 +102,18 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
 }
+
+
+compose.desktop {
+    application {
+        mainClass = "org.courselab.app.MainKt"
+
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "org.courselab.app"
+            packageVersion = "1.0.0"
+        }
+    }
+}
+
 

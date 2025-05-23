@@ -23,7 +23,7 @@ import org.courselab.app.viewmodel.AuthViewModel
 
 @Composable
 fun SignUpScreen(
-    logo: Painter,
+    logo: Painter?,
     authViewModel: AuthViewModel,
     onSignUpComplete: (Boolean) -> Unit
 ) {
@@ -59,7 +59,7 @@ fun SignUpScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Image(logo, contentDescription = "Logo", modifier = Modifier.size(100.dp))
+                logo?.let { Image(it, contentDescription = "Logo", modifier = Modifier.size(100.dp)) }
                 Spacer(Modifier.height(16.dp))
                 listOf(
                     "Nombre" to state.nombre,
