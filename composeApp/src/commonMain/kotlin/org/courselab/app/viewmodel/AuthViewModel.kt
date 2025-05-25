@@ -28,7 +28,7 @@ data class ForgotPassword(val email: String)
 
 class AuthViewModel(
     private val authRepository: AuthRepository,
-) : CommonBaseViewModel() {
+) : BaseViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 

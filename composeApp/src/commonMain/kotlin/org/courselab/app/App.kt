@@ -1,5 +1,7 @@
 package org.courselab.app
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
@@ -14,8 +16,7 @@ import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-
-expect fun createHttpClient(): HttpClient
+import org.koin.compose.KoinContext
 
 @Serializable
 object LogInScreen
@@ -29,27 +30,58 @@ object SignUpScreen
 fun App(logo: Painter? = null) {
     CourseLabAppTheme(
         content = @Composable {
-            val navController: NavHostController = rememberNavController()
-            NavHost(navController = navController, startDestination = LogInScreen) {
-                composable<LogInScreen> {
-                    WelcomeScreen(
-                        loginViewModel = koinInject<LogInViewModel>(),
-                        onLoginSuccess = { /* ir a Home */ },
-                        onSignUpNavigate = { navController.navigate(SignUpScreen) },
-                        logo = logo
-                    )
-                }
-                composable<SignUpScreen> {
-                    SignUpScreen(
-                        logo = logo,
-                        onSignUpComplete = { success ->
-                            if (success) navController.navigate(
-                                LogInScreen
-                            )
-                        }
-                    )
+            KoinContext {
+                val navController: NavHostController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    enterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    popExitTransition = {
+                        slideOutOfContainer(
+                            AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec = tween(500)
+                        )
+                    },
+                    startDestination = LogInScreen
+                ) {
+                    composable<LogInScreen> {
+                        WelcomeScreen(
+                            loginViewModel = koinInject<LogInViewModel>(),
+                            onLoginSuccess = { /* ir a Home */ },
+                            onSignUpNavigate = { navController.navigate(SignUpScreen) },
+                            logo = logo
+                        )
+                    }
+                    composable<SignUpScreen> {
+                        SignUpScreen(
+                            logo = logo,
+                            onSignUpComplete = { success ->
+                                if (success) navController.navigate(
+                                    LogInScreen
+                                )
+                            },
+                            onNavigateToLogin = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
+
         }
     )
 }

@@ -1,15 +1,13 @@
 package org.courselab.app.ui.screens.sign_in
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.courselab.app.data.AuthRepository
-import org.courselab.app.viewmodel.CommonBaseViewModel
+import org.courselab.app.viewmodel.BaseViewModel
+import org.courselab.app.viewmodel.BaseViewModelInterface
 import org.courselab.app.viewmodel.ForgotPassword
 import org.courselab.app.viewmodel.LogIn
 
@@ -19,7 +17,7 @@ data class LoginFormState(
 )
 
 //CONTROL DEL ESTADO
-class LogInViewModel(private val repository: AuthRepository) : CommonBaseViewModel() {
+class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
 
     private val _loginState = MutableStateFlow(LoginFormState())
     val loginState: StateFlow<LoginFormState> = _loginState

@@ -17,31 +17,33 @@ data class SignUpRequest(
     val email: String,
     val password: String,
     val fechaNacimiento: String,
-    val genero: String
+    val genero: String,
 )
 
 @Serializable
 data class ApiResponse<T>(
     val success: Boolean,
     val data: T? = null,
-    val message: String? = null
+    val message: String? = null,
 )
 
 class AuthRepository(
     private val client: HttpClient,
-    private val baseUrl: String
+    private val baseUrl: String,
 ) {
     suspend fun logIn(email: String, password: String): ApiResponse<Unit> {
-        print("se ha llegado aqui")
+        println("se ha llegado aqui")
         return client.post("$baseUrl/auth/signin") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, password))
         }.body()
     }
 
-    suspend fun signUp(request: SignUpRequest): ApiResponse<Unit> =
-        client.post("$baseUrl/auth/signup/user") {
+    suspend fun signUp(request: SignUpRequest): ApiResponse<Unit> {
+        println("se ha llegado SING UP REQUEST")
+       return client.post("$baseUrl/auth/signup/user") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
+    }
 }

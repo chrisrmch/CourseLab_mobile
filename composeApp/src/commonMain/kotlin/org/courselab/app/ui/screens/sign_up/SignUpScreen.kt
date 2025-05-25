@@ -25,6 +25,7 @@ import org.koin.compose.koinInject
 fun SignUpScreen(
     logo: Painter?,
     onSignUpComplete: (Boolean) -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val authViewModel= koinInject<AuthViewModel>()
 
@@ -116,6 +117,16 @@ fun SignUpScreen(
                         Text("SIGN UP", color = BlackPrimary)
                     }
                 }
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = onNavigateToLogin,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = YellowPrimary),
+                    border = ButtonDefaults.outlinedButtonBorder().copy(brush = Brush.horizontalGradient(colors=listOf(YellowPrimary, YellowPrimary)))
+                ) {
+                    Text("Volver al Login", color = YellowPrimary)
+                }
+
             }
         }
     }

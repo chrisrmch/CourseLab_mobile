@@ -26,6 +26,6 @@ val networkModule = module {
 }
 
 val repositoriesModules = module {
-    val serverURL = "http://10.0.2.2:8080"
+    val serverURL = "http://192.168.1.9:8081"
     single { AuthRepository(get(), serverURL) }
 }

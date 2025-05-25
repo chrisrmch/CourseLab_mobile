@@ -6,8 +6,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 
-actual fun getViewModelScope(viewModel: BaseViewModel): BaseViewModel {
-    if (viewModel is DesktopActualBaseViewModel) {
+actual fun getViewModelScope(): BaseViewModelInterface {
+    if (viewModel is DesktopActualBaseViewModelInterface) {
         return viewModel
     }
 
@@ -17,7 +17,7 @@ actual fun getViewModelScope(viewModel: BaseViewModel): BaseViewModel {
     )
 }
 
-open class DesktopActualBaseViewModel : BaseViewModel {
+open class DesktopActualBaseViewModelInterface : BaseViewModelInterface {
     private val _internalScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default) // O Dispatchers.Main si usas Compose UI
 

@@ -10,8 +10,6 @@ fun main() = application {
         alwaysOnTop = true,
         title = "CourseLab",
     ) {
-        App(
-            httpClient = createHttpClient(),
-        )
+        App()
     }
 }
