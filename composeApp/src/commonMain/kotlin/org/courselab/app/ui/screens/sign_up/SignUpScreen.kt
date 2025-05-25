@@ -19,13 +19,15 @@ import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.theme.*
 import org.courselab.app.viewmodel.AuthViewModel
 import org.courselab.app.viewmodel.SignUp
+import org.koin.compose.koinInject
 
 @Composable
 fun SignUpScreen(
     logo: Painter?,
-    authViewModel: AuthViewModel,
     onSignUpComplete: (Boolean) -> Unit,
 ) {
+    val authViewModel= koinInject<AuthViewModel>()
+
     val state by authViewModel.signUpState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var lastSuccess by remember { mutableStateOf(false) }

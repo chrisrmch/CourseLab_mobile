@@ -37,5 +37,5 @@ actual fun createHttpClient(): HttpClient {
 @Composable
 fun AndroidApp() {
     val logoPainter = painterResource(id = R.drawable.courselab_inside_app)
-    App(logo = logoPainter, httpClient = createHttpClient())
+    App(logo = logoPainter)
 }
