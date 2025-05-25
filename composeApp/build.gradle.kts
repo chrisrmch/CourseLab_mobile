@@ -46,7 +46,9 @@ kotlin {
             implementation(libs.androidx.compose.material3.adaptative.layout)
             implementation(libs.androidx.compose.material3.adaptative.navigation)
             implementation(libs.okhttp.client)
-            implementation(libs.navigation.compose)
+            implementation(libs.navigation.compose.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -60,6 +62,9 @@ kotlin {
             implementation(libs.ktor)
             implementation(libs.ktor.negotiation)
             implementation(libs.ktor.serialization)
+            implementation(libs.navigation.compose.common)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

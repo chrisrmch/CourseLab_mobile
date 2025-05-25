@@ -1,44 +1,50 @@
-package org.courselab.app.ui.screens
+package org.courselab.app.ui.screens.sign_in
 
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import org.courselab.app.ui.theme.*
-import org.courselab.app.viewmodel.AuthViewModel
-import org.courselab.app.viewmodel.AuthEvent
+import org.courselab.app.viewmodel.ForgotPassword
+import org.courselab.app.viewmodel.LogIn
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview
 @Composable
 fun WelcomeScreen(
     logo: Painter?,
-    authViewModel: AuthViewModel,
+    loginViewModel: LogInViewModel,
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit
 ) {
-    val loginState by authViewModel.loginState.collectAsState()
+    val loginState by loginViewModel.loginState.collectAsState()
 
     var showForgotDialog by remember { mutableStateOf(false) }
-    val isLoading by authViewModel.isLoading.collectAsState()
+    val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        authViewModel.snackbarMsg.collect { msg ->
+        loginViewModel.snackbarMsg.collect { msg ->
             snackbarHostState.showSnackbar(msg)
         }
     }
@@ -46,8 +52,7 @@ fun WelcomeScreen(
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = Color.Transparent,
-    ) {
-        padding: PaddingValues ->
+    ) { padding: PaddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,15 +69,29 @@ fun WelcomeScreen(
             ) {
                 logo?.let {
                     Image(
+                        alignment = Alignment.Center,
                         painter = it,
                         contentDescription = "Logo",
-                        modifier = Modifier.size(120.dp)
+                        modifier = Modifier
+                            .size(180.dp)
+                            .offset(y = (-80).dp)
+                            .shadow(
+                                elevation = 40.dp,
+                                spotColor = Color.White,
+                                ambientColor = Color.Black
+                            )
+                            .clip(RoundedCornerShape(15.dp))
+                            .border(
+                                width = 1.dp,
+                                color = Color.Transparent,
+                                shape = RoundedCornerShape(15.dp)
+                            ).zIndex(1f)
                     )
                 }
                 Spacer(Modifier.height(24.dp))
                 OutlinedTextField(
                     value = loginState.email,
-                    onValueChange = { authViewModel.onLoginInputChanged(it, loginState.password) },
+                    onValueChange = { loginViewModel.onLoginInputChanged(it, loginState.password) },
                     label = { Text("E-mail") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = Color.White,
@@ -89,7 +108,7 @@ fun WelcomeScreen(
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = loginState.password,
-                    onValueChange = { authViewModel.onLoginInputChanged(loginState.email, it) },
+                    onValueChange = { loginViewModel.onLoginInputChanged(loginState.email, it) },
                     label = { Text("Contraseña") },
                     visualTransformation = PasswordVisualTransformation(),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -106,8 +125,8 @@ fun WelcomeScreen(
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        authViewModel.handleEvent(
-                            AuthEvent.Login(
+                         loginViewModel.onLogInEvent(
+                            LogIn(
                                 loginState.email, loginState.password
                             )
                         ) { success -> if (success) onLoginSuccess() }
@@ -143,8 +162,7 @@ fun WelcomeScreen(
                 initialEmail = forgotEmail,
                 onEmailChange = { forgotEmail = it },
                 onSend = {
-                    authViewModel.handleEvent(AuthEvent.ForgotPassword(forgotEmail)) {
-
+                    loginViewModel.onForgotPassword(ForgotPassword(forgotEmail)) {
                     }
                     showForgotDialog = false
                 },
@@ -152,6 +170,7 @@ fun WelcomeScreen(
         }
     }
 }
+
 @Preview
 @Composable
 fun ForgotPasswordDialog(

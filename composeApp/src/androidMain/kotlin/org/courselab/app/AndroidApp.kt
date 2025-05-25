@@ -6,11 +6,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import org.courselab.app.R.drawable.courselab
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.Duration
 
-ºactual fun createHttpClient(): HttpClient {
+actual fun createHttpClient(): HttpClient {
     return HttpClient(OkHttp) {
         engine {
             config {
@@ -37,6 +36,6 @@ import kotlin.time.Duration
 @Preview
 @Composable
 fun AndroidApp() {
-    val logoPainter = painterResource(id = courselab)
+    val logoPainter = painterResource(id = R.drawable.courselab_inside_app)
     App(logo = logoPainter, httpClient = createHttpClient())
 }

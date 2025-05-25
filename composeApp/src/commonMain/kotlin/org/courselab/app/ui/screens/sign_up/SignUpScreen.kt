@@ -1,4 +1,4 @@
-package org.courselab.app.ui.screens
+package org.courselab.app.ui.screens.sign_up
 
 
 import androidx.compose.foundation.Image
@@ -13,26 +13,24 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.theme.*
-import org.courselab.app.viewmodel.AuthEvent
 import org.courselab.app.viewmodel.AuthViewModel
+import org.courselab.app.viewmodel.SignUp
 
 @Composable
 fun SignUpScreen(
     logo: Painter?,
     authViewModel: AuthViewModel,
-    onSignUpComplete: (Boolean) -> Unit
+    onSignUpComplete: (Boolean) -> Unit,
 ) {
     val state by authViewModel.signUpState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var lastSuccess by remember { mutableStateOf(false) }
     val isLoading by authViewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         authViewModel.snackbarMsg.collect { message ->
@@ -59,7 +57,13 @@ fun SignUpScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                logo?.let { Image(it, contentDescription = "Logo", modifier = Modifier.size(100.dp)) }
+                logo?.let {
+                    Image(
+                        it,
+                        contentDescription = "Logo",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 listOf(
                     "Nombre" to state.nombre,
@@ -89,7 +93,8 @@ fun SignUpScreen(
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        authViewModel.handleEvent(AuthEvent.SignUp(state)) { success ->
+                        authViewModel.onSignUpFormSubmitted(SignUp(state)) {
+                            success ->
                             lastSuccess = success; showDialog = true; onSignUpComplete(success)
                         }
                     },
