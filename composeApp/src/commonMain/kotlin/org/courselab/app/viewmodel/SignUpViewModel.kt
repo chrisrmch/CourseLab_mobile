@@ -21,12 +21,9 @@ data class SignUpFormState(
 )
 
 
-data class LogIn(val email: String, val password: String)
 data class SignUp(val form: SignUpFormState)
-data class ForgotPassword(val email: String)
 
-
-class AuthViewModel(
+class SignUpViewModel(
     private val authRepository: AuthRepository,
 ) : BaseViewModel() {
     private val _isLoading = MutableStateFlow(false)

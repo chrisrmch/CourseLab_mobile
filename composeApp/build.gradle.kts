@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.navigationSafeArgs)
+    idea
 }
 
 kotlin {
@@ -76,6 +77,13 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.okhttp.client)
         }
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
+        isDownloadJavadoc = true
     }
 }
 

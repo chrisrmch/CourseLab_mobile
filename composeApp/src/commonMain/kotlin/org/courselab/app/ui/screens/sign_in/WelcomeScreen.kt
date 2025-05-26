@@ -20,9 +20,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import org.courselab.app.data.LoginRequest
 import org.courselab.app.ui.theme.*
-import org.courselab.app.viewmodel.ForgotPassword
-import org.courselab.app.viewmodel.LogIn
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -41,7 +40,6 @@ fun WelcomeScreen(
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
@@ -126,7 +124,7 @@ fun WelcomeScreen(
                 Button(
                     onClick = {
                          loginViewModel.onLogInEvent(
-                            LogIn(
+                             LoginRequest(
                                 loginState.email, loginState.password
                             )
                         ) { success -> if (success) onLoginSuccess() }

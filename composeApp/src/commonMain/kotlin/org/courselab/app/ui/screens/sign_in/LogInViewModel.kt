@@ -6,20 +6,21 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.courselab.app.data.AuthRepository
+import org.courselab.app.data.LoginRequest
 import org.courselab.app.viewmodel.BaseViewModel
-import org.courselab.app.viewmodel.BaseViewModelInterface
-import org.courselab.app.viewmodel.ForgotPassword
-import org.courselab.app.viewmodel.LogIn
 
 //DTO
 data class LoginFormState(
     val email: String = "", val password: String = "", val isValid: Boolean = false,
 )
 
+data class ForgotPassword(val email: String)
+
+
 //CONTROL DEL ESTADO
 class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
 
-    private val _loginState = MutableStateFlow(LoginFormState())
+    private val _loginState = MutableStateFlow(value = LoginFormState())
     val loginState: StateFlow<LoginFormState> = _loginState
 
     private val _snackbarMsg = MutableSharedFlow<String>()
@@ -29,21 +30,24 @@ class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
 
     fun onLoginInputChanged(email: String, password: String) {
-        _loginState.value =
-            LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
+        _loginState.value = LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
     }
 
-    fun onLogInEvent(event: LogIn, onResult: (Boolean) -> Unit) {
+    fun onLogInEvent(logInRequest: LoginRequest, onResult: (Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {
-                var response = repository.logIn(event.email, event.password)
+                var response = repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
                 if (response.success) onResult(true)
-                else _snackbarMsg.emit(response.message ?: "Error en login")
+                else {
+                    _snackbarMsg.emit(response.message ?: "Error en login")
+                    onResult(false)
+                }
             } catch (e: Exception) {
                 print(e)
                 _snackbarMsg.emit("Error de red: ${e.message}")
+                onResult(false)
             } finally {
                 _isLoading.value = false
             }

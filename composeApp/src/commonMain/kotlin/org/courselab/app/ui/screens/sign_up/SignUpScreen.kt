@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.theme.*
-import org.courselab.app.viewmodel.AuthViewModel
+import org.courselab.app.viewmodel.SignUpViewModel
 import org.courselab.app.viewmodel.SignUp
 import org.koin.compose.koinInject
 
@@ -27,16 +27,16 @@ fun SignUpScreen(
     onSignUpComplete: (Boolean) -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    val authViewModel= koinInject<AuthViewModel>()
+    val signUpViewModel= koinInject<SignUpViewModel>()
 
-    val state by authViewModel.signUpState.collectAsState()
+    val state by signUpViewModel.signUpState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var lastSuccess by remember { mutableStateOf(false) }
-    val isLoading by authViewModel.isLoading.collectAsState()
+    val isLoading by signUpViewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
-        authViewModel.snackbarMsg.collect { message ->
+        signUpViewModel.snackbarMsg.collect { message ->
             snackbarHostState.showSnackbar(message)
         }
     }
@@ -79,7 +79,7 @@ fun SignUpScreen(
                     OutlinedTextField(
                         value = value,
                         onValueChange = {
-                            authViewModel.onSignUpInputChanged(
+                            signUpViewModel.onSignUpInputChanged(
                                 label.lowercase(),
                                 it
                             )
@@ -96,7 +96,7 @@ fun SignUpScreen(
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = {
-                        authViewModel.onSignUpFormSubmitted(SignUp(state)) {
+                        signUpViewModel.onSignUpFormSubmitted(SignUp(state)) {
                             success ->
                             lastSuccess = success; showDialog = true; onSignUpComplete(success)
                         }
