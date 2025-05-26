@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.painterResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,4 +24,11 @@ class MainActivity : ComponentActivity() {
                 AndroidApp()
         }
     }
+}
+
+@Preview
+@Composable
+fun AndroidApp() {
+    val logoPainter = painterResource(id = R.drawable.courselab_inside_app)
+    App(logo = logoPainter)
 }
