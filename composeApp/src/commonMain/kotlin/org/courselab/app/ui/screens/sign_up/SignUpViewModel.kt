@@ -1,4 +1,4 @@
-package org.courselab.app.viewmodel
+package org.courselab.app.ui.screens.sign_up
 
 
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.courselab.app.data.AuthRepository
 import org.courselab.app.data.SignUpRequest
+import org.courselab.app.viewmodel.BaseViewModel
 
 
 data class SignUpFormState(

@@ -4,11 +4,39 @@ package org.courselab.app.ui.screens.sign_in
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,23 +44,28 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.compose_multiplatform
 import org.courselab.app.data.LoginRequest
-import org.courselab.app.ui.theme.*
+import org.courselab.app.ui.theme.BlackPrimary
+import org.courselab.app.ui.theme.Rose
+import org.courselab.app.ui.theme.YellowLight
+import org.courselab.app.ui.theme.YellowPrimary
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun WelcomeScreen(
     logo: Painter?,
     loginViewModel: LogInViewModel,
     onLoginSuccess: () -> Unit,
-    onSignUpNavigate: () -> Unit
+    onSignUpNavigate: () -> Unit,
 ) {
     val loginState by loginViewModel.loginState.collectAsState()
 
@@ -55,7 +88,14 @@ fun WelcomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(colors = listOf(Rose, BlackPrimary))
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White,
+
+                            Color.LightGray,
+                            BlackPrimary
+                        )
+                    )
                 ).padding(padding)
         ) {
             Column(
@@ -67,8 +107,8 @@ fun WelcomeScreen(
             ) {
                 logo?.let {
                     Image(
+                        imageVector = vectorResource(Res.drawable.compose_multiplatform),
                         alignment = Alignment.Center,
-                        painter = it,
                         contentDescription = "Logo",
                         modifier = Modifier
                             .size(180.dp)
@@ -123,8 +163,8 @@ fun WelcomeScreen(
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = {
-                         loginViewModel.onLogInEvent(
-                             LoginRequest(
+                        loginViewModel.onLogInEvent(
+                            LoginRequest(
                                 loginState.email, loginState.password
                             )
                         ) { success -> if (success) onLoginSuccess() }
@@ -172,7 +212,10 @@ fun WelcomeScreen(
 @Preview
 @Composable
 fun ForgotPasswordDialog(
-    initialEmail: String, onEmailChange: (String) -> Unit, onSend: () -> Unit, onDismiss: () -> Unit
+    initialEmail: String,
+    onEmailChange: (String) -> Unit,
+    onSend: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     AlertDialog(
         containerColor = BlackPrimary,

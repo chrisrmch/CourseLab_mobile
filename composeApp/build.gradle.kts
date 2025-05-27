@@ -68,6 +68,9 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.compose.m3.kmp)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.material3.adaptative)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -130,5 +133,3 @@ compose.desktop {
         }
     }
 }
-
-

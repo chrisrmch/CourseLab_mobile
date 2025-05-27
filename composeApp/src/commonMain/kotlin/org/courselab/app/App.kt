@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.ktor.client.HttpClient
 import kotlinx.serialization.Serializable
 import org.courselab.app.ui.screens.sign_in.LogInViewModel
 import org.courselab.app.ui.screens.sign_in.WelcomeScreen

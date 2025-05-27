@@ -1,7 +1,7 @@
 package org.courselab.app.di
 
 import org.courselab.app.ui.screens.sign_in.LogInViewModel
-import org.courselab.app.viewmodel.SignUpViewModel
+import org.courselab.app.ui.screens.sign_up.SignUpViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 

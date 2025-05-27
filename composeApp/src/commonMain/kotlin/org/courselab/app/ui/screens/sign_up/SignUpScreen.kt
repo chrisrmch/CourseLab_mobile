@@ -17,8 +17,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.theme.*
-import org.courselab.app.viewmodel.SignUpViewModel
-import org.courselab.app.viewmodel.SignUp
 import org.koin.compose.koinInject
 
 @Composable
