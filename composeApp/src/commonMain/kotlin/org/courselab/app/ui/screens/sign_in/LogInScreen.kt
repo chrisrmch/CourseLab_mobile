@@ -34,7 +34,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,7 +43,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -52,21 +50,27 @@ import androidx.compose.ui.zIndex
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.compose_multiplatform
 import org.courselab.app.data.LoginRequest
+import org.courselab.app.di.initKoin
 import org.courselab.app.ui.theme.BlackPrimary
 import org.courselab.app.ui.theme.Rose
 import org.courselab.app.ui.theme.YellowLight
 import org.courselab.app.ui.theme.YellowPrimary
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
-@Preview
+@Preview()
 @Composable
-fun WelcomeScreen(
-    logo: Painter?,
-    loginViewModel: LogInViewModel,
-    onLoginSuccess: () -> Unit,
-    onSignUpNavigate: () -> Unit,
+fun LoginScreen(
+    logo: Painter? = painterResource(resource = Res.drawable.compose_multiplatform),
+    onLoginSuccess: () -> Unit = {},
+    onSignUpNavigate: () -> Unit = {},
 ) {
+//    QUITAR initKoin() DESPUÉS DE DISEÑAR LA PANTALLA CON PREVIEW
+    initKoin()
+//    ------------------------------------------------------------
+    val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
 
     var showForgotDialog by remember { mutableStateOf(false) }
@@ -91,7 +95,6 @@ fun WelcomeScreen(
                     brush = Brush.verticalGradient(
                         colors = listOf(
                             Color.White,
-
                             Color.LightGray,
                             BlackPrimary
                         )
@@ -151,7 +154,7 @@ fun WelcomeScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
+                        unfocusedTextColor = Color.Red,
                         focusedBorderColor = YellowPrimary,
                         unfocusedBorderColor = YellowLight,
                         cursorColor = YellowPrimary,
@@ -209,13 +212,13 @@ fun WelcomeScreen(
     }
 }
 
-@Preview
+@Preview()
 @Composable
 fun ForgotPasswordDialog(
-    initialEmail: String,
-    onEmailChange: (String) -> Unit,
-    onSend: () -> Unit,
-    onDismiss: () -> Unit,
+    initialEmail: String = "",
+    onEmailChange: (String) -> Unit = {},
+    onSend: () -> Unit = {},
+    onDismiss: () -> Unit = {},
 ) {
     AlertDialog(
         containerColor = BlackPrimary,

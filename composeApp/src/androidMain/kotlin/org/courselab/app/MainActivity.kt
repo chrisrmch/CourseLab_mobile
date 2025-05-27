@@ -8,8 +8,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.courselab.app.di.initKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +22,12 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(isSystemInDarkTheme()) {
                 enableEdgeToEdge()
             }
-                AndroidApp()
+            AndroidApp()
         }
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun AndroidApp() {
     val logoPainter = painterResource(id = R.drawable.courselab_inside_app)
