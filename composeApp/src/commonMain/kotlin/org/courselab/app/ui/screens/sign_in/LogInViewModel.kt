@@ -5,8 +5,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.courselab.app.data.ApiResponse
 import org.courselab.app.data.AuthRepository
 import org.courselab.app.data.LoginRequest
+import org.courselab.app.data.LogInResponse
 import org.courselab.app.viewmodel.BaseViewModel
 
 //DTO
@@ -37,7 +39,7 @@ class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
         scope.launch {
             _isLoading.value = true
             try {
-                var response = repository.logIn(logInRequest.email, logInRequest.password)
+                var response : LogInResponse = repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
                 if (response.success) onResult(true)
                 else {

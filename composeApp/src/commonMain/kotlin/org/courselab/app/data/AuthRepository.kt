@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 data class LoginRequest(val email: String, val password: String)
 
 @Serializable
-data class SignUpRequest(
+data class LogInResponse(
     val nombre: String,
     val apellidos: String,
     val email: String,
@@ -31,17 +31,17 @@ class AuthRepository(
     private val client: HttpClient,
     private val baseUrl: String,
 ) {
-    suspend fun logIn(email: String, password: String): ApiResponse<Unit> {
+    suspend fun logIn(email: String, password: String): LogInResponse {
         println("se ha llegado aqui")
         return client.post("$baseUrl/auth/signin") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, password))
-        }.body()
+        }.body<LogInResponse>()
     }
 
-    suspend fun signUp(request: SignUpRequest): ApiResponse<Unit> {
+    suspend fun signUp(request: LogInResponse): ApiResponse<Unit> {
         println("se ha llegado SING UP REQUEST")
-       return client.post("$baseUrl/auth/signup/user") {
+        return client.post("$baseUrl/auth/signup/user") {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()

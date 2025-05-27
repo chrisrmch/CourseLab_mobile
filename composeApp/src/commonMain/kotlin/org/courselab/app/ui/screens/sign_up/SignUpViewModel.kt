@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.courselab.app.data.AuthRepository
-import org.courselab.app.data.SignUpRequest
+import org.courselab.app.data.LogInResponse
 import org.courselab.app.viewmodel.BaseViewModel
 
 
@@ -59,7 +59,7 @@ class SignUpViewModel(
         scope.launch {
             _isLoading.value = true
             try {
-                val req = SignUpRequest(
+                val req = LogInResponse(
                     event.form.nombre,
                     event.form.apellidos,
                     event.form.email,

@@ -71,6 +71,8 @@ kotlin {
             implementation(libs.compose.m3.kmp)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.material3.adaptative)
+            implementation(libs.preferences.datastore)
+            implementation(libs.datastore)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
