@@ -16,43 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
 fun CourseLabAppTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
 ) {
-    val colors = if (useDarkTheme) {
-        darkColorScheme(
-            primary = YellowLight,
-            onPrimary = BlackPrimary,
-            primaryContainer = YellowPrimary,
-            onPrimaryContainer = BlackPrimary,
-            secondary = Rose,
-            onSecondary = BlackPrimary,
-            background = BlackPrimary,
-            onBackground = YellowLight,
-            surface = BlackPrimary,
-            onSurface = YellowLight,
-            error = RedLight,
-            onError = Color.White
-        )
-    } else {
-        lightColorScheme(
-            primary = YellowPrimary,
-            onPrimary = BlackPrimary,
-            primaryContainer = YellowLight,
-            onPrimaryContainer = BlackPrimary,
-            secondary = Rose,
-            onSecondary = BlackPrimary,
-            background = BlackPrimary,
-            onBackground = YellowLight,
-            surface = BlackPrimary,
-            onSurface = YellowLight,
-            error = RedPrimary,
-            onError = Color.White
-        )
-    }
-
     val typography = Typography(
         bodyMedium = TextStyle(
             fontFamily = FontFamily.Default,
@@ -66,10 +35,11 @@ fun CourseLabAppTheme(
         large = RoundedCornerShape(0.dp)
     )
 
+    val colors = if (darkTheme) darkColours else lightColours
     MaterialTheme(
         colorScheme = colors,
         typography = typography,
         shapes = shapes,
-        content = content,
+        content = content
     )
 }

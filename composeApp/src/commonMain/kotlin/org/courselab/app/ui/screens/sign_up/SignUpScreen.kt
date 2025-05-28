@@ -16,16 +16,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import org.courselab.app.ui.screens.sign_in.GradientScaffold
 import org.courselab.app.ui.theme.*
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+@Preview
 @Composable
 fun SignUpScreen(
     logo: Painter?,
-    onSignUpComplete: (Boolean) -> Unit,
-    onNavigateToLogin: () -> Unit
+    onSignUpComplete: (Boolean) -> Unit = {},
+    onNavigateToLogin: () -> Unit = {},
 ) {
-    val signUpViewModel= koinInject<SignUpViewModel>()
+    val signUpViewModel = koinInject<SignUpViewModel>()
 
     val state by signUpViewModel.signUpState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
@@ -39,95 +42,88 @@ fun SignUpScreen(
         }
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        containerColor = Color.Transparent
-
-    ) { padding ->
-        Box(
-            modifier = Modifier
+    GradientScaffold(
+        snackbarHostState = snackbarHostState,
+    ) {
+        Column(
+            Modifier
                 .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(colors = listOf(Rose, BlackPrimary))
-                ).padding(paddingValues = padding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
-            ) {
-                logo?.let {
-                    Image(
-                        it,
-                        contentDescription = "Logo",
-                        modifier = Modifier.size(100.dp)
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
-                listOf(
-                    "Nombre" to state.nombre,
-                    "Apellidos" to state.apellidos,
-                    "E-mail" to state.email,
-                    "Contraseña" to state.password,
-                    "Fecha de nacimiento" to state.fechaNacimiento,
-                    "Género" to state.genero
-                ).forEach { (label, value) ->
-                    OutlinedTextField(
-                        value = value,
-                        onValueChange = {
-                            signUpViewModel.onSignUpInputChanged(
-                                label.lowercase(),
-                                it
-                            )
-                        },
-                        label = { Text(label) },
-                        enabled = !isLoading,
-                        visualTransformation = if (label == "Contraseña") PasswordVisualTransformation() else VisualTransformation.None,
-                        keyboardOptions = if (label == "E-mail") KeyboardOptions(keyboardType = KeyboardType.Email) else KeyboardOptions.Default,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    )
-                }
-                Spacer(Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        signUpViewModel.onSignUpFormSubmitted(SignUp(state)) {
-                            success ->
-                            lastSuccess = success; showDialog = true; onSignUpComplete(success)
-                        }
-                    },
-                    enabled = state.isValid,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = YellowPrimary)
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp,
-                            color = BlackPrimary
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text("Registrando...", color = BlackPrimary)
-                    } else {
-                        Text("SIGN UP", color = BlackPrimary)
-                    }
-                }
-                Spacer(Modifier.height(8.dp))
-                OutlinedButton(
-                    onClick = onNavigateToLogin,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = YellowPrimary),
-                    border = ButtonDefaults.outlinedButtonBorder().copy(brush = Brush.horizontalGradient(colors=listOf(YellowPrimary, YellowPrimary)))
-                ) {
-                    Text("Volver al Login", color = YellowPrimary)
-                }
-
+            logo?.let {
+                Image(
+                    it,
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(180.dp)
+                )
             }
+            Spacer(Modifier.height(16.dp))
+            listOf(
+                "E-mail" to state.email,
+                "Contraseña" to state.password,
+            ).forEach { (label, value) ->
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = {
+                        signUpViewModel.onSignUpInputChanged(
+                            label.lowercase(),
+                            it
+                        )
+                    },
+                    label = { Text(label) },
+                    enabled = !isLoading,
+                    visualTransformation = if (label == "Contraseña") PasswordVisualTransformation() else VisualTransformation.None,
+                    keyboardOptions = if (label == "E-mail") KeyboardOptions(keyboardType = KeyboardType.Email) else KeyboardOptions.Default,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    signUpViewModel.onSignUpFormSubmitted(SignUp(state)) { success ->
+                        lastSuccess = success; showDialog = true; onSignUpComplete(success)
+                    }
+                },
+                enabled = state.isValid,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text("Registrando...", color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text("SIGN UP", color = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            OutlinedButton(
+                onClick = onNavigateToLogin,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                border = ButtonDefaults.outlinedButtonBorder().copy(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                )
+            ) {
+                Text("Volver al Login", color = MaterialTheme.colorScheme.onPrimary)
+            }
+
         }
     }
+
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -148,7 +144,7 @@ fun SignUpScreen(
                 TextButton(onClick = { showDialog = false }) {
                     Text(
                         "OK",
-                        color = YellowPrimary
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }

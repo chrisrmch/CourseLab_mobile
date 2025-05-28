@@ -39,7 +39,7 @@ class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
         scope.launch {
             _isLoading.value = true
             try {
-                var response : LogInResponse = repository.logIn(logInRequest.email, logInRequest.password)
+                var response : ApiResponse<LogInResponse> = repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
                 if (response.success) onResult(true)
                 else {

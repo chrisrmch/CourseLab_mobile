@@ -8,14 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import courselab.composeapp.generated.resources.Res
-import courselab.composeapp.generated.resources.compose_multiplatform
 import kotlinx.serialization.Serializable
-import org.courselab.app.di.initKoin
 import org.courselab.app.ui.screens.sign_in.LoginScreen
 import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 
@@ -28,8 +24,7 @@ object SignUpScreen
 
 @Preview
 @Composable
-fun App(logo: Painter? = painterResource(resource = Res.drawable.compose_multiplatform)) {
-    initKoin()
+fun App(logo: Painter?) {
     CourseLabAppTheme(
         content = @Composable {
             KoinContext {
