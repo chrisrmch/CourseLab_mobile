@@ -92,66 +92,40 @@ import androidx.compose.ui.graphics.Color
  *   dependiendo del diseño que se quiera lograr.
  */
 
-private val EnergyOrangeGenerated = Color(red = 227, green = 183, blue = 9)
-private val EnergyOrangeGeneratedInverse = Color(red = 28, green = 72, blue = 246)
-
-private val EnergyOrange = Color(color = 0xFFFF9800)
-private val EnergyOrangeLight = Color(color = 0xFFFFE0B2)
-private val PureBlack = Color(color = 0xff000000)
-private val LightWithe = Color(color = 0xFFF5F5F5)
-private val PureWithe = Color(color = 0xFFFFFFFF)
-private val DarkGray = Color(red = 69, green = 68, blue = 64)
-private val LightGray = Color(red = 164, green = 164, blue = 163)
-private val MediumGray = Color(red = 92, green = 89, blue = 84)
-private val LightMediumGray = Color(red = 173, green = 173, blue = 173)
-private val DarkAlmostBlack = Color(red = 50, green = 46, blue = 29)
-private val DarkAlmostBlackPlus = Color(red = 32, green = 32, blue = 32)
-
-
-private val EnergyOrangeDark = Color(color = 0xFFE65100)
-
-private val FreshGreen = Color(color = 0xFF388E3C)
-private val FreshGreenLight = Color(color = 0xFFC8E6C9)
-private val FreshGreenDark = Color(color = 0xff225d24)
-
-private val ErrorRed = Color(color = 0xFFD32F2F)
-private val ErrorRedLight = Color(color = 0xFFFFCDD2)
-private val ErrorRedDark = Color(color = 0xFF8E0000)
-
 val darkColours = darkColorScheme(
-    primary = EnergyOrangeGenerated,
-    onPrimary = PureBlack,
-    primaryContainer = DarkAlmostBlackPlus,
-    onPrimaryContainer = EnergyOrangeGenerated,
-    inversePrimary = EnergyOrangeGeneratedInverse,
+    primary =  Color(red = 32, green = 32, blue = 32),
+    onPrimary = Color(red = 235, green =235, blue = 235),
+    primaryContainer = Color(color = 0xFFFF9800),
+    onPrimaryContainer = Color(color = 0xff000000),
+    inversePrimary = Color(color = 0xFFFFFFFF),
 
-    secondary = EnergyOrange,
-    onSecondary = PureBlack,
-    secondaryContainer = EnergyOrangeLight,
-    onSecondaryContainer = EnergyOrangeDark,
+    secondary =  Color(color = 0xFFFF9800),
+    onSecondary = Color(color = 0xff000000),
+    secondaryContainer = Color(color = 0xFFFFE0B2),
+    onSecondaryContainer = Color(color = 0xFFE65100),
 
-    tertiary = FreshGreen,
-    onTertiary = PureWithe,
-    tertiaryContainer = FreshGreenLight,
-    onTertiaryContainer = FreshGreenDark,
+    tertiary = Color(color = 0xFF388E3C),
+    onTertiary =  Color(color = 0xcbc3c3c3),
+    tertiaryContainer =  Color(color = 0xFFC8E6C9),
+    onTertiaryContainer = Color(color = 0xff225d24),
 
-    background = PureBlack,
-    onBackground = PureWithe,
-    surface = DarkGray,
-    onSurface = LightGray,
-    surfaceVariant = MediumGray,
-    onSurfaceVariant = LightMediumGray,
-    surfaceTint = DarkAlmostBlack,
+    background = Color(color = 0xff000000),
+    onBackground = Color(color = 0xFFFFFFFF),
+    surface = Color(red = 69, green = 68, blue = 64),
+    onSurface = Color(red = 230, green = 230, blue = 230),
+    surfaceVariant = Color(red = 92, green = 89, blue = 84),
+    onSurfaceVariant = Color(red = 173, green = 173, blue = 173),
+    surfaceTint = Color(red = 50, green = 46, blue = 29),
 
 
     inverseSurface = Color(color = 0xFFEEEEEE),
     inverseOnSurface = Color(color = 0xFF121212),
 
 
-    error = ErrorRed,
-    onError = Color.White,
-    errorContainer = ErrorRedLight,
-    onErrorContainer = ErrorRedDark,
+    error =  Color(color = 0xFFD32F2F),
+    onError = Color(color = 0xffff0034),
+    errorContainer =  Color(color = 0xFFFFCDD2),
+    onErrorContainer = Color(color = 0xFF8E0000),
 
     outline = Color(color = 0xFF707070),
     outlineVariant = Color(color = 0xFFD1C4E9),
@@ -160,72 +134,42 @@ val darkColours = darkColorScheme(
     surfaceDim = Color(color = 0xFFF5F5F5),
     surfaceContainer = Color(color = 0xFFF0F0F0),
     surfaceContainerHigh = Color(color = 0xFFE0E0E0),
-    surfaceContainerHighest = Color(color = 0xFFD0D0D0),
-    surfaceContainerLow = Color(color = 0xFFF8F8F8),
-    surfaceContainerLowest = Color(color = 0xFFFBFBFB)
+    surfaceContainerHighest =Color(color = 0xff1f1c1c),
+    surfaceContainerLow = Color(color = 0xff2f2c2c),
+    surfaceContainerLowest =  Color(color = 0xffffffff)
 )
 
-
-
-
-//withe theme
-private val LightGrayBackground = Color(red = 242, green = 242, blue = 242)
-private val GrayBlueish = Color(red = 110, green = 113, blue = 145)
-private val GrayBlueisher = Color(red = 78, green = 75, blue = 102)
-
-private val LightGrayBackgroundSurface = Color(red = 252, green = 252, blue = 252)
-private val DarkBlueBackground = Color(red = 20, green = 20, blue = 42)
-private val LightYellowBackground = Color(red = 254, green = 236, blue = 186)
-
-
-private val grayPurple = Color(red = 214, green = 208, blue = 253)
-private val grayPurpleLight = Color(red = 239, green = 236, blue = 254)
-
-
-private val softBackground = Color(red = 245, green = 245, blue = 245)
-private val softOnBackground = Color(red = 143, green = 143, blue = 143)
-
-
-private val softSurface = Color(red = 229, green = 229, blue = 229)
-private val onsoftSurface = Color(red = 102, green = 104, blue = 106)
-
-
-private val softSurfaceVariant = Color(red = 248, green = 248, blue = 252)
-
-
-
-
 val lightColours = lightColorScheme(
-    primary = EnergyOrangeGenerated,
-    onPrimary = PureWithe,
-    primaryContainer = LightGrayBackground,
-    onPrimaryContainer = GrayBlueish,
-    inversePrimary = GrayBlueisher,
+    primary = Color(red = 227, green = 183, blue = 9),
+    onPrimary = Color(color = 0xFFFFFFFF),
+    primaryContainer = Color(red = 242, green = 242, blue = 242),
+    onPrimaryContainer = Color(red = 110, green = 113, blue = 145),
+    inversePrimary = Color(red = 78, green = 75, blue = 102),
 
-    secondary = LightGrayBackgroundSurface,
-    onSecondary = DarkBlueBackground,
-    secondaryContainer = LightYellowBackground,
-    onSecondaryContainer = DarkAlmostBlackPlus,
+    secondary = Color(red = 252, green = 252, blue = 252),
+    onSecondary = Color(red = 20, green = 20, blue = 42),
+    secondaryContainer = Color(red = 254, green = 236, blue = 186),
+    onSecondaryContainer = Color(red = 32, green = 32, blue = 32),
 
-    tertiary = grayPurpleLight,
-    onTertiary = DarkGray,
-    tertiaryContainer = grayPurple,
-    onTertiaryContainer = DarkBlueBackground,
+    tertiary = Color(red = 239, green = 236, blue = 254),
+    onTertiary = Color(red = 69, green = 68, blue = 64),
+    tertiaryContainer =  Color(red = 214, green = 208, blue = 253),
+    onTertiaryContainer = Color(red = 20, green = 20, blue = 42),
 
-    background = softBackground,
-    onBackground = softOnBackground,
-    surface = softSurface,
-    onSurface = onsoftSurface,
-    surfaceVariant = softSurfaceVariant,
-    onSurfaceVariant = LightGray,
-    surfaceTint = DarkAlmostBlack,
-    inverseSurface = PureBlack,
-    inverseOnSurface = LightWithe,
+    background = Color(red = 245, green = 245, blue = 245),
+    onBackground = Color(red = 143, green = 143, blue = 143),
+    surface = Color(red = 229, green = 229, blue = 229),
+    onSurface = Color(red = 102, green = 104, blue = 106),
+    surfaceVariant = Color(red = 248, green = 248, blue = 252),
+    onSurfaceVariant = Color(red = 164, green = 164, blue = 163),
+    surfaceTint = Color(red = 50, green = 46, blue = 29),
+    inverseSurface = Color(color = 0xff000000),
+    inverseOnSurface =  Color(color = 0xcbc3c3c3),
 
-    error = ErrorRedLight,
-    onError = ErrorRedDark,
-    errorContainer = ErrorRedDark,
-    onErrorContainer = ErrorRedLight,
+    error =  Color(color = 0xFFFFCDD2),
+    onError = Color(color = 0xFF8E0000),
+    errorContainer = Color(color = 0xFF8E0000),
+    onErrorContainer =  Color(color = 0xFFFFCDD2),
 
     outline = Color(color = 0xFFBBBBBB),
     outlineVariant = Color(color = 0xFF757575),
@@ -234,7 +178,7 @@ val lightColours = lightColorScheme(
     surfaceDim = Color(color = 0xFF181818),
     surfaceContainer = Color(color = 0xFF222222),
     surfaceContainerHigh = Color(color = 0xFF2E2E2E),
-    surfaceContainerHighest = Color(color = 0xFF393939),
-    surfaceContainerLow = Color(color = 0xFF171717),
+    surfaceContainerHighest = Color(color = 0x7affeca3),
+    surfaceContainerLow = Color(color = 0x52fff29f),
     surfaceContainerLowest = Color(color = 0xFF1C1C1C)
 )

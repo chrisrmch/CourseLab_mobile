@@ -1,9 +1,12 @@
 package org.courselab.app.ui.screens.sign_in
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.ui.text.TextRange
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.courselab.app.data.ApiResponse
 import org.courselab.app.data.AuthRepository
@@ -23,6 +26,7 @@ data class ForgotPassword(val email: String)
 class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
 
     private val _loginState = MutableStateFlow(value = LoginFormState())
+
     val loginState: StateFlow<LoginFormState> = _loginState
 
     private val _snackbarMsg = MutableSharedFlow<String>()
@@ -32,14 +36,22 @@ class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
     val isLoading: StateFlow<Boolean> = _isLoading
 
     fun onLoginInputChanged(email: String, password: String) {
-        _loginState.value = LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
+        _loginState.value =
+            LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
+    }
+
+    fun onPaswordChange(password: String) {
+        _loginState.update {
+            it.copy(password = password)
+        }
     }
 
     fun onLogInEvent(logInRequest: LoginRequest, onResult: (Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {
-                var response : ApiResponse<LogInResponse> = repository.logIn(logInRequest.email, logInRequest.password)
+                var response: ApiResponse<LogInResponse> =
+                    repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
                 if (response.success) onResult(true)
                 else {

@@ -3,9 +3,12 @@ package org.courselab.app.ui.screens.sign_in
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,16 +19,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicSecureTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.TextFieldDecorator
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults.DecorationBox
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -37,19 +48,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.selects.select
 import org.courselab.app.data.LoginRequest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 fun LoginScreen(
@@ -58,12 +79,39 @@ fun LoginScreen(
     onSignUpNavigate: () -> Unit = {},
 ) {
     val loginViewModel = koinInject<LogInViewModel>()
+
     val loginState by loginViewModel.loginState.collectAsState()
+
+    var passwordFieldState = rememberTextFieldState(
+        initialText = loginState.password
+    )
+
+    LaunchedEffect(passwordFieldState) {
+        snapshotFlow { passwordFieldState.text.toString() }
+            .distinctUntilChanged()
+            .collect { passwordValue ->
+                if (passwordValue != loginState.password) {
+                    loginViewModel.onPaswordChange(passwordValue)
+                }
+            }
+    }
+
+    LaunchedEffect(loginState.password) {
+        if (loginState.password != passwordFieldState.text.toString()) {
+            passwordFieldState.edit {
+                replace(0, asCharSequence().length, loginState.password)
+                select(builder = {
+                    loginState.password.length
+                })
+            }
+        }
+    }
 
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
+    val colorScheme = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
@@ -83,78 +131,121 @@ fun LoginScreen(
                 Image(
                     it,
                     contentDescription = "Logo",
-                    modifier = Modifier.size(180.dp).offset(y = (-80).dp)
+                    modifier = Modifier.size(180.dp).offset(y = (-50).dp)
                         .clip(RoundedCornerShape(15.dp))
                 )
             }
-            Spacer(Modifier.height(24.dp))
-            OutlinedTextField(
-                value = loginState.email,
-                onValueChange = { loginViewModel.onLoginInputChanged(it, loginState.password) },
-                label = { Text("E-mail") },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            FormContainer(
+                title = "Iniciar Sesión",
                 modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(8.dp))
-            OutlinedTextField(
-                value = loginState.password,
-                onValueChange = { loginViewModel.onLoginInputChanged(loginState.email, it) },
-                label = { Text("Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.Red,
-                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    cursorColor = MaterialTheme.colorScheme.onPrimary,
-                    focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedLabelColor = MaterialTheme.colorScheme.secondary
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    loginViewModel.onLogInEvent(
-                        LoginRequest(
-                            loginState.email, loginState.password
-                        )
-                    ) { success -> if (success) onLoginSuccess() }
-                },
-                enabled = loginState.isValid && !isLoading,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    .padding(it)
+                    .align(Alignment.CenterHorizontally)
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.background
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text("Ingresando...", color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text("Log In", color = MaterialTheme.colorScheme.onPrimary)
+                OutlinedTextField(
+                    shape = RoundedCornerShape(20.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    value = loginState.email,
+                    onValueChange = { loginViewModel.onLoginInputChanged(it, loginState.password) },
+                    label = { Text("E-mail") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = colorScheme.onPrimary,
+                        unfocusedTextColor = colorScheme.onSurfaceVariant,
+                        focusedBorderColor = colorScheme.onBackground,
+                        unfocusedBorderColor = colorScheme.onSurfaceVariant,
+                        cursorColor = colorScheme.inverseSurface,
+                        focusedLabelColor = colorScheme.onPrimary,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                )
+                @OptIn(ExperimentalMaterial3Api::class)
+                Spacer(Modifier.height(8.dp))
+                BasicSecureTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = passwordFieldState,
+                    textStyle = TextStyle(
+                        colorScheme.onPrimary
+                    ),
+                    decorator = TextFieldDecorator {
+                        Box(
+                            modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                                .background(Color(0xFFF0F0F0))
+                                .padding(vertical = 8.dp, horizontal = 12.dp)
+                        )
+                        BasicSecureTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = passwordFieldState,
+                            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
+                            decorator = TextFieldDecorator { innerTextField ->
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(Color(0xFFF0F0F0))
+                                        .padding(vertical = 8.dp, horizontal = 12.dp)
+                                ) {
+                                    // Este DecorationBox es el que dibuja el label, el borde, el cursor, etc.
+                                    OutlinedTextFieldDefaults(
+                                        value = passwordFieldState.text.toString(),
+                                        innerTextField = innerTextField,
+                                        enabled = true,
+                                        singleLine = true,
+                                        visualTransformation = PasswordVisualTransformation(),
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        label = { Text("Contraseña") },
+                                        colors = outlinedTextFieldColors(
+                                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                                            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            focusedBorderColor = MaterialTheme.colorScheme.onBackground,
+                                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            cursorColor = MaterialTheme.colorScheme.inverseSurface,
+                                            focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    )
+                                }
+                            }
+                    }
+                )
+                Spacer(Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        loginViewModel.onLogInEvent(
+                            LoginRequest(
+                                loginState.email, loginState.password
+                            )
+                        ) { success -> if (success) onLoginSuccess() }
+                    },
+                    enabled = loginState.isValid && !isLoading,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.background
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("Ingresando...", color = MaterialTheme.colorScheme.onPrimary)
+                    } else {
+                        Text("Log In", color = MaterialTheme.colorScheme.onPrimary)
+                    }
                 }
-            }
-            Spacer(Modifier.height(8.dp))
-            Button(
-                onClick = onSignUpNavigate,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) { Text("Sign Up", color = MaterialTheme.colorScheme.background) }
-            Spacer(Modifier.height(8.dp))
-            TextButton(onClick = { showForgotDialog = true }) {
-                Text("¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.error)
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    onClick = onSignUpNavigate,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) { Text("Sign Up", color = MaterialTheme.colorScheme.background) }
+                Spacer(Modifier.height(8.dp))
+                TextButton(onClick = { showForgotDialog = true }) {
+                    Text("¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.error)
+                }
+
             }
         }
         if (showForgotDialog) ForgotPasswordDialog(
@@ -167,6 +258,7 @@ fun LoginScreen(
             onDismiss = { showForgotDialog = false })
     }
 }
+
 
 @Preview()
 @Composable
@@ -216,10 +308,9 @@ fun ForgotPasswordDialog(
         })
 }
 
-@Preview
 @Composable
 fun GradientScaffold(
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
@@ -242,4 +333,72 @@ fun GradientScaffold(
             content(padding)
         }
     }
+}
+
+
+/**
+ * Contenedor genérico para formularios:
+ * • Tarjeta con gradiente de fondo según modo (light/dark).
+ * • Esquinas extra redondeadas.
+ * • Slot para ilustración/icono, título y contenido inyectable.
+ * • Botón de acción fuera de scope (se inyecta con content).
+ */
+@Preview
+@Composable
+fun FormContainer(
+    title: String = "",
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit = {},
+) {
+
+    val bgGradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.surfaceContainerLow,
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        )
+    )
+
+    Column(
+        modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(RoundedCornerShape(25.dp))
+            .background(bgGradient)
+            .padding(vertical = 20.dp, horizontal = 20.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        content()
+    }
+}
+
+
+@Composable
+fun RoundedSecureTextField(
+    state: TextFieldState,
+    modifier: Modifier = Modifier,
+) {
+    // Tu decorator que aplica shape, fondo y padding
+    val roundedDecorator = TextFieldDecorator { innerTextField ->
+        Box(
+            modifier
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFF0F0F0))
+                .padding(vertical = 8.dp, horizontal = 12.dp)
+        ) {
+            innerTextField()
+        }
+    }
+
+    BasicSecureTextField(
+        state = state,
+        modifier = modifier,
+        decorator = roundedDecorator,
+        // aquí puedes pasar el resto de parámetros que necesites...
+    )
 }
