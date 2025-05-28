@@ -3,8 +3,6 @@ package org.courselab.app.ui.screens.sign_in
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,24 +17,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicSecureTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldDecorator
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.OutlinedTextFieldDefaults.DecorationBox
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -53,16 +45,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.LineHeightStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.selects.select
@@ -70,13 +56,12 @@ import org.courselab.app.data.LoginRequest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 fun LoginScreen(
     logo: Painter?,
-    onLoginSuccess: () -> Unit = {},
-    onSignUpNavigate: () -> Unit = {},
+    onLoginSuccess: () -> Unit,
+    onSignUpNavigate: () -> Unit,
 ) {
     val loginViewModel = koinInject<LogInViewModel>()
 
@@ -163,52 +148,10 @@ fun LoginScreen(
                 )
                 @OptIn(ExperimentalMaterial3Api::class)
                 Spacer(Modifier.height(8.dp))
-                BasicSecureTextField(
+                RoundedSecureTextField(
                     modifier = Modifier.fillMaxWidth(),
                     state = passwordFieldState,
-                    textStyle = TextStyle(
-                        colorScheme.onPrimary
-                    ),
-                    decorator = TextFieldDecorator {
-                        Box(
-                            modifier = Modifier.clip(RoundedCornerShape(12.dp))
-                                .background(Color(0xFFF0F0F0))
-                                .padding(vertical = 8.dp, horizontal = 12.dp)
-                        )
-                        BasicSecureTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            state = passwordFieldState,
-                            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-                            decorator = TextFieldDecorator { innerTextField ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(Color(0xFFF0F0F0))
-                                        .padding(vertical = 8.dp, horizontal = 12.dp)
-                                ) {
-                                    // Este DecorationBox es el que dibuja el label, el borde, el cursor, etc.
-                                    OutlinedTextFieldDefaults(
-                                        value = passwordFieldState.text.toString(),
-                                        innerTextField = innerTextField,
-                                        enabled = true,
-                                        singleLine = true,
-                                        visualTransformation = PasswordVisualTransformation(),
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        label = { Text("Contraseña") },
-                                        colors = outlinedTextFieldColors(
-                                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                                            unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            focusedBorderColor = MaterialTheme.colorScheme.onBackground,
-                                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            cursorColor = MaterialTheme.colorScheme.inverseSurface,
-                                            focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    )
-                                }
-                            }
-                    }
+                    label = "Contraseña"
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -381,24 +324,38 @@ fun FormContainer(
 @Composable
 fun RoundedSecureTextField(
     state: TextFieldState,
+    label: String,
     modifier: Modifier = Modifier,
 ) {
-    // Tu decorator que aplica shape, fondo y padding
-    val roundedDecorator = TextFieldDecorator { innerTextField ->
-        Box(
-            modifier
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFF0F0F0))
-                .padding(vertical = 8.dp, horizontal = 12.dp)
-        ) {
-            innerTextField()
-        }
-    }
-
-    BasicSecureTextField(
-        state = state,
-        modifier = modifier,
-        decorator = roundedDecorator,
-        // aquí puedes pasar el resto de parámetros que necesites...
+    val colorScheme = MaterialTheme.colorScheme
+    OutlinedTextField(
+        value = state.text.toString(),
+        onValueChange = { newValue ->
+            state.edit {
+                if (newValue.length <= length + 1) {
+                    replace(0, length, newValue)
+                }
+            }
+        },
+        label = { Text(label) },
+        visualTransformation = PasswordVisualTransformation(mask = '\u2022'),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Password
+        ),
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colorScheme.onPrimary,
+            unfocusedTextColor = colorScheme.onSurfaceVariant,
+            focusedBorderColor = colorScheme.onBackground,
+            unfocusedBorderColor = colorScheme.onSurfaceVariant,
+            cursorColor = colorScheme.inverseSurface,
+            focusedLabelColor = colorScheme.onPrimary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        singleLine = true,
+        maxLines = 1
     )
 }
