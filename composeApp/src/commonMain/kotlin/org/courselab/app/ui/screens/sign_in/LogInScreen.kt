@@ -216,11 +216,12 @@ fun ForgotPasswordDialog(
         })
 }
 
+@Preview
 @Composable
 fun GradientScaffold(
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     modifier: Modifier = Modifier,
-    content: @Composable (PaddingValues) -> Unit,
+    content: @Composable (PaddingValues) -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
@@ -232,8 +233,8 @@ fun GradientScaffold(
             modifier = Modifier.fillMaxSize().background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.inverseSurface
+                        MaterialTheme.colorScheme.background,
+                        MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             ).padding(padding)

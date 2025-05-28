@@ -34,8 +34,8 @@ fun CourseLabAppTheme(
         medium = RoundedCornerShape(4.dp),
         large = RoundedCornerShape(0.dp)
     )
-
-    val colors = if (darkTheme) lightColours else darkColours
+// TODO: MUST SOLVE LINEARGRADIENT IN GradientScaffold
+    val colors = if (darkTheme) darkColours else lightColours
     MaterialTheme(
         colorScheme = colors,
         typography = typography,
