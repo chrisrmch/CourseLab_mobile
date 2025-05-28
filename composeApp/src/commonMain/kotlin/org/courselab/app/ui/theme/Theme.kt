@@ -35,7 +35,7 @@ fun CourseLabAppTheme(
         large = RoundedCornerShape(0.dp)
     )
 
-    val colors = if (darkTheme) darkColours else lightColours
+    val colors = if (darkTheme) lightColours else darkColours
     MaterialTheme(
         colorScheme = colors,
         typography = typography,

@@ -26,6 +26,7 @@ object SignUpScreen
 @Composable
 fun App(logo: Painter?) {
     CourseLabAppTheme(
+
         content = @Composable {
             KoinContext {
                 val navController: NavHostController = rememberNavController()
