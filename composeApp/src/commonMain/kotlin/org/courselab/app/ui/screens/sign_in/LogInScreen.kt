@@ -3,6 +3,7 @@ package org.courselab.app.ui.screens.sign_in
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -39,6 +41,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -46,7 +49,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import org.courselab.app.data.LoginRequest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -122,6 +129,8 @@ fun LoginScreen(
                     value = loginState.password,
                     onValueChange = { loginViewModel.onLoginInputChanged(loginState.email, it) },
                     label = "Contraseña",
+                    logInViewModel = loginViewModel,
+                    onLoginSuccess = onLoginSuccess,
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -290,23 +299,42 @@ fun FormContainer(
     }
 }
 
-
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RoundedSecureTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
+    logInViewModel: LogInViewModel,
+    onLoginSuccess: () -> Unit
 ) {
+    val loginState by logInViewModel.loginState.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
+    val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= (value.length + 1)) {
+                onValueChange(it)
+            }
+        },
         label = { Text(label) },
         visualTransformation = PasswordVisualTransformation(mask = '\u2022'),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+                  logInViewModel.onLogInEvent(
+                            LoginRequest(
+                                loginState.email, loginState.password
+                            )
+                        ) { success -> if (success) onLoginSuccess() }
+
+            }
         ),
         modifier = modifier
             .fillMaxWidth(),
