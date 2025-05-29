@@ -63,40 +63,13 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
 ) {
-    val loginViewModel = koinInject<LogInViewModel>()
-
+   val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
-
-    var passwordFieldState = rememberTextFieldState(
-        initialText = loginState.password
-    )
-
-    LaunchedEffect(passwordFieldState) {
-        snapshotFlow { passwordFieldState.text.toString() }
-            .distinctUntilChanged()
-            .collect { passwordValue ->
-                if (passwordValue != loginState.password) {
-                    loginViewModel.onPaswordChange(passwordValue)
-                }
-            }
-    }
-
-    LaunchedEffect(loginState.password) {
-        if (loginState.password != passwordFieldState.text.toString()) {
-            passwordFieldState.edit {
-                replace(0, asCharSequence().length, loginState.password)
-                select(builder = {
-                    loginState.password.length
-                })
-            }
-        }
-    }
 
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
-    val colorScheme = MaterialTheme.colorScheme
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
