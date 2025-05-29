@@ -22,6 +22,13 @@ data class SignUpFormState(
     val isValid: Boolean = false,
 )
 
+/**
+firstname": "$firstname",
+"lastname": "$lastname",
+"email": "$email",
+"password": "$password",
+"role": "ROLE_USER"
+ */
 
 data class SignUp(val form: SignUpFormState)
 
@@ -60,16 +67,14 @@ class SignUpViewModel(
         scope.launch {
             _isLoading.value = true
             try {
-                val req = LogInResponse(
-                    event.form.nombre,
-                    event.form.apellidos,
-                    event.form.email,
-                    event.form.password,
-                    event.form.fechaNacimiento,
-                    event.form.genero
+                val signUpRequest = SignUp(
+                    SignUpFormState(
+                        email = event.form.email,
+                        password = event.form.password,
+                    )
                 )
 
-                val response = authRepository.signUp(req)
+                val response = authRepository.signUp(signUpRequest)
                 if (response.success) onResult(true)
                 else _snackbarMsg.emit(response.message ?: "Error en registro")
 

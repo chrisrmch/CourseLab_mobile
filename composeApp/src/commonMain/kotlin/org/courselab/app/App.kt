@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
+import org.courselab.app.ui.screens.home.HomeScreen
 import org.courselab.app.ui.screens.sign_in.LoginScreen
 import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
@@ -20,6 +21,9 @@ object LogInScreen
 
 @Serializable
 object SignUpScreen
+
+@Serializable
+object HomeScreen
 
 
 @Preview
@@ -60,7 +64,7 @@ fun App(logo: Painter?) {
                 ) {
                     composable<LogInScreen> {
                         LoginScreen(
-                            onLoginSuccess = { println( "se ha entrado en login")},
+                            onLoginSuccess = { navController.navigate(HomeScreen) },
                             onSignUpNavigate = { navController.navigate(SignUpScreen) },
                             logo = logo
                         )
@@ -75,6 +79,9 @@ fun App(logo: Painter?) {
                             },
                             onNavigateToLogin = { navController.popBackStack() }
                         )
+                    }
+                    composable<HomeScreen> {
+                        HomeScreen()
                     }
                 }
             }

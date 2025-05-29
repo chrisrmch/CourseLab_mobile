@@ -9,18 +9,31 @@ import io.ktor.client.statement.request
 import io.ktor.http.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.Serializable
+import org.courselab.app.ui.screens.sign_up.SignUp
 
 @Serializable
-data class LoginRequest(val email: String, val password: String)
+data class LoginRequest(
+    val email: String,
+    val password: String,
+    val accountRole: String = "ROLE_USER",
+)
 
 @Serializable
 data class LogInResponse(
-    val nombre: String,
-    val apellidos: String,
+    val id: Int,
+    val name: String,
+    val lastname: String,
     val email: String,
-    val password: String,
-    val fechaNacimiento: String,
-    val genero: String,
+    val role: String,
+    val token: String,
+    val type: String = "Bearer",
+//    "id": 1,
+//    "name": "Christian",
+//    "lastname": "Mamani",
+//    "email": "christianrmch@outlook.es",
+//    "role": "ROLE_USER",
+//    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc3RpYW5ybWNoQG91dGxvb2suZXMiLCJpYXQiOjE3NDg1MzI5MzYsImV4cCI6MTc0ODYxOTMzNn0.2PwctuV4_8nhuSAeXzeBaL5V3tRJOQNBZ5NAMztRhxw",
+//    "type": "Bearer"
 )
 
 @Serializable
@@ -45,7 +58,12 @@ class AuthRepository(
             println("Response Status: ${response.status}")
             println("Response Body: ${response.body<String>()}")
             if (response.status.value == 200) {
-                return response.body<ApiResponse<LogInResponse>>()
+                val data = ApiResponse(
+                    success = true,
+                    data = response.body<LogInResponse>(),
+                    message = null
+                )
+                return data;
             } else {
                 println("Login failed with status code ${response.status.value}")
                 return ApiResponse(
@@ -64,7 +82,7 @@ class AuthRepository(
         }
     }
 
-    suspend fun signUp(signUpRequest: LogInResponse): ApiResponse<Unit> {
+    suspend fun signUp(signUpRequest: SignUp): ApiResponse<Unit> {
         try {
             val response: HttpResponse = client.post("$baseUrl/auth/signup/user") {
                 contentType(ContentType.Application.Json)
