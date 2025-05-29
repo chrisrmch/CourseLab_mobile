@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,7 +38,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,8 +47,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.selects.select
 import org.courselab.app.data.LoginRequest
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -63,8 +58,9 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
 ) {
-   val loginViewModel = koinInject<LogInViewModel>()
+    val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
+    val colorScheme = MaterialTheme.colorScheme
 
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
@@ -123,8 +119,9 @@ fun LoginScreen(
                 Spacer(Modifier.height(8.dp))
                 RoundedSecureTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    state = passwordFieldState,
-                    label = "Contraseña"
+                    value = loginState.password,
+                    onValueChange = { loginViewModel.onLoginInputChanged(loginState.email, it) },
+                    label = "Contraseña",
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(
@@ -296,20 +293,15 @@ fun FormContainer(
 
 @Composable
 fun RoundedSecureTextField(
-    state: TextFieldState,
+    value: String,
+    onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     OutlinedTextField(
-        value = state.text.toString(),
-        onValueChange = { newValue ->
-            state.edit {
-                if (newValue.length <= length + 1) {
-                    replace(0, length, newValue)
-                }
-            }
-        },
+        value = value,
+        onValueChange = onValueChange,
         label = { Text(label) },
         visualTransformation = PasswordVisualTransformation(mask = '\u2022'),
         keyboardOptions = KeyboardOptions(
