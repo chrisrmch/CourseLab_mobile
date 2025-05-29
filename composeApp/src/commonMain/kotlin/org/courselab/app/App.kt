@@ -60,7 +60,7 @@ fun App(logo: Painter?) {
                 ) {
                     composable<LogInScreen> {
                         LoginScreen(
-                            onLoginSuccess = { /* ir a Home */ },
+                            onLoginSuccess = { println( "se ha entrado en login")},
                             onSignUpNavigate = { navController.navigate(SignUpScreen) },
                             logo = logo
                         )
