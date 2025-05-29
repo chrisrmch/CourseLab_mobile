@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -43,14 +44,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -98,9 +103,7 @@ fun LoginScreen(
             }
             FormContainer(
                 title = "Iniciar Sesión",
-                modifier = Modifier.fillMaxWidth()
-                    .padding(it)
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
             ) {
                 OutlinedTextField(
                     shape = RoundedCornerShape(20.dp),
@@ -108,6 +111,7 @@ fun LoginScreen(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
                     ),
+                    maxLines = 1,
                     modifier = Modifier.fillMaxWidth(),
                     value = loginState.email,
                     onValueChange = { loginViewModel.onLoginInputChanged(it, loginState.password) },
@@ -122,7 +126,6 @@ fun LoginScreen(
                         unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
                 )
-                @OptIn(ExperimentalMaterial3Api::class)
                 Spacer(Modifier.height(8.dp))
                 RoundedSecureTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -143,29 +146,41 @@ fun LoginScreen(
                     },
                     enabled = loginState.isValid && !isLoading,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     if (isLoading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(20.dp),
                             strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.background
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                         Spacer(Modifier.width(8.dp))
                         Text("Ingresando...", color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text("Log In", color = MaterialTheme.colorScheme.onPrimary)
+                        Text(
+                            "Log In",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
                 Spacer(Modifier.height(8.dp))
                 Button(
                     onClick = onSignUpNavigate,
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) { Text("Sign Up", color = MaterialTheme.colorScheme.background) }
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Text(
+                        "Sign Up",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(Modifier.height(8.dp))
                 TextButton(onClick = { showForgotDialog = true }) {
-                    Text("¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.error)
+                    Text("¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.onPrimary)
                 }
 
             }
@@ -225,7 +240,11 @@ fun ForgotPasswordDialog(
                 onClick = onDismiss,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    "Cancelar",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         })
 }
@@ -272,20 +291,12 @@ fun FormContainer(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
-
-    val bgGradient = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.surfaceContainerLow,
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        )
-    )
-
     Column(
         modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clip(RoundedCornerShape(25.dp))
-            .background(bgGradient)
+            .background(color = Color.Transparent)
             .padding(vertical = 20.dp, horizontal = 20.dp)
     ) {
         Text(
@@ -307,7 +318,7 @@ fun RoundedSecureTextField(
     label: String,
     modifier: Modifier = Modifier,
     logInViewModel: LogInViewModel,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     val loginState by logInViewModel.loginState.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
@@ -328,11 +339,11 @@ fun RoundedSecureTextField(
         keyboardActions = KeyboardActions(
             onDone = {
                 keyboardController?.hide()
-                  logInViewModel.onLogInEvent(
-                            LoginRequest(
-                                loginState.email, loginState.password
-                            )
-                        ) { success -> if (success) onLoginSuccess() }
+                logInViewModel.onLogInEvent(
+                    LoginRequest(
+                        loginState.email, loginState.password
+                    )
+                ) { success -> if (success) onLoginSuccess() }
 
             }
         ),

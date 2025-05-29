@@ -95,7 +95,7 @@ import androidx.compose.ui.graphics.Color
 val darkColours = darkColorScheme(
     primary =  Color(red = 32, green = 32, blue = 32),
     onPrimary = Color(red = 235, green =235, blue = 235),
-    primaryContainer = Color(color = 0xFFFF9800),
+    primaryContainer = Color(color = 0xffffbe3b),
     onPrimaryContainer = Color(color = 0xff000000),
     inversePrimary = Color(color = 0xFFFFFFFF),
 
@@ -113,8 +113,8 @@ val darkColours = darkColorScheme(
     onBackground = Color(color = 0xFFFFFFFF),
     surface = Color(red = 69, green = 68, blue = 64),
     onSurface = Color(red = 230, green = 230, blue = 230),
-    surfaceVariant = Color(red = 52, green = 42, blue = 14),
-    onSurfaceVariant =  Color(red = 92, green = 89, blue = 84),
+    surfaceVariant =Color(red = 213, green = 213, blue = 213),
+    onSurfaceVariant = Color(red = 190, green = 190, blue = 190),
     surfaceTint =  Color(red = 173, green = 173, blue = 173),
 
 
@@ -134,7 +134,7 @@ val darkColours = darkColorScheme(
     surfaceDim = Color(color = 0xFFF5F5F5),
     surfaceContainer = Color(color = 0xFFF0F0F0),
     surfaceContainerHigh = Color(color = 0xFFE0E0E0),
-    surfaceContainerHighest =Color(color = 0xff1f1c1c),
+    surfaceContainerHighest =Color(color = 0xff312c2c),
     surfaceContainerLow = Color(color = 0xff2f2c2c),
     surfaceContainerLowest =  Color(color = 0xffffffff)
 )
@@ -161,7 +161,7 @@ val lightColours = lightColorScheme(
     surface = Color(red = 229, green = 229, blue = 229),
     onSurface = Color(red = 102, green = 104, blue = 106),
     surfaceVariant = Color(red = 248, green = 248, blue = 252),
-    onSurfaceVariant = Color(red = 164, green = 164, blue = 163),
+    onSurfaceVariant = Color(red = 82, green = 82, blue = 82),
     surfaceTint = Color(red = 50, green = 46, blue = 29),
     inverseSurface = Color(color = 0xff000000),
     inverseOnSurface =  Color(color = 0xcbc3c3c3),
