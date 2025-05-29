@@ -65,32 +65,31 @@ fun FormScaffold(
     modifier: Modifier = Modifier,
     onDoneAction: () -> Unit = {},
 ) {
-    val colorScheme = MaterialTheme.colorScheme
     Column(modifier) {
         fields.forEachIndexed { index, (fieldValue, onValueChange) ->
-            if (index > 1 && index < fields.size - 1) {
-                Spacer(Modifier.height(8.dp))
-            }
             if (fieldValue.trim().toLowerCasePreservingASCIIRules() == "email" || fieldValue.trim()
                     .toLowerCasePreservingASCIIRules() == "e-mail"
             ) {
                 BuildTextField(
-                    fieldValues = fieldValues,
+                    fields = fieldValues,
                     index = index,
-                    onValueChange = onValueChange
+                    label = fieldValue,
+                    onTextEditing = onValueChange
                 )
                 Spacer(Modifier.height(9.dp))
             }
             if (fieldValue.trim()
-                    .toLowerCasePreservingASCIIRules() == "contraseña" && index == fields.size - 1
+                    .toLowerCasePreservingASCIIRules() == "password"
             ) {
                 SecurePasswordTextField(
                     value = fieldValues.getOrNull(index)?.invoke() ?: "",
                     onValueChange = onValueChange,
-                    label = fieldValue,
+                    myLabel = fieldValue,
                     onDoneAction = onDoneAction
                 )
-                Spacer(Modifier.height(16.dp))
+            }
+            if(index == fields.lastIndex) {
+                Spacer(Modifier.height(19.dp))
             }
         }
     }
@@ -98,9 +97,10 @@ fun FormScaffold(
 
 @Composable
 fun BuildTextField(
-    fieldValues: List<() -> String>,
+    fields: List<() -> String>,
+    label : String,
     index: Int,
-    onValueChange: (String) -> Unit,
+    onTextEditing: (String) -> Unit,
 ) {
     OutlinedTextField(
         shape = RoundedCornerShape(20.dp),
@@ -110,9 +110,9 @@ fun BuildTextField(
         ),
         maxLines = 1,
         modifier = Modifier.fillMaxWidth(),
-        value = fieldValues.getOrNull(index)?.invoke() ?: "",
-        onValueChange = onValueChange,
-        label = { Text(fieldValues.getOrNull(index)?.invoke() ?: "") },
+        value = fields.getOrNull(index)?.invoke() ?: "",
+        onValueChange = onTextEditing,
+        label = { Text(label) },
         colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = colorScheme.onPrimary,
             unfocusedTextColor = colorScheme.onSurfaceVariant,

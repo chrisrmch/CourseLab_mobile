@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -14,14 +15,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import io.ktor.websocket.Frame.Text
 
 
 @Composable
 fun SecurePasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
+    myLabel: String,
     modifier: Modifier = Modifier,
     onDoneAction: () -> Unit,
 ) {
@@ -34,7 +34,7 @@ fun SecurePasswordTextField(
                 onValueChange(it)
             }
         },
-        label = { Text(label) },
+        label = { Text(myLabel) },
         visualTransformation = PasswordVisualTransformation(mask = '\u2022'),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,

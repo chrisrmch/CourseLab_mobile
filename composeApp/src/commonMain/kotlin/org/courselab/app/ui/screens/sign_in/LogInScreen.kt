@@ -91,7 +91,7 @@ fun LoginScreen(
             FormScaffold(
                 fields = listOf(
                     "E-mail" to { loginViewModel.onLoginInputChanged(it, loginState.password) },
-                    "Contraseña" to { loginViewModel.onLoginInputChanged(loginState.email, it) }
+                    "Password" to { loginViewModel.onLoginInputChanged(loginState.email, it) }
                 ),
                 onDoneAction = {
                     loginViewModel.onLogInEvent(

@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import org.courselab.app.ui.screens.sign_in.GradientScaffold
+import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.theme.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
