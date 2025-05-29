@@ -109,13 +109,13 @@ val darkColours = darkColorScheme(
     tertiaryContainer =  Color(color = 0xFFC8E6C9),
     onTertiaryContainer = Color(color = 0xff225d24),
 
-    background = Color(color = 0xff000000),
+    background = Color(red = 69, green = 68, blue = 64),
     onBackground = Color(color = 0xFFFFFFFF),
     surface = Color(red = 69, green = 68, blue = 64),
     onSurface = Color(red = 230, green = 230, blue = 230),
-    surfaceVariant = Color(red = 92, green = 89, blue = 84),
-    onSurfaceVariant = Color(red = 173, green = 173, blue = 173),
-    surfaceTint = Color(red = 50, green = 46, blue = 29),
+    surfaceVariant = Color(red = 52, green = 42, blue = 14),
+    onSurfaceVariant =  Color(red = 92, green = 89, blue = 84),
+    surfaceTint =  Color(red = 173, green = 173, blue = 173),
 
 
     inverseSurface = Color(color = 0xFFEEEEEE),
