@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.theme.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -44,13 +45,11 @@ fun SignUpScreen(
 
     GradientScaffold(
         snackbarHostState = snackbarHostState,
-    ) {
+    ) { it ->
         Column(
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center
         ) {
             logo?.let {
                 Image(
@@ -60,28 +59,20 @@ fun SignUpScreen(
                 )
             }
             Spacer(Modifier.height(16.dp))
-            listOf(
-                "E-mail" to state.email,
-                "Contraseña" to state.password,
-            ).forEach { (label, value) ->
-                OutlinedTextField(
-                    value = value,
-                    onValueChange = {
-                        signUpViewModel.onSignUpInputChanged(
-                            label.lowercase(),
-                            it
-                        )
-                    },
-                    label = { Text(label) },
-                    enabled = !isLoading,
-                    visualTransformation = if (label == "Contraseña") PasswordVisualTransformation() else VisualTransformation.None,
-                    keyboardOptions = if (label == "E-mail") KeyboardOptions(keyboardType = KeyboardType.Email) else KeyboardOptions.Default,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                )
-            }
-            Spacer(Modifier.height(16.dp))
+            FormScaffold(
+                fields = listOf(
+                    "E-mail" to { signUpViewModel.onSignUpInputChanged("E-mail", it) },
+                    "Password" to { signUpViewModel.onSignUpInputChanged("Password", it) }
+                ),
+                fieldValues = listOf(
+                    { state.email },
+                    { state.password }
+                ), onDoneAction = {
+                    signUpViewModel.onSignUpFormSubmitted(SignUp(state)) { success ->
+                        lastSuccess = success; showDialog = true; onSignUpComplete(success)
+                    }
+                }
+            )
             Button(
                 onClick = {
                     signUpViewModel.onSignUpFormSubmitted(SignUp(state)) { success ->

@@ -38,15 +38,15 @@ fun GradientScaffold(
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        containerColor = colorScheme.background,
+        contentColor = colorScheme.onBackground
     ) { padding ->
         Box(
             modifier = Modifier.fillMaxSize().background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.onSurfaceVariant
+                        colorScheme.background,
+                        colorScheme.onSurfaceVariant
                     )
                 )
             ).padding(padding)
@@ -63,7 +63,7 @@ fun FormScaffold(
     fields: List<Pair<String, (String) -> Unit>> = emptyList(),
     fieldValues: List<() -> String> = emptyList(),
     modifier: Modifier = Modifier,
-    onDoneAction: () -> Unit = {},
+    onDoneAction: () -> Unit,
 ) {
     Column(modifier) {
         fields.forEachIndexed { index, (fieldValue, onValueChange) ->

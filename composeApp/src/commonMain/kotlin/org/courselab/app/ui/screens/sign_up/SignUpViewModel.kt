@@ -1,6 +1,7 @@
 package org.courselab.app.ui.screens.sign_up
 
 
+import io.ktor.util.toLowerCasePreservingASCIIRules
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -37,20 +38,20 @@ class SignUpViewModel(
     val snackbarMsg: SharedFlow<String> = _snackbarMsg
 
     fun onSignUpInputChanged(field: String, value: String) {
+        println("se ha llegado aqui + $value")
+//         _loginState.value =
+//            LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
         val current = _signUpState.value
-        val updated = when (field) {
-            "nombre" -> current.copy(nombre = value)
-            "apellidos" -> current.copy(apellidos = value)
+        val updated = when (field.trim()
+            .toLowerCasePreservingASCIIRules()) {
             "e-mail" -> current.copy(email = value)
-            "contraseña" -> current.copy(password = value)
-            "fecha de nacimiento" -> current.copy(fechaNacimiento = value)
-            "género" -> current.copy(genero = value)
+            "password" -> current.copy(password = value)
             else -> current
         }
         _signUpState.value = updated.copy(
-            isValid = updated.nombre.isNotBlank()
-                    && updated.apellidos.isNotBlank()
-                    && updated.email.isNotBlank()
+            email = updated.email,
+            password = updated.password,
+            isValid = updated.email.isNotBlank()
                     && updated.password.isNotBlank()
         )
     }
