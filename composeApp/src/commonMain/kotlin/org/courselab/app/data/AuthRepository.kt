@@ -1,15 +1,24 @@
 package org.courselab.app.data
 
 
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.websocket.webSocket
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
-import io.ktor.http.*
-import kotlinx.coroutines.suspendCancellableCoroutine
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
+import io.ktor.http.contentType
+import io.ktor.websocket.CloseReason
+import io.ktor.websocket.Frame
+import io.ktor.websocket.close
+import io.ktor.websocket.readText
+import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
-import org.courselab.app.ui.screens.sign_up.SignUp
+import kotlinx.serialization.json.Json
+import org.courselab.app.ui.screens.sign_up.SignUpRequestDTO
 
 @Serializable
 data class LoginRequest(
@@ -27,13 +36,11 @@ data class LogInResponse(
     val role: String,
     val token: String,
     val type: String = "Bearer",
-//    "id": 1,
-//    "name": "Christian",
-//    "lastname": "Mamani",
-//    "email": "christianrmch@outlook.es",
-//    "role": "ROLE_USER",
-//    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaHJpc3RpYW5ybWNoQG91dGxvb2suZXMiLCJpYXQiOjE3NDg1MzI5MzYsImV4cCI6MTc0ODYxOTMzNn0.2PwctuV4_8nhuSAeXzeBaL5V3tRJOQNBZ5NAMztRhxw",
-//    "type": "Bearer"
+)
+
+@Serializable
+data class SignUpResponse(
+    val message: String,
 )
 
 @Serializable
@@ -69,7 +76,7 @@ class AuthRepository(
                 return ApiResponse(
                     success = false,
                     data = null,
-                    message = "login failed with status code ${response.status.value}"
+                    message = "No se ha podido iniciar sesión"
                 )
             }
         } catch (e: Exception) {
@@ -77,37 +84,107 @@ class AuthRepository(
             return ApiResponse(
                 success = false,
                 data = null,
-                message = "login failed due to an exception: ${e.message}"
+                message = "Ups... ha ocurrido un error inesperado :("
             )
         }
     }
 
-    suspend fun signUp(signUpRequest: SignUp): ApiResponse<Unit> {
-        try {
+    /**
+     * Primero envía el POST a /auth/signup/user. Si es 200, entonces abre WebSocket a /notify
+     * y espera la notificación con texto "Nuevo usuario registrado: <email>". Finalmente retorna
+     * ApiResponse indicando éxito o fracaso.
+     */
+    suspend fun signUp(signUpRequest: SignUpRequestDTO): ApiResponse<SignUpResponse> {
+        return try {
             val response: HttpResponse = client.post("$baseUrl/auth/signup/user") {
                 contentType(ContentType.Application.Json)
                 setBody(signUpRequest)
             }
             println("Request URL: ${response.request.url}")
             println("Response Status: ${response.status}")
-            println("Response Body: ${response.body<String>()}")
-            if (response.status.value == 200) {
-                return response.body<ApiResponse<Unit>>()
-            } else {
-                println("Login failed with status code ${response.status.value}")
-                return ApiResponse(
-                    success = false,
-                    data = null,
-                    message = "login failed with status code ${response.status.value}"
-                )
+            val bodyText = response.body<String>()
+            println("Response Body: $bodyText")
+            when (response.status.value) {
+                200 -> {
+                    val parsed = Json.decodeFromString(SignUpResponse.serializer(), bodyText)
+                    val expectedNotification = "Nuevo usuario registrado: ${signUpRequest.email}"
+                    client.webSocket(
+                        method = HttpMethod.Get,
+                        host = extractHost(baseUrl),
+                        port = extractPort(baseUrl),
+                        path = "/notify"
+                    ) {
+                        for (frame in incoming) {
+                            if (!this.isActive) break
+                            if (frame is Frame.Text) {
+                                val receivedText = frame.readText().trim()
+                                println("WS: Mensaje recibido -> $receivedText")
+                                if (receivedText == expectedNotification) {
+                                    close(
+                                        CloseReason(
+                                            CloseReason.Codes.NORMAL,
+                                            "Notificación recibida"
+                                        )
+                                    )
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    ApiResponse(
+                        success = true,
+                        data = parsed,
+                        message = "Sólo te queda aceptar el correo!"
+                    )
+                }
+
+                400 -> {
+                    ApiResponse(
+                        success = false,
+                        data = null,
+                        message = "Este correo ya está registrado"
+                    )
+                }
+
+                else -> {
+                    ApiResponse(
+                        success = false,
+                        data = null,
+                        message = "No se ha podido crear la cuenta :("
+                    )
+                }
             }
         } catch (e: Exception) {
-            println("An error occurred during login: ${e.message}")
-            return ApiResponse(
-                success = false,
+            println("An error occurred during signup: ${e.message}")
+            ApiResponse(    
+                success = fals
                 data = null,
-                message = "login failed due to an exception: ${e.message}"
+                message = "Ups... ha ocurrido un error inesperado"
             )
+        }
+    }
+
+    /**
+     * Extrae el host de la baseUrl (por ejemplo "http://192.168.1.5:8081" → "192.168.1.5").
+     * Si tu baseUrl es algo como "http://192.168.1.5:8081", devolvemos solo el hostname.
+     */
+    private fun extractHost(baseUrl: String): String {
+        // Asumimos "http[s]://host:puerto", simplemente tomamos el substring entre "://" y ":"
+        return baseUrl
+            .substringAfter("://")
+            .substringBefore(":")
+    }
+
+    /**
+     * Extrae el puerto de la baseUrl, p.e. "http://192.168.1.5:8081" → 8081.
+     * Si no hay puerto explícito, devolvemos 80 o 443 según el esquema.
+     */
+    private fun extractPort(baseUrl: String): Int {
+        val afterProtocol = baseUrl.substringAfter("://")
+        return if (afterProtocol.contains(":")) {
+            afterProtocol.substringAfter(":").toIntOrNull() ?: 80
+        } else {
+            if (baseUrl.startsWith("https")) 443 else 80
         }
     }
 }

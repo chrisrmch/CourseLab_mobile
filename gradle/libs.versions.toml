@@ -68,6 +68,7 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-material3-adaptative = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "material3-adaptative-compose" }
 preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+ktor-websocket = { module = "io.ktor:ktor-client-websockets", version.ref ="ktor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

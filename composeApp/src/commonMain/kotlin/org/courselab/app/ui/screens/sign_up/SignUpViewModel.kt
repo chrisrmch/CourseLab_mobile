@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import org.courselab.app.data.AuthRepository
-import org.courselab.app.data.LogInResponse
 import org.courselab.app.viewmodel.BaseViewModel
 
 
@@ -30,7 +31,12 @@ firstname": "$firstname",
 "role": "ROLE_USER"
  */
 
-data class SignUp(val form: SignUpFormState)
+@Serializable
+data class SignUpRequestDTO(
+    val email: String,
+    val password: String,
+    val role: String = "ROLE_USER",
+)
 
 class SignUpViewModel(
     private val authRepository: AuthRepository,
@@ -63,17 +69,15 @@ class SignUpViewModel(
         )
     }
 
-    fun onSignUpFormSubmitted(event: SignUp, onResult: (Boolean) -> Unit) {
+    fun onSignUpFormSubmitted(event: SignUpRequestDTO, onResult: (Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {
-                val signUpRequest = SignUp(
-                    SignUpFormState(
-                        email = event.form.email,
-                        password = event.form.password,
-                    )
+                val signUpRequest = SignUpRequestDTO(
+                    email = event.email,
+                    password = event.password,
+                    role = "ROLE_USER"
                 )
-
                 val response = authRepository.signUp(signUpRequest)
                 if (response.success) onResult(true)
                 else _snackbarMsg.emit(response.message ?: "Error en registro")

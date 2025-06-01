@@ -2,9 +2,7 @@ package org.courselab.app.ui.screens.sign_up
 
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,13 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
-import org.courselab.app.ui.theme.*
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -68,14 +62,20 @@ fun SignUpScreen(
                     { state.email },
                     { state.password }
                 ), onDoneAction = {
-                    signUpViewModel.onSignUpFormSubmitted(SignUp(state)) { success ->
+                    signUpViewModel.onSignUpFormSubmitted(SignUpRequestDTO(
+                        email = state.email,
+                        password = state.password
+                    )) { success ->
                         lastSuccess = success; showDialog = true; onSignUpComplete(success)
                     }
                 }
             )
             Button(
                 onClick = {
-                    signUpViewModel.onSignUpFormSubmitted(SignUp(state)) { success ->
+                    signUpViewModel.onSignUpFormSubmitted(SignUpRequestDTO(
+                        email = state.email,
+                        password = state.password
+                    )) { success ->
                         lastSuccess = success; showDialog = true; onSignUpComplete(success)
                     }
                 },
