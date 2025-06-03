@@ -3,21 +3,13 @@ package org.courselab.app.data
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.websocket.webSocket
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
-import io.ktor.websocket.CloseReason
-import io.ktor.websocket.Frame
-import io.ktor.websocket.close
-import io.ktor.websocket.readText
-import kotlinx.coroutines.isActive
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import org.courselab.app.ui.screens.sign_up.SignUpRequestDTO
 
 @Serializable
@@ -30,12 +22,12 @@ data class LoginRequest(
 @Serializable
 data class LogInResponse(
     val id: Int,
-    val name: String,
-    val lastname: String,
+    val name: String?,
+    val lastname: String?,
     val email: String,
     val role: String,
     val token: String,
-    val type: String = "Bearer",
+    val type: String,
 )
 
 @Serializable
@@ -106,34 +98,9 @@ class AuthRepository(
             println("Response Body: $bodyText")
             when (response.status.value) {
                 200 -> {
-                    val parsed = Json.decodeFromString(SignUpResponse.serializer(), bodyText)
-                    val expectedNotification = "Nuevo usuario registrado: ${signUpRequest.email}"
-                    client.webSocket(
-                        method = HttpMethod.Get,
-                        host = extractHost(baseUrl),
-                        port = extractPort(baseUrl),
-                        path = "/notify"
-                    ) {
-                        for (frame in incoming) {
-                            if (!this.isActive) break
-                            if (frame is Frame.Text) {
-                                val receivedText = frame.readText().trim()
-                                println("WS: Mensaje recibido -> $receivedText")
-                                if (receivedText == expectedNotification) {
-                                    close(
-                                        CloseReason(
-                                            CloseReason.Codes.NORMAL,
-                                            "Notificación recibida"
-                                        )
-                                    )
-                                    break
-                                }
-                            }
-                        }
-                    }
                     ApiResponse(
                         success = true,
-                        data = parsed,
+                        data = null,
                         message = "Sólo te queda aceptar el correo!"
                     )
                 }
@@ -156,8 +123,8 @@ class AuthRepository(
             }
         } catch (e: Exception) {
             println("An error occurred during signup: ${e.message}")
-            ApiResponse(    
-                success = fals
+            ApiResponse(
+                success = false,
                 data = null,
                 message = "Ups... ha ocurrido un error inesperado"
             )

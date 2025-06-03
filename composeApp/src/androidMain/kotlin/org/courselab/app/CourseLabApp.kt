@@ -1,23 +1,20 @@
 package org.courselab.app
 
 import android.app.Application
-import org.courselab.app.di.sharedKoinModules
+import android.content.Context
+import org.courselab.app.di.initKoinAndroid
 import org.courselab.app.viewmodel.getViewModelScope
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import org.koin.dsl.module
 
 class CourseLabApp : Application() {
     override fun onCreate() {
         super.onCreate()
         getViewModelScope()
-        initKoin()
-    }
-
-    private fun initKoin() {
-        val modules = sharedKoinModules
-        startKoin {
-            androidContext(this@CourseLabApp)
-            modules(modules)
-        }
+        initKoinAndroid(
+            listOf(
+                module {
+                    single<Context> { this@CourseLabApp }
+                })
+        )
     }
 }

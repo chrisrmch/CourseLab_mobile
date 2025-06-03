@@ -73,7 +73,8 @@ kotlin {
             implementation(libs.compose.material3.adaptative)
             implementation(libs.preferences.datastore)
             implementation(libs.datastore)
-            implementation(libs.ktor.websocket)
+            implementation(libs.compose.foundation)
+            implementation(libs.icons)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

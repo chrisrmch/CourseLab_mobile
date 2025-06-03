@@ -25,6 +25,7 @@ kmp-navigation = "2.9.0-beta01"
 koin = "4.0.2"
 kotlinx-datetime = "0.6.2"
 datastore = "1.1.7"
+icons = "1.7.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -66,9 +67,12 @@ compose-m3-kmp = { module = "org.jetbrains.compose.material3:material3", version
 kotlinx-datetime = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime"}
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-material3-adaptative = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "material3-adaptative-compose" }
-preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
-ktor-websocket = { module = "io.ktor:ktor-client-websockets", version.ref ="ktor" }
+preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "icons" }
+
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -2,6 +2,7 @@ package org.courselab.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
@@ -30,7 +31,6 @@ object HomeScreen
 @Composable
 fun App(logo: Painter?) {
     CourseLabAppTheme(
-
         content = @Composable {
             KoinContext {
                 val navController: NavHostController = rememberNavController()
