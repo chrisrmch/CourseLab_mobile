@@ -28,6 +28,7 @@ data class LogInResponse(
     val role: String,
     val token: String,
     val type: String,
+    val firstLogin: Boolean
 )
 
 @Serializable
@@ -46,23 +47,49 @@ class AuthRepository(
     private val client: HttpClient,
     private val baseUrl: String,
 ) {
-
     suspend fun logIn(email: String, password: String): ApiResponse<LogInResponse> {
         try {
             val response: HttpResponse = client.post("$baseUrl/auth/signin") {
                 contentType(ContentType.Application.Json)
                 setBody(LoginRequest(email, password))
             }
+
             println("Request URL: ${response.request.url}")
             println("Response Status: ${response.status}")
             println("Response Body: ${response.body<String>()}")
-            if (response.status.value == 200) {
+
+            if (response.status.value == 200 && response.body<LogInResponse>().firstLogin) {
                 val data = ApiResponse(
                     success = true,
                     data = response.body<LogInResponse>(),
-                    message = null
+                    message = "Bienvenido a CourseLab, por favor completa tu perfil"
                 )
-                return data;
+                return data
+
+            } else if (response.status.value == 200) {
+                val data = ApiResponse(
+                    success = true,
+                    data = response.body<LogInResponse>(),
+                    message = "Sesión iniciada correctamente"
+                )
+                return data
+            } else if (response.status.value == 406) {
+                println(response.status.description)
+                val errorMessage = response.body<String>()
+                println("Login failed with status code ${response.status.value}")
+                return ApiResponse(
+                    success = false,
+                    data = null,
+                    message = errorMessage
+                )
+            } else if (response.status.value == 417) {
+                println(response.status.description)
+                println("Login failed with status code ${response.status.value}")
+                return ApiResponse(
+                    success = false,
+                    data = null,
+                    message = "El correo o la contraseña son incorrectos"
+                )
             } else {
                 println("Login failed with status code ${response.status.value}")
                 return ApiResponse(
@@ -81,11 +108,6 @@ class AuthRepository(
         }
     }
 
-    /**
-     * Primero envía el POST a /auth/signup/user. Si es 200, entonces abre WebSocket a /notify
-     * y espera la notificación con texto "Nuevo usuario registrado: <email>". Finalmente retorna
-     * ApiResponse indicando éxito o fracaso.
-     */
     suspend fun signUp(signUpRequest: SignUpRequestDTO): ApiResponse<SignUpResponse> {
         return try {
             val response: HttpResponse = client.post("$baseUrl/auth/signup/user") {

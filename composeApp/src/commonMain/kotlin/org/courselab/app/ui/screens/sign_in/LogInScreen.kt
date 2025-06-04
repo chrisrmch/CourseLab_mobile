@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -25,10 +25,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,13 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import org.courselab.app.data.LoginRequest
+import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -58,8 +58,43 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
 ) {
+    val dataStore: UserPreferencesDataStore = koinInject()
+    val shouldDoOnboarding = dataStore.isFirstLogin.collectAsState(initial = false)
     val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
+
+
+    // 1) Leemos el valor actual guardado (“light”, “dark” o “system”)
+    val themePref by dataStore.themePreference.collectAsState(initial = "system")
+
+    // 2) isDark arranca siendo true solo si el pref anterior era "dark"
+    var isDark by remember { mutableStateOf(themePref == "dark") }
+
+    // 3) Cada vez que isDark cambie, guardamos "dark" o "light" en DataStore
+    LaunchedEffect(isDark) {
+        dataStore.setThemePreference(if (isDark) "dark" else "light")
+    }
+
+//    @Composable
+//    fun ThemeToggle(isDark: Boolean) {
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.padding(8.dp)
+//        ) {
+//            Text(
+//                if (themePref.equals("dark")) "Dark Mode" else "Light Mode",
+//                color = MaterialTheme.colorScheme.onSurface
+//            )
+//            Spacer(Modifier.width(8.dp))
+//            Switch(
+//                checked = isDark,
+//                onCheckedChange = { newValue ->
+//                    isDark = newValue
+//                }
+//            )
+//        }
+//    }
+
 
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
@@ -97,8 +132,17 @@ fun LoginScreen(
                     loginViewModel.onLogInEvent(
                         LoginRequest(
                             loginState.email, loginState.password
-                        )
-                    ) { success -> if (success) onLoginSuccess() }
+                        ),
+                    ) { success, firstLogIn ->
+                        if (success && !firstLogIn) {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 1")
+                            onLoginSuccess()
+                        } else if (success && firstLogIn) {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 2")
+                        } else {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 3")
+                        }
+                    }
                 },
                 fieldValues = listOf(
                     { loginState.email },
@@ -111,7 +155,16 @@ fun LoginScreen(
                         LoginRequest(
                             loginState.email, loginState.password
                         )
-                    ) { success -> if (success) onLoginSuccess() }
+                    ) { success, firstLogIn ->
+                        if (success && !firstLogIn) {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 1")
+                            onLoginSuccess()
+                        } else if (success && firstLogIn) {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 2")
+                        } else {
+                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 3")
+                        }
+                    }
                 },
                 enabled = loginState.isValid && !isLoading,
                 modifier = Modifier.fillMaxWidth(),
@@ -154,6 +207,23 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(
+                    text = if (isDark) "Dark Mode" else "Light Mode",
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.width(8.dp))
+                Switch(
+                    checked = isDark,
+                    onCheckedChange = { isDark = it }
+                )
+            }
+
+            Spacer(Modifier.height(16.dp))
         }
     }
 
@@ -246,7 +316,7 @@ fun FormContainer(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineLarge,
+              style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )

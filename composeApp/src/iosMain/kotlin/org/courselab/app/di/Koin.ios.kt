@@ -1,9 +1,10 @@
 package org.courselab.app.di
 
-import androidx.compose.runtime.Composable
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.courselab.app.data.createDataStore
+import org.courselab.app.data.PREFERENCES_DB
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
@@ -29,6 +30,6 @@ fun dataStore(): DataStore<Preferences> = createDataStore(
             create = false,
             error = null,
         )
-        requireNotNull(documentDirectory).path + "/$dataStoreFileName"
+        requireNotNull(documentDirectory).path + "/$PREFERENCES_DB"
     }
 )

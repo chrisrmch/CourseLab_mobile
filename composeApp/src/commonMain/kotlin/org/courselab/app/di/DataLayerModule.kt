@@ -7,6 +7,7 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.courselab.app.data.AuthRepository
+import org.courselab.app.data.UserPreferencesDataStore
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -18,15 +19,15 @@ val networkModule = module {
                         prettyPrint = true
                         isLenient = true
                         ignoreUnknownKeys = true
-                    }, contentType = ContentType.Application.Json
+                    }, contentType = ContentType.Application.Any
                 )
             }
-            install(WebSockets) {
-                println("SE HA INICIADO EL WEBSOCKET")
-                extensions {
-                    pingIntervalMillis = 50000L
-                }
-            }
+//            install(WebSockets) {
+//                println("SE HA INICIADO EL WEBSOCKET")
+//                extensions {
+//                    pingIntervalMillis = 50000L
+//                }
+//            }
         }
     }
 }
@@ -34,5 +35,6 @@ val networkModule = module {
 
 val repositoriesModules = module {
     val serverURL = "http://192.168.1.12:8081"
+    single { UserPreferencesDataStore(get()) }
     single { AuthRepository(get(), serverURL) }
 }

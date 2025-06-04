@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen() {
     val drawerState = remember { DrawerState(initialValue = DrawerValue.Closed) }
     val scope = rememberCoroutineScope()
 
@@ -87,7 +87,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun HomeScreenPreview() {
     HomeScreen()

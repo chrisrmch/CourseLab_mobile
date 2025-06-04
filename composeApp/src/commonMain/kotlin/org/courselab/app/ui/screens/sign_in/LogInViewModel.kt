@@ -1,7 +1,5 @@
 package org.courselab.app.ui.screens.sign_in
 
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.ui.text.TextRange
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,10 +21,10 @@ data class ForgotPassword(val email: String)
 
 
 //CONTROL DEL ESTADO
-class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
-
+class LogInViewModel(
+    private val repository: AuthRepository,
+) : BaseViewModel() {
     private val _loginState = MutableStateFlow(value = LoginFormState())
-
     val loginState: StateFlow<LoginFormState> = _loginState
 
     private val _snackbarMsg = MutableSharedFlow<String>()
@@ -40,28 +38,29 @@ class LogInViewModel(private val repository: AuthRepository) : BaseViewModel() {
             LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
     }
 
-    fun onPaswordChange(password: String) {
-        _loginState.update {
-            it.copy(password = password)
-        }
-    }
-
-    fun onLogInEvent(logInRequest: LoginRequest, onResult: (Boolean) -> Unit) {
+    fun onLogInEvent(logInRequest: LoginRequest, onResult: (success : Boolean, firstLogin : Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {
-                var response: ApiResponse<LogInResponse> =
+                val response: ApiResponse<LogInResponse> =
                     repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
-                if (response.success) onResult(true)
-                else {
+                if (!response.success && response.data != null && !response.data.firstLogin) {
+                    onResult(true, false)
                     _snackbarMsg.emit(response.message ?: "Error en login")
-                    onResult(false)
+                }
+                else if (response.success && response.data != null && response.data.firstLogin) {
+                    onResult(true, true)
+                    _snackbarMsg.emit(response.message ?: "Bienvenido a CourseLab, por favor completa tu perfil")
+                }
+                else {
+                    onResult(false, false)
+                    _snackbarMsg.emit(response.message ?: "Error en login")
                 }
             } catch (e: Exception) {
                 print(e)
+                onResult(false, false)
                 _snackbarMsg.emit("Error de red: ${e.message}")
-                onResult(false)
             } finally {
                 _isLoading.value = false
             }
