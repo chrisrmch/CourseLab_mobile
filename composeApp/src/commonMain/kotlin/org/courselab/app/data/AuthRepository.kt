@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 import org.courselab.app.ui.screens.sign_up.SignUpRequestDTO
 
 @Serializable
-data class LoginRequest(
+data class LoginRequestDTO(
     val email: String,
     val password: String,
     val accountRole: String = "ROLE_USER",
@@ -51,7 +51,7 @@ class AuthRepository(
         try {
             val response: HttpResponse = client.post("$baseUrl/auth/signin") {
                 contentType(ContentType.Application.Json)
-                setBody(LoginRequest(email, password))
+                setBody(LoginRequestDTO(email, password))
             }
 
             println("Request URL: ${response.request.url}")

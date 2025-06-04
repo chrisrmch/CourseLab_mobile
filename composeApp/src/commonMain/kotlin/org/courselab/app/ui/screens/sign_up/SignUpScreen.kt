@@ -3,16 +3,20 @@ package org.courselab.app.ui.screens.sign_up
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -38,10 +42,10 @@ fun SignUpScreen(
     }
 
     GradientScaffold(
-        snackbarHostState = snackbarHostState,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { it ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(it).padding(16.dp).offset(y = (-26.9).dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -49,10 +53,10 @@ fun SignUpScreen(
                 Image(
                     it,
                     contentDescription = "Logo",
-                    modifier = Modifier.size(180.dp)
+                    modifier = Modifier.size(180.dp).offset(y = (-50).dp)
+                        .clip(RoundedCornerShape(15.dp))
                 )
             }
-            Spacer(Modifier.height(16.dp))
             FormScaffold(
                 fields = listOf(
                     "E-mail" to { signUpViewModel.onSignUpInputChanged("E-mail", it) },
@@ -92,14 +96,21 @@ fun SignUpScreen(
                     Spacer(Modifier.width(8.dp))
                     Text("Registrando...", color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text("SIGN UP", color = MaterialTheme.colorScheme.onPrimary)
+                    Text(
+                        "Sign Up",
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = onNavigateToLogin,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.primary),
                 border = ButtonDefaults.outlinedButtonBorder().copy(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
@@ -112,8 +123,10 @@ fun SignUpScreen(
                 Text("Volver al Login", color = MaterialTheme.colorScheme.onPrimary)
             }
 
+            ThemeToggle()
         }
     }
+
 
     if (showDialog) {
         AlertDialog(

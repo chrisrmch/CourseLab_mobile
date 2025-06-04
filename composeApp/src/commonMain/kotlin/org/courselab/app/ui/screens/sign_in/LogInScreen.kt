@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +21,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,27 +34,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import org.courselab.app.data.LoginRequest
+import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-import org.koin.core.component.getScopeId
 
-@Preview()
+@Preview
 @Composable
 fun LoginScreen(
     logo: Painter?,
@@ -78,10 +76,10 @@ fun LoginScreen(
     }
 
     GradientScaffold(
-        snackbarHostState = snackbarHostState,
-    ) { it ->
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ){ it ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(it).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -95,12 +93,16 @@ fun LoginScreen(
             }
             FormScaffold(
                 fields = listOf(
-                    "E-mail" to { loginViewModel.onLoginInputChanged(it, loginState.password) },
-                    "Password" to { loginViewModel.onLoginInputChanged(loginState.email, it) }
-                ),
+                    "E-mail" to {
+                        loginViewModel.onLoginInputChanged(
+                            it,
+                            loginState.password
+                        )
+                    },
+                    "Password" to { loginViewModel.onLoginInputChanged(loginState.email, it) }),
                 onDoneAction = {
                     loginViewModel.onLogInEvent(
-                        LoginRequest(
+                        LoginRequestDTO(
                             loginState.email, loginState.password
                         ),
                     ) { success, firstLogIn ->
@@ -115,15 +117,12 @@ fun LoginScreen(
                         }
                     }
                 },
-                fieldValues = listOf(
-                    { loginState.email },
-                    { loginState.password }
-                )
+                fieldValues = listOf({ loginState.email }, { loginState.password })
             )
             Button(
                 onClick = {
                     loginViewModel.onLogInEvent(
-                        LoginRequest(
+                        LoginRequestDTO(
                             loginState.email, loginState.password
                         )
                     ) { success, firstLogIn ->
@@ -152,17 +151,26 @@ fun LoginScreen(
                 } else {
                     Text(
                         "Log In",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
             Spacer(Modifier.height(8.dp))
-            Button(
+            OutlinedButton(
                 onClick = onSignUpNavigate,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.primary),
+                border = ButtonDefaults.outlinedButtonBorder().copy(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
+                )
             ) {
                 Text(
                     "Sign Up",
@@ -174,15 +182,10 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { showForgotDialog = true }) {
                 Text(
-                    "¿Has olvidado tu contraseña?",
-                    color = MaterialTheme.colorScheme.onPrimary
+                    "¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.onPrimary
                 )
             }
-
             ThemeToggle()
-
-
-            Spacer(Modifier.height(16.dp))
         }
     }
 
@@ -193,12 +196,11 @@ fun LoginScreen(
             loginViewModel.onForgotPassword(ForgotPassword(forgotEmail)) {}
             showForgotDialog = false
         },
-        onDismiss = { showForgotDialog = false }
-    )
+        onDismiss = { showForgotDialog = false })
 }
 
 
-@Preview()
+@Preview
 @Composable
 fun ForgotPasswordDialog(
     initialEmail: String = "",
@@ -266,12 +268,8 @@ fun FormContainer(
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     Column(
-        modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(25.dp))
-            .background(color = Color.Transparent)
-            .padding(vertical = 20.dp, horizontal = 20.dp)
+        modifier.fillMaxWidth().padding(16.dp).clip(RoundedCornerShape(25.dp))
+            .background(color = Color.Transparent).padding(vertical = 20.dp, horizontal = 20.dp)
     ) {
         Text(
             text = title,

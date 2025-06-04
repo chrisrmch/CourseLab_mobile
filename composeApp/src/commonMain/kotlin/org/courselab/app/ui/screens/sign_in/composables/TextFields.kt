@@ -5,55 +5,71 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.ktor.util.toLowerCasePreservingASCIIRules
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun GradientScaffold(
-    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
+    topBar: @Composable () -> Unit = {},
+    bottomBar: @Composable () -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
+    floatingActionButton: @Composable () -> Unit = {},
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
+    containerColor: Color = colorScheme.background,
+    contentColor: Color = colorScheme.onBackground,
+    contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = colorScheme.background,
-        contentColor = colorScheme.onBackground
+        snackbarHost = snackbarHost,
+        containerColor = containerColor,
+        contentColor = contentColor,
+        contentWindowInsets = contentWindowInsets,
+        topBar = topBar,
+        bottomBar = bottomBar,
+        floatingActionButton = floatingActionButton,
+        floatingActionButtonPosition = floatingActionButtonPosition,
     ) { padding ->
         Box(
-            modifier = Modifier.fillMaxSize().background(
+            modifier = Modifier.fillMaxSize()
+                .padding(padding)
+                .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        colorScheme.background,
-                        colorScheme.onSurfaceVariant
+                        colorScheme.surfaceBright,
+                        colorScheme.inverseOnSurface
                     )
                 )
-            ).padding(padding)
+            ),
         ) {
             content(padding)
         }
     }
+
+
 }
 
 
@@ -88,7 +104,7 @@ fun FormScaffold(
                     onDoneAction = onDoneAction
                 )
             }
-            if(index == fields.lastIndex) {
+            if (index == fields.lastIndex) {
                 Spacer(Modifier.height(19.dp))
             }
         }
@@ -98,7 +114,7 @@ fun FormScaffold(
 @Composable
 fun BuildTextField(
     fields: List<() -> String>,
-    label : String,
+    label: String,
     index: Int,
     onTextEditing: (String) -> Unit,
 ) {

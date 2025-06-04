@@ -6,7 +6,7 @@ android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
 androidx-activity = "1.10.1"
-androidx-appcompat = "1.7.0"
+androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-core = "1.16.0"
 androidx-espresso = "3.6.1"
@@ -67,6 +67,11 @@ compose-m3-kmp = { module = "org.jetbrains.compose.material3:material3", version
 kotlinx-datetime = {module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime"}
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-material3-adaptative = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "material3-adaptative-compose" }
+compose-material3-adaptative-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "material3-adaptative-compose" }
+compose-material3-adaptative-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptative-compose" }
+compose-window-sizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "composeMultiplatform" }
+
+
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }

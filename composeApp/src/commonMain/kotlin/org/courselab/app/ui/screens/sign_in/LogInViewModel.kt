@@ -4,11 +4,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.courselab.app.data.ApiResponse
 import org.courselab.app.data.AuthRepository
-import org.courselab.app.data.LoginRequest
+import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.LogInResponse
 import org.courselab.app.viewmodel.BaseViewModel
 
@@ -36,7 +35,7 @@ class LogInViewModel(
             LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
     }
 
-    fun onLogInEvent(logInRequest: LoginRequest, onResult: (success : Boolean, firstLogin : Boolean) -> Unit) {
+    fun onLogInEvent(logInRequest: LoginRequestDTO, onResult: (success : Boolean, firstLogin : Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {

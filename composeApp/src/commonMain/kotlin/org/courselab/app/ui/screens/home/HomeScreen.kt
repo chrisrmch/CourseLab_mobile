@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import org.courselab.app.LocalNavController
 import org.courselab.app.screenDetails
+import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -47,7 +47,7 @@ fun HomeScreen() {
     val size = screenDetails()
     val scope = rememberCoroutineScope()
 
-    Scaffold(
+    GradientScaffold(
         bottomBar = {
             BottomNavigationBar()
         },
@@ -114,8 +114,8 @@ data class BottomNavItem(
 fun BottomNavigationBar() {
     val navigator = LocalNavController.current
     val items = listOf(
-        BottomNavItem(icon = Icons.Default.Home,     label = "Home"),
-        BottomNavItem(icon = Icons.Default.Person,   label = "Profile"),
+        BottomNavItem(icon = Icons.Default.Home, label = "Home"),
+        BottomNavItem(icon = Icons.Default.Person, label = "Profile"),
         BottomNavItem(icon = Icons.Default.Settings, label = "Settings")
     )
 
@@ -131,7 +131,7 @@ fun BottomNavigationBar() {
                 onClick = {
                     selectedIndex = index
 
-                    if(navItem.label == "Settings" && navigator != null) {
+                    if (navItem.label == "Settings" && navigator != null) {
                         navigator.navigateUp()
                     }
 

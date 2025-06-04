@@ -1,11 +1,14 @@
 package org.courselab.app
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
@@ -22,14 +25,15 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(isSystemInDarkTheme()) {
                 enableEdgeToEdge()
             }
-            AndroidApp()
+            AndroidApp(sdc = this)
         }
     }
 }
 
-@Preview(showBackground = true)
+
+
 @Composable
-fun AndroidApp() {
+fun AndroidApp(sdc : ComponentActivity) {
     val logoPainter = painterResource(id = R.drawable.logo)
     App(logo = logoPainter)
 }

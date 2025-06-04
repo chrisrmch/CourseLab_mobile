@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowSizeClass
 import kotlinx.serialization.Serializable
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.ui.screens.home.HomeScreen

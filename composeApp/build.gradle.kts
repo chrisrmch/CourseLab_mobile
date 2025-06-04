@@ -74,6 +74,11 @@ kotlin {
             implementation(libs.compose.m3.kmp)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.material3.adaptative)
+            implementation(libs.compose.material3.adaptative.layout)
+            implementation(libs.compose.material3.adaptative.navigation)
+            implementation(compose.material3AdaptiveNavigationSuite)
+            implementation(libs.compose.window.sizeClass)
+
             implementation(libs.preferences.datastore)
             implementation(libs.datastore)
             implementation(libs.compose.foundation)
