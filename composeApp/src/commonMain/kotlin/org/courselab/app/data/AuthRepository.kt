@@ -152,28 +152,4 @@ class AuthRepository(
             )
         }
     }
-
-    /**
-     * Extrae el host de la baseUrl (por ejemplo "http://192.168.1.5:8081" → "192.168.1.5").
-     * Si tu baseUrl es algo como "http://192.168.1.5:8081", devolvemos solo el hostname.
-     */
-    private fun extractHost(baseUrl: String): String {
-        // Asumimos "http[s]://host:puerto", simplemente tomamos el substring entre "://" y ":"
-        return baseUrl
-            .substringAfter("://")
-            .substringBefore(":")
-    }
-
-    /**
-     * Extrae el puerto de la baseUrl, p.e. "http://192.168.1.5:8081" → 8081.
-     * Si no hay puerto explícito, devolvemos 80 o 443 según el esquema.
-     */
-    private fun extractPort(baseUrl: String): Int {
-        val afterProtocol = baseUrl.substringAfter("://")
-        return if (afterProtocol.contains(":")) {
-            afterProtocol.substringAfter(":").toIntOrNull() ?: 80
-        } else {
-            if (baseUrl.startsWith("https")) 443 else 80
-        }
-    }
 }

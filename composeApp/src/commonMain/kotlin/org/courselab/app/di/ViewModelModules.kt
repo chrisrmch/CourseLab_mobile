@@ -10,9 +10,3 @@ val viewModelModules = module {
     factoryOf(::LogInViewModel)
     factoryOf(::SignUpViewModel)
 }
-
-//val navigationModule = module {
-//    single<AppNavigator> { (navController: NavHostController) ->
-//        ComposeAppNavigator(navController)
-//    }
-//}

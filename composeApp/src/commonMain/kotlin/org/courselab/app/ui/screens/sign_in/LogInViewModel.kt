@@ -19,8 +19,6 @@ data class LoginFormState(
 
 data class ForgotPassword(val email: String)
 
-
-//CONTROL DEL ESTADO
 class LogInViewModel(
     private val repository: AuthRepository,
 ) : BaseViewModel() {

@@ -52,8 +52,6 @@ class SignUpViewModel(
 
     fun onSignUpInputChanged(field: String, value: String) {
         println("se ha llegado aqui + $value")
-//         _loginState.value =
-//            LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
         val current = _signUpState.value
         val updated = when (field.trim()
             .toLowerCasePreservingASCIIRules()) {
