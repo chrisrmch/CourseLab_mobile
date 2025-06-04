@@ -45,7 +45,7 @@ class LogInViewModel(
                 val response: ApiResponse<LogInResponse> =
                     repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
-                if (!response.success && response.data != null && !response.data.firstLogin) {
+                if (response.success && response.data != null && !response.data.firstLogin) {
                     onResult(true, false)
                     _snackbarMsg.emit(response.message ?: "Error en login")
                 }

@@ -1,6 +1,8 @@
 package org.courselab.app.ui.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
@@ -19,18 +21,34 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
+import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.ui.screens.sign_in.ToggleButton
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
     val drawerState = remember { DrawerState(initialValue = DrawerValue.Closed) }
     val scope = rememberCoroutineScope()
+    val dataStore: UserPreferencesDataStore = koinInject()
+    val themePref by dataStore.themePreference.collectAsState(initial = "system")
+    val isDark = (themePref == "dark")
+
+    LaunchedEffect(isDark) {
+        dataStore.setThemePreference(if (isDark) "dark" else "light")
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -40,7 +58,7 @@ fun HomeScreen() {
                     NavigationDrawerItem(
                         label = { Text("Item 1") },
                         selected = false,
-                        onClick = {  }
+                        onClick = { }
                     )
                     NavigationDrawerItem(
                         label = { Text("Item 2") },
@@ -56,7 +74,13 @@ fun HomeScreen() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("CourseLab", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
+                    title = {
+                        Text(
+                            "CourseLab",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    },
                     colors = TopAppBarColors(
                         containerColor = colorScheme.background,
                         scrolledContainerColor = colorScheme.inverseOnSurface,
@@ -72,7 +96,8 @@ fun HomeScreen() {
                                 } else {
                                     drawerState.close()
                                 }
-                            } }) {
+                            }
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "Menu"
@@ -83,6 +108,12 @@ fun HomeScreen() {
             }
         ) { paddingValues ->
             Text("Home Screen Content", modifier = Modifier.padding(paddingValues))
+            Spacer(modifier = Modifier.padding(10.dp))
+            ToggleButton(dark = isDark, onCheckedChange = { it ->
+                scope.launch {
+                    dataStore.setThemePreference(if (it) "dark" else "light")
+                }
+            })
         }
     }
 }

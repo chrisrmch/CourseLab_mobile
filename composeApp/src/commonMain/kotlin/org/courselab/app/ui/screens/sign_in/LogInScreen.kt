@@ -134,6 +134,7 @@ fun LoginScreen(
                             loginState.email, loginState.password
                         ),
                     ) { success, firstLogIn ->
+                        println("SUCCESS: $success, FIRST LOGIN: $firstLogIn")
                         if (success && !firstLogIn) {
                             println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 1")
                             onLoginSuccess()
@@ -208,20 +209,8 @@ fun LoginScreen(
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(
-                    text = if (isDark) "Dark Mode" else "Light Mode",
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.width(8.dp))
-                Switch(
-                    checked = isDark,
-                    onCheckedChange = { isDark = it }
-                )
-            }
+            ToggleButton(isDark, onCheckedChange = { isDark = it })
+
 
             Spacer(Modifier.height(16.dp))
         }
@@ -236,6 +225,24 @@ fun LoginScreen(
         },
         onDismiss = { showForgotDialog = false }
     )
+}
+
+@Composable
+fun ToggleButton(dark: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        Text(
+            text = if (dark) "Dark Mode" else "Light Mode",
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(Modifier.width(8.dp))
+        Switch(
+            checked = dark,
+            onCheckedChange = onCheckedChange
+        )
+    }
 }
 
 
@@ -316,7 +323,7 @@ fun FormContainer(
     ) {
         Text(
             text = title,
-              style = MaterialTheme.typography.headlineLarge,
+            style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
