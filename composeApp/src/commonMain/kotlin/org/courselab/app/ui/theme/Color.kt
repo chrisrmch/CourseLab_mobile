@@ -95,14 +95,16 @@ import androidx.compose.ui.graphics.Color
 val darkColours = darkColorScheme(
     primary =  Color(red = 32, green = 32, blue = 32),
     onPrimary = Color(red = 235, green =235, blue = 235),
-    primaryContainer = Color(color = 0xffffbe3b),
-    onPrimaryContainer = Color(color = 0xff000000),
+    primaryContainer = Color(color = 0xff000000),
+    onPrimaryContainer = Color(color = 0xFFFFE0B2),
+//    primaryContainer = Color(color = 0xffffbe3b),
+//    onPrimaryContainer = Color(color = 0xff000000),
     inversePrimary = Color(color = 0xFFFFFFFF),
 
-    secondary =  Color(color = 0xFFFF9800),
+    secondary =  Color(color = 0xffff9800),
     onSecondary = Color(color = 0xff000000),
-    secondaryContainer = Color(color = 0xFFFFE0B2),
-    onSecondaryContainer = Color(color = 0xFFE65100),
+    secondaryContainer = Color(color = 0xff000000), //Color(color = 0xFFE65100)
+    onSecondaryContainer = Color(color = 0xFFFFE0B2),
 
     tertiary = Color(color = 0xFF388E3C),
     onTertiary =  Color(color = 0xcbc3c3c3),
@@ -140,10 +142,11 @@ val darkColours = darkColorScheme(
 )
 
 val lightColours = lightColorScheme(
-    primary = Color(red = 227, green = 183, blue = 9),
-    onPrimary = Color(color = 0xFFFFFFFF),
+    primary = Color(red = 254, green = 236, blue = 186),
+    onPrimary = Color(red = 20, green = 20, blue = 42),
     primaryContainer = Color(red = 242, green = 242, blue = 242),
-    onPrimaryContainer = Color(red = 110, green = 113, blue = 145),
+    onPrimaryContainer = Color(red = 78, green = 75, blue = 102),
+//    onPrimaryContainer = Color(red = 110, green = 113, blue = 145),
     inversePrimary = Color(red = 78, green = 75, blue = 102),
 
     secondary = Color(red = 252, green = 252, blue = 252),

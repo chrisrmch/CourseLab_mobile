@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,57 +45,59 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
         content = @Composable {
             KoinContext {
                 val navController: NavHostController = rememberNavController()
-                NavHost(
-                    navController = navController,
-                    enterTransition = {
-                        slideIntoContainer(
-                            AnimatedContentTransitionScope.SlideDirection.Left,
-                            animationSpec = tween(500)
-                        )
-                    },
-                    exitTransition = {
-                        slideOutOfContainer(
-                            AnimatedContentTransitionScope.SlideDirection.Left,
-                            animationSpec = tween(500)
-                        )
-                    },
-                    popEnterTransition = {
-                        slideIntoContainer(
-                            AnimatedContentTransitionScope.SlideDirection.Right,
-                            animationSpec = tween(500)
-                        )
-                    },
-                    popExitTransition = {
-                        slideOutOfContainer(
-                            AnimatedContentTransitionScope.SlideDirection.Right,
-                            animationSpec = tween(500)
-                        )
-                    },
-                    startDestination = LogInScreen
-                ) {
-                    composable<LogInScreen> {
-                        LoginScreen(
-                            onLoginSuccess = {
-                                println("LOGIN SUCCESSFUL, NAVIGATING TO HOME")
-                                navController.navigate(HomeScreen)
-                                             },
-                            onSignUpNavigate = { navController.navigate(SignUpScreen) },
-                            logo = logo
-                        )
-                    }
-                    composable<SignUpScreen> {
-                        SignUpScreen(
-                            logo = logo,
-                            onSignUpComplete = { success ->
-                                if (success) navController.navigate(
-                                    LogInScreen
-                                )
-                            },
-                            onNavigateToLogin = { navController.popBackStack() }
-                        )
-                    }
-                    composable<HomeScreen> {
-                        HomeScreen()
+                CompositionLocalProvider(LocalNavController provides navController) {
+                    NavHost(
+                        navController = navController,
+                        enterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Left,
+                                animationSpec = tween(500)
+                            )
+                        },
+                        exitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Left,
+                                animationSpec = tween(500)
+                            )
+                        },
+                        popEnterTransition = {
+                            slideIntoContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                animationSpec = tween(500)
+                            )
+                        },
+                        popExitTransition = {
+                            slideOutOfContainer(
+                                AnimatedContentTransitionScope.SlideDirection.Right,
+                                animationSpec = tween(500)
+                            )
+                        },
+                        startDestination = LogInScreen
+                    ) {
+                        composable<LogInScreen> {
+                            LoginScreen(
+                                onLoginSuccess = {
+                                    println("LOGIN SUCCESSFUL, NAVIGATING TO HOME")
+                                    navController.navigate(HomeScreen)
+                                },
+                                onSignUpNavigate = { navController.navigate(SignUpScreen) },
+                                logo = logo
+                            )
+                        }
+                        composable<SignUpScreen> {
+                            SignUpScreen(
+                                logo = logo,
+                                onSignUpComplete = { success ->
+                                    if (success) navController.navigate(
+                                        LogInScreen
+                                    )
+                                },
+                                onNavigateToLogin = { navController.popBackStack() }
+                            )
+                        }
+                        composable<HomeScreen> {
+                            HomeScreen()
+                        }
                     }
                 }
             }

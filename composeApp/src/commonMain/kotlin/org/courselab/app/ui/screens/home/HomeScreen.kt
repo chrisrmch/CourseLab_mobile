@@ -1,119 +1,99 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package org.courselab.app.ui.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import org.courselab.app.LocalNavController
+import org.courselab.app.screenDetails
+import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.launch
-import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.sign_in.ToggleButton
-import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
-    val drawerState = remember { DrawerState(initialValue = DrawerValue.Closed) }
+    val size = screenDetails()
     val scope = rememberCoroutineScope()
-    val dataStore: UserPreferencesDataStore = koinInject()
-    val themePref by dataStore.themePreference.collectAsState(initial = "system")
-    val isDark = (themePref == "dark")
 
-    LaunchedEffect(isDark) {
-        dataStore.setThemePreference(if (isDark) "dark" else "light")
-    }
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                Column {
-                    NavigationDrawerItem(
-                        label = { Text("Item 1") },
-                        selected = false,
-                        onClick = { }
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar()
+        },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "COURSELAB",
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
+                        modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
                     )
-                    NavigationDrawerItem(
-                        label = { Text("Item 2") },
-                        selected = false,
-                        onClick = { /* Handle item 2 click */ }
-
-
-                    )
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            "CourseLab",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
+                },
+                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = colorScheme.primaryContainer,
+                    navigationIconContentColor = colorScheme.onPrimaryContainer,
+                    titleContentColor = colorScheme.onPrimary,
+                    actionIconContentColor = colorScheme.primary
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
                         )
-                    },
-                    colors = TopAppBarColors(
-                        containerColor = colorScheme.background,
-                        scrolledContainerColor = colorScheme.inverseOnSurface,
-                        navigationIconContentColor = colorScheme.onBackground,
-                        titleContentColor = colorScheme.onBackground,
-                        actionIconContentColor = colorScheme.primary
-                    ),
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
-                                }
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = "Menu"
-                            )
-                        }
                     }
-                )
-            }
-        ) { paddingValues ->
-            Text("Home Screen Content", modifier = Modifier.padding(paddingValues))
-            Spacer(modifier = Modifier.padding(10.dp))
-            ToggleButton(dark = isDark, onCheckedChange = { it ->
-                scope.launch {
-                    dataStore.setThemePreference(if (it) "dark" else "light")
                 }
-            })
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(15.dp)
+        ) {
+            Text("Home Screen Content")
+            Spacer(modifier = Modifier.height(10.dp))
+            ThemeToggle()
+
+            val screenHeight = size.heightDp
+            val screenWidth = size.widthDp
+            Text("Screen Height: $screenHeight")
+            Text("Screen Width: $screenWidth")
         }
     }
 }
@@ -122,4 +102,51 @@ fun HomeScreen() {
 @Composable
 fun HomeScreenPreview() {
     HomeScreen()
+}
+
+
+data class BottomNavItem(
+    val icon: ImageVector,
+    val label: String
+)
+
+@Composable
+fun BottomNavigationBar() {
+    val navigator = LocalNavController.current
+    val items = listOf(
+        BottomNavItem(icon = Icons.Default.Home,     label = "Home"),
+        BottomNavItem(icon = Icons.Default.Person,   label = "Profile"),
+        BottomNavItem(icon = Icons.Default.Settings, label = "Settings")
+    )
+
+    var selectedIndex by remember { mutableStateOf(0) }
+
+    NavigationBar(
+        containerColor = colorScheme.primaryContainer,
+        contentColor = colorScheme.onPrimaryContainer
+    ) {
+        items.forEachIndexed { index, navItem ->
+            NavigationBarItem(
+                selected = (index == selectedIndex),
+                onClick = {
+                    selectedIndex = index
+
+                    if(navItem.label == "Settings" && navigator != null) {
+                        navigator.navigateUp()
+                    }
+
+                },
+                icon = {
+                    Icon(
+                        modifier = Modifier.size(35.dp),
+                        imageVector = navItem.icon,
+                        contentDescription = navItem.label
+                    )
+                },
+                label = {
+                    Text(text = navItem.label)
+                },
+            )
+        }
+    }
 }
