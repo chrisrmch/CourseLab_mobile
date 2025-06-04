@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.ui.screens.sign_in.composables.CustomOutlinedButton
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
@@ -77,7 +78,7 @@ fun LoginScreen(
 
     GradientScaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
-    ){ it ->
+    ) { it ->
         Column(
             modifier = Modifier.fillMaxSize().padding(it).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -119,7 +120,8 @@ fun LoginScreen(
                 },
                 fieldValues = listOf({ loginState.email }, { loginState.password })
             )
-            Button(
+            CustomOutlinedButton(
+                "Log In",
                 onClick = {
                     loginViewModel.onLogInEvent(
                         LoginRequestDTO(
@@ -137,9 +139,8 @@ fun LoginScreen(
                     }
                 },
                 enabled = loginState.isValid && !isLoading,
-                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-            ) {
+            ){
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
@@ -158,27 +159,11 @@ fun LoginScreen(
                 }
             }
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(
+            CustomOutlinedButton(
+                text = "Sign Up",
                 onClick = onSignUpNavigate,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.primary),
-                border = ButtonDefaults.outlinedButtonBorder().copy(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
-                        )
-                    )
-                )
-            ) {
-                Text(
-                    "Sign Up",
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            )
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { showForgotDialog = true }) {
                 Text(

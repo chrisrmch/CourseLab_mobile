@@ -25,15 +25,13 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(isSystemInDarkTheme()) {
                 enableEdgeToEdge()
             }
-            AndroidApp(sdc = this)
+            AndroidApp()
         }
     }
 }
 
-
-
 @Composable
-fun AndroidApp(sdc : ComponentActivity) {
+fun AndroidApp() {
     val logoPainter = painterResource(id = R.drawable.logo)
     App(logo = logoPainter)
 }

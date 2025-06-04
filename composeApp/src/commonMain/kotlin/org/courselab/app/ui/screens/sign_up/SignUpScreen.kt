@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.courselab.app.ui.screens.sign_in.composables.CustomOutlinedButton
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
@@ -66,20 +67,25 @@ fun SignUpScreen(
                     { state.email },
                     { state.password }
                 ), onDoneAction = {
-                    signUpViewModel.onSignUpFormSubmitted(SignUpRequestDTO(
-                        email = state.email,
-                        password = state.password
-                    )) { success ->
+                    signUpViewModel.onSignUpFormSubmitted(
+                        SignUpRequestDTO(
+                            email = state.email,
+                            password = state.password
+                        )
+                    ) { success ->
                         lastSuccess = success; showDialog = true; onSignUpComplete(success)
                     }
                 }
             )
-            Button(
+
+            CustomOutlinedButton(
                 onClick = {
-                    signUpViewModel.onSignUpFormSubmitted(SignUpRequestDTO(
-                        email = state.email,
-                        password = state.password
-                    )) { success ->
+                    signUpViewModel.onSignUpFormSubmitted(
+                        SignUpRequestDTO(
+                            email = state.email,
+                            password = state.password
+                        )
+                    ) { success ->
                         lastSuccess = success; showDialog = true; onSignUpComplete(success)
                     }
                 },
@@ -104,18 +110,20 @@ fun SignUpScreen(
                     )
                 }
             }
+
             Spacer(Modifier.height(8.dp))
             OutlinedButton(
                 onClick = onNavigateToLogin,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.primary),
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
                 border = ButtonDefaults.outlinedButtonBorder().copy(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
                             MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.secondary
+                            MaterialTheme.colorScheme.onPrimary
                         )
                     )
                 )
@@ -126,7 +134,6 @@ fun SignUpScreen(
             ThemeToggle()
         }
     }
-
 
     if (showDialog) {
         AlertDialog(
