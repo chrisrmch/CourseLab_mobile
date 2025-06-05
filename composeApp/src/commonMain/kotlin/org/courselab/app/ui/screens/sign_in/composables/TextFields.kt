@@ -11,20 +11,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import io.ktor.util.toLowerCasePreservingASCIIRules
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -60,7 +65,7 @@ fun GradientScaffold(
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         colorScheme.surfaceBright,
-                        colorScheme.inverseOnSurface
+                        colorScheme.surfaceContainerHigh
                     )
                 )
             ),
@@ -129,14 +134,61 @@ fun BuildTextField(
         value = fields.getOrNull(index)?.invoke() ?: "",
         onValueChange = onTextEditing,
         label = { Text(label) },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = colorScheme.onPrimary,
-            unfocusedTextColor = colorScheme.onSurfaceVariant,
-            focusedBorderColor = colorScheme.onBackground,
-            unfocusedBorderColor = colorScheme.onSurfaceVariant,
-            cursorColor = colorScheme.inverseSurface,
-            focusedLabelColor = colorScheme.onPrimary,
-            unfocusedLabelColor = colorScheme.onSurfaceVariant
-        ),
+        colors = textFieldColors()
     )
+}
+
+
+
+@Composable
+fun SecurePasswordTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    myLabel: String,
+    modifier: Modifier = Modifier,
+    onDoneAction: () -> Unit,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val keyboardController = LocalSoftwareKeyboardController.current
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            if (it.length <= (value.length + 1)) {
+                onValueChange(it)
+            }
+        },
+        label = { Text(myLabel) },
+        visualTransformation = PasswordVisualTransformation(mask = '\u2022'),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Done,
+            keyboardType = KeyboardType.Password
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+                onDoneAction()
+            }
+        ),
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = textFieldColors(),
+            singleLine = true,
+        maxLines = 1
+    )
+}
+
+
+
+@Composable
+private fun textFieldColors() : TextFieldColors {
+    return OutlinedTextFieldDefaults.colors(
+        focusedTextColor = colorScheme.primary,
+        unfocusedTextColor = colorScheme.outlineVariant,
+        cursorColor = colorScheme.primary,
+        unfocusedBorderColor = colorScheme.outlineVariant,
+        focusedBorderColor = colorScheme.onBackground,
+        unfocusedLabelColor = colorScheme.outlineVariant,
+        focusedLabelColor = colorScheme.onBackground
+    );
 }

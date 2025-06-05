@@ -9,12 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.courselab.app.ui.screens.sign_in.composables.CustomOutlinedButton
+import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
@@ -78,7 +78,7 @@ fun SignUpScreen(
                 }
             )
 
-            CustomOutlinedButton(
+            OutlinedWelcomeButtons.Primary(
                 onClick = {
                     signUpViewModel.onSignUpFormSubmitted(
                         SignUpRequestDTO(
@@ -90,8 +90,6 @@ fun SignUpScreen(
                     }
                 },
                 enabled = state.isValid,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
@@ -100,11 +98,11 @@ fun SignUpScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Registrando...", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Registrando...", color = MaterialTheme.colorScheme.onSecondary)
                 } else {
                     Text(
                         "Sign Up",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -112,24 +110,10 @@ fun SignUpScreen(
             }
 
             Spacer(Modifier.height(8.dp))
-            OutlinedButton(
+            OutlinedWelcomeButtons.Secondary(
+                text = "Already have an account?",
                 onClick = onNavigateToLogin,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.primary
-                ),
-                border = ButtonDefaults.outlinedButtonBorder().copy(
-                    brush = Brush.horizontalGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.colorScheme.onPrimary
-                        )
-                    )
-                )
-            ) {
-                Text("Volver al Login", color = MaterialTheme.colorScheme.onPrimary)
-            }
+            )
 
             ThemeToggle()
         }

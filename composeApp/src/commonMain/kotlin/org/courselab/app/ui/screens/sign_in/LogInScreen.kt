@@ -21,7 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SnackbarHost
@@ -38,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
@@ -46,9 +44,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.sign_in.composables.CustomOutlinedButton
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -120,7 +118,7 @@ fun LoginScreen(
                 },
                 fieldValues = listOf({ loginState.email }, { loginState.password })
             )
-            CustomOutlinedButton(
+            OutlinedWelcomeButtons.Primary(
                 "Log In",
                 onClick = {
                     loginViewModel.onLogInEvent(
@@ -139,27 +137,26 @@ fun LoginScreen(
                     }
                 },
                 enabled = loginState.isValid && !isLoading,
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ){
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Ingresando...", color = MaterialTheme.colorScheme.onPrimary)
+                    Text("Ingresando...", color = MaterialTheme.colorScheme.onSecondary)
                 } else {
                     Text(
                         "Log In",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.onSecondary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
             Spacer(Modifier.height(8.dp))
-            CustomOutlinedButton(
+            OutlinedWelcomeButtons.Secondary(
                 text = "Sign Up",
                 onClick = onSignUpNavigate,
                 modifier = Modifier.fillMaxWidth(),
@@ -167,7 +164,7 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { showForgotDialog = true }) {
                 Text(
-                    "¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.onPrimary
+                    "¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.onSecondary
                 )
             }
             ThemeToggle()

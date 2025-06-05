@@ -20,6 +20,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -48,55 +51,110 @@ fun HomeScreen() {
     val scope = rememberCoroutineScope()
 
     GradientScaffold(
-        bottomBar = {
-            BottomNavigationBar()
-        },
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "COURSELAB",
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center,
-                        letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
-                        modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
-                    )
-                },
-                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = colorScheme.primaryContainer,
-                    navigationIconContentColor = colorScheme.onPrimaryContainer,
-                    titleContentColor = colorScheme.onPrimary,
-                    actionIconContentColor = colorScheme.primary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Scaffold(
+            bottomBar = {
+                BottomNavigationBar()
+            },
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "COURSELAB",
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
+                            modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
                         )
+                    },
+                    scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = colorScheme.primaryContainer,
+                        navigationIconContentColor = colorScheme.onPrimaryContainer,
+                        titleContentColor = colorScheme.onPrimary,
+                        actionIconContentColor = colorScheme.primary
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Menu"
+                            )
+                        }
                     }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(15.dp)
+                )
+            }
         ) {
-            Text("Home Screen Content")
-            Spacer(modifier = Modifier.height(10.dp))
-            ThemeToggle()
+                paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(15.dp)
+            ) {
+                Text("Home Screen Content")
+                Spacer(modifier = Modifier.height(10.dp))
+                ThemeToggle()
 
-            val screenHeight = size.heightDp
-            val screenWidth = size.widthDp
-            Text("Screen Height: $screenHeight")
-            Text("Screen Width: $screenWidth")
+                val screenHeight = size.heightDp
+                val screenWidth = size.widthDp
+                Text("Screen Height: $screenHeight")
+                Text("Screen Width: $screenWidth")
+            }
+        }
         }
     }
-}
+//    GradientScaffold(
+//        bottomBar = {
+//            BottomNavigationBar()
+//        },
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    Text(
+//                        text = "COURSELAB",
+//                        fontWeight = FontWeight.SemiBold,
+//                        textAlign = TextAlign.Center,
+//                        letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
+//                        modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
+//                    )
+//                },
+//                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+//                colors = TopAppBarDefaults.largeTopAppBarColors(
+//                    containerColor = colorScheme.primaryContainer,
+//                    navigationIconContentColor = colorScheme.onPrimaryContainer,
+//                    titleContentColor = colorScheme.onPrimary,
+//                    actionIconContentColor = colorScheme.primary
+//                ),
+//                navigationIcon = {
+//                    IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
+//                        Icon(
+//                            imageVector = Icons.Default.Menu,
+//                            contentDescription = "Menu"
+//                        )
+//                    }
+//                }
+//            )
+//        }
+//    ) { paddingValues ->
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//                .padding(15.dp)
+//        ) {
+//            Text("Home Screen Content")
+//            Spacer(modifier = Modifier.height(10.dp))
+//            ThemeToggle()
+//
+//            val screenHeight = size.heightDp
+//            val screenWidth = size.widthDp
+//            Text("Screen Height: $screenHeight")
+//            Text("Screen Width: $screenWidth")
+//        }
+//    }
+//}
 
 @Preview
 @Composable
