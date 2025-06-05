@@ -2,19 +2,24 @@ package org.courselab.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.window.core.layout.WindowSizeClass
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.home.HomeScreen
+import org.courselab.app.ui.screens.onboarding.OnboardingStep1
+import org.courselab.app.ui.screens.onboarding.OnboardingStep2
 import org.courselab.app.ui.screens.sign_in.LoginScreen
-import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
@@ -86,18 +91,41 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
                             )
                         }
                         composable<SignUpScreen> {
-                            SignUpScreen(
+                            OnboardingStep1(
                                 logo = logo,
-                                onSignUpComplete = { success ->
-                                    if (success) navController.navigate(
-                                        LogInScreen
-                                    )
+                                onNext = { nombre, apellidos, fechaNacimiento, genero ->
+                                    navController.navigate(HomeScreen)
                                 },
-                                onNavigateToLogin = { navController.popBackStack() }
-                            )
+                                onBackToLogin = { navController.popBackStack() }
+                            );
+//                            SignUpScreen(
+//                                logo = logo,
+//                                onSignUpComplete = { success ->
+//                                    if (success) navController.navigate(
+//                                        LogInScreen
+//                                    )
+//                                },
+//                                onNavigateToLogin = { navController.popBackStack() }
+//                            )
                         }
                         composable<HomeScreen> {
-                            HomeScreen()
+                            OnboardingStep1(
+                                logo = logo,
+                                onNext = { nombre: String, apellidos: String, fechaNacimiento: LocalDate, genero: String ->
+                                    OnboardingStep2(
+                                        initialNombre = nombre,
+                                        initialApellidos = apellidos,
+                                        initialFechaNacimiento = fechaNacimiento,
+                                        initialGenero = genero,
+                                        onBack = {   },
+                                    ){ fotoPerfilUri: String?, biografia: String, enlaceWeb: String, ubicacion: String, intereses: List<String> ->
+
+                                    }
+                                },
+                                onBackToLogin = {
+
+                                }
+                            )
                         }
                     }
                 }

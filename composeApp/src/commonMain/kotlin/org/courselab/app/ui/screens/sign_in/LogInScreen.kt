@@ -42,12 +42,15 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.courselab.app.viewmodel.getViewModelScope
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -57,9 +60,10 @@ fun LoginScreen(
     logo: Painter?,
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
+    dataStore: UserPreferencesDataStore = koinInject()
 ) {
-    val dataStore: UserPreferencesDataStore = koinInject()
-    val shouldDoOnboarding = dataStore.isFirstLogin.collectAsState(initial = false)
+    val shouldDoOnboarding by dataStore.isFirstLogin.collectAsState(initial = false)
+
     val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
 
@@ -119,7 +123,6 @@ fun LoginScreen(
                 fieldValues = listOf({ loginState.email }, { loginState.password })
             )
             OutlinedWelcomeButtons.Primary(
-                "Log In",
                 onClick = {
                     loginViewModel.onLogInEvent(
                         LoginRequestDTO(
@@ -137,7 +140,7 @@ fun LoginScreen(
                     }
                 },
                 enabled = loginState.isValid && !isLoading,
-            ){
+            ) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),

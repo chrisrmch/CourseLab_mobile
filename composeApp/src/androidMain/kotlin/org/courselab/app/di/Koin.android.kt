@@ -7,6 +7,7 @@ import org.koin.dsl.module
 actual val platformModule: Module
     get() = module {
         single {
+            println("DATASTORE INICIALIZADO")
             dataStore(get())
         }
     }

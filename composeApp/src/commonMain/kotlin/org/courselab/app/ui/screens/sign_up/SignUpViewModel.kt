@@ -41,6 +41,7 @@ data class SignUpRequestDTO(
 class SignUpViewModel(
     private val authRepository: AuthRepository,
 ) : BaseViewModel() {
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 

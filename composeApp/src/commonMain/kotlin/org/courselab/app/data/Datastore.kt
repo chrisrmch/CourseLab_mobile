@@ -30,10 +30,13 @@ fun createDataStore(producePath: () -> String): DataStore<Preferences> =
 
 const val PREFERENCES_DB = "cl_user.preferences_pb"
 
+
+
 val USER_ID = intPreferencesKey("id")
 val IS_FIRST_LOGIN = booleanPreferencesKey("is_first_login")
 val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
 val SESSION_TOKEN = stringPreferencesKey("session_token")
+val USER_EMAIL = stringPreferencesKey("email")
 val THEME_PREFERENCE = stringPreferencesKey("theme_preference") // "light", "dark", "system"
 val NOTIFICATION_ENABLED = booleanPreferencesKey("notification_enabled")
 val LANGUAGE_PREFERENCE = stringPreferencesKey("language_preference") // "en", "es", "fr"
@@ -50,6 +53,16 @@ class UserPreferencesDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun setUserId(id: Int) {
         dataStore.edit { preferences ->
             preferences[USER_ID] = id
+        }
+    }
+
+    val userEmail: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[USER_EMAIL]
+    }
+
+    suspend fun setUserEmail(email: String) {
+        dataStore.edit { preferences ->
+            preferences[USER_EMAIL] = email
         }
     }
 

@@ -78,7 +78,6 @@ kotlin {
             implementation(libs.compose.material3.adaptative.navigation)
             implementation(compose.material3AdaptiveNavigationSuite)
             implementation(libs.compose.window.sizeClass)
-
             implementation(libs.preferences.datastore)
             implementation(libs.datastore)
             implementation(libs.compose.foundation)
@@ -86,6 +85,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlin.test.common)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

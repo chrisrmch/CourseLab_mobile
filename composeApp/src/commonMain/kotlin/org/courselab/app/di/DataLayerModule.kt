@@ -8,6 +8,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.courselab.app.data.AuthRepository
 import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.data.UserRepository
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -36,5 +37,6 @@ val networkModule = module {
 val repositoriesModules = module {
     val serverURL = "http://192.168.1.12:8081"
     single { UserPreferencesDataStore(get()) }
-    single { AuthRepository(get(), serverURL) }
+    single { AuthRepository(get(), serverURL, get()) }
+    single { UserRepository(get(), serverURL, get()) }
 }
