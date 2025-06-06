@@ -42,15 +42,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
-import org.courselab.app.viewmodel.getViewModelScope
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -70,16 +68,16 @@ fun LoginScreen(
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarMessages = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
-            snackbarHostState.showSnackbar(msg)
+            snackbarMessages.showSnackbar(msg)
         }
     }
 
     GradientScaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarMessages) },
     ) { it ->
         Column(
             modifier = Modifier.fillMaxSize().padding(it).padding(16.dp),
@@ -96,13 +94,10 @@ fun LoginScreen(
             }
             FormScaffold(
                 fields = listOf(
-                    "E-mail" to {
-                        loginViewModel.onLoginInputChanged(
-                            it,
-                            loginState.password
-                        )
-                    },
-                    "Password" to { loginViewModel.onLoginInputChanged(loginState.email, it) }),
+                    FormField("E-mail", {loginViewModel.onLoginInputChanged(it, loginState.password)}),
+                    FormField("Password", {loginViewModel.onLoginInputChanged(loginState.email, it)})
+                ),
+                fieldValues = listOf({ loginState.email }, { loginState.password }),
                 onDoneAction = {
                     loginViewModel.onLogInEvent(
                         LoginRequestDTO(
@@ -119,8 +114,7 @@ fun LoginScreen(
                             println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 3")
                         }
                     }
-                },
-                fieldValues = listOf({ loginState.email }, { loginState.password })
+                }
             )
             OutlinedWelcomeButtons.Primary(
                 onClick = {

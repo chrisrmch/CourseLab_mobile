@@ -12,7 +12,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.courselab.app.ui.screens.sign_in.composables.BuildTextField
+import org.courselab.app.ui.screens.sign_in.composables.BuildEmailTextField
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
@@ -115,7 +115,7 @@ fun OnboardingStep2(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // 3. Enlace web (URL)
-                    BuildTextField(
+                    BuildEmailTextField(
                         fields = listOf({ enlaceWeb }),
                         label = "Enlace Web",
                         index = 0,
@@ -125,7 +125,7 @@ fun OnboardingStep2(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     // 4. Ubicación (texto)
-                    BuildTextField(
+                    BuildEmailTextField(
                         fields = listOf({ ubicacion }),
                         label = "Ubicación",
                         index = 0,

@@ -4,54 +4,45 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.data.UserRepository
-import org.courselab.app.models.Notification
 import org.courselab.app.models.TrainingActivity
 import org.courselab.app.models.UserProfile
 import org.courselab.app.viewmodel.BaseViewModel
 
 
 data class UserUiState(
-    val userID: Int = 0,
     val profile: UserProfile? = null,
     val activities: List<TrainingActivity> = emptyList(),
-    val notifications: List<Notification> = emptyList(),
     val name: String = "",
     val surname: String = "",
     val email: String = "",
     val password: String = "",
-    val dateOfBirth: String = "",
-    val sex: String = "",
+    val dateOfBirth: LocalDate? = null,
+    val sex: Sex? = null,
     private val role: String = "ROLE_USER"
 )
+
+
+enum class Sex {
+HOMBRE, MUJER
+}
 
 class UserViewModel(
     private val userPreferencesDataStore: UserPreferencesDataStore,
     private val userRepository: UserRepository
 ) : BaseViewModel() {
 
-    init {
-        loadUserData()
-    }
-
-
     val userId : Flow<Int?> = userPreferencesDataStore.userId
 
-
-    private fun loadUserData() {
-         scope.launch {
-             userId.collect { id -> id?.let { updateUserUserID(it) } }
-         }
-        println("Loading user data !!!!!!!!!!!!!!!!!!!!! USER_ID: $userId")
-        TODO("Not yet implemented")
-    }
-
     private val _uiState = MutableStateFlow(UserUiState())
-    val uiState: StateFlow<UserUiState> = _uiState.asStateFlow()
+    val userState: StateFlow<UserUiState> = _uiState.asStateFlow()
+
+
 
     /**
      *
@@ -94,43 +85,25 @@ class UserViewModel(
      */
     fun updateUserName(name: String) {
         _uiState.update { currentState -> currentState.copy(name = name) }
+        println("SE HA ACTUALIZADO EL NOMBRE")
     }
 
     fun updateUserEmail(email: String) {
         _uiState.update { currentState -> currentState.copy(email = email) }
     }
 
-    fun updateUserUserID(userID: Int) {
-        _uiState.update { currentState -> currentState.copy(userID = userID) }
-    }
-
-    fun updateUserProfile(profile: UserProfile) {
-        _uiState.update { currentState -> currentState.copy(profile = profile) }
-    }
-
-    fun updateUserActivities(activities: List<TrainingActivity>) {
-        _uiState.update { currentState -> currentState.copy(activities = activities) }
-    }
-
-    fun updateUserNotifications(notifications: List<Notification>) {
-        _uiState.update { currentState -> currentState.copy(notifications = notifications) }
-    }
-
     fun updateUserSurname(surname: String) {
         _uiState.update { currentState -> currentState.copy(surname = surname) }
+        println("SE HA ACTUALIZADO EL APELLIDO")
     }
 
-    fun updateUserPassword(password: String) {
-        _uiState.update { currentState -> currentState.copy(password = password) }
-    }
-
-    fun updateUserDateOfBirth(dateOfBirth: String) {
+    fun updateUserDateOfBirth(dateOfBirth: LocalDate) {
         _uiState.update { currentState -> currentState.copy(dateOfBirth = dateOfBirth) }
+        println("SE HA ACTUALIZADO LA FECHA DE NACIMIENTO")
     }
 
-    fun updateUserSex(sex: String) {
+    fun updateUserSex(sex: Sex) {
         _uiState.update { currentState -> currentState.copy(sex = sex) }
+        println("SE HA ACTUALIZADO EL SEXO")
     }
-
-
 }

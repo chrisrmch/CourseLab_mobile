@@ -82,6 +82,8 @@ kotlin {
             implementation(libs.datastore)
             implementation(libs.compose.foundation)
             implementation(libs.icons)
+            implementation(libs.calendar)
+            implementation(compose.material3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

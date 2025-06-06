@@ -10,10 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
@@ -60,8 +60,8 @@ fun SignUpScreen(
             }
             FormScaffold(
                 fields = listOf(
-                    "E-mail" to { signUpViewModel.onSignUpInputChanged("E-mail", it) },
-                    "Password" to { signUpViewModel.onSignUpInputChanged("Password", it) }
+                    FormField("Email", { signUpViewModel.onSignUpInputChanged("E-mail", it) } ),
+                    FormField("Password",  { signUpViewModel.onSignUpInputChanged("Password", it) } )
                 ),
                 fieldValues = listOf(
                     { state.email },

@@ -2,22 +2,17 @@ package org.courselab.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.onboarding.OnboardingStep1
+import org.courselab.app.ui.screens.onboarding.UserInformationStep
 import org.courselab.app.ui.screens.onboarding.OnboardingStep2
 import org.courselab.app.ui.screens.sign_in.LoginScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
@@ -91,7 +86,7 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
                             )
                         }
                         composable<SignUpScreen> {
-                            OnboardingStep1(
+                            UserInformationStep(
                                 logo = logo,
                                 onNext = { nombre, apellidos, fechaNacimiento, genero ->
                                     navController.navigate(HomeScreen)
@@ -109,7 +104,7 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
 //                            )
                         }
                         composable<HomeScreen> {
-                            OnboardingStep1(
+                            UserInformationStep(
                                 logo = logo,
                                 onNext = { nombre: String, apellidos: String, fechaNacimiento: LocalDate, genero: String ->
                                     OnboardingStep2(

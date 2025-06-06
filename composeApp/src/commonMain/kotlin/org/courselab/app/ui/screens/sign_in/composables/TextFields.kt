@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import io.ktor.util.toLowerCasePreservingASCIIRules
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -77,21 +78,27 @@ fun GradientScaffold(
 
 }
 
+data class FormField(
+    val label: String,
+    val onValueChanged: (String) -> Unit
+)
 
 @Composable
 @Preview
 fun FormScaffold(
-    fields: List<Pair<String, (String) -> Unit>> = emptyList(),
+    fields: List<FormField> = emptyList(),
     fieldValues: List<() -> String> = emptyList(),
     modifier: Modifier = Modifier,
-    onDoneAction: () -> Unit,
+    onDoneAction: (() -> Unit)? = null,
 ) {
     Column(modifier) {
         fields.forEachIndexed { index, (fieldValue, onValueChange) ->
-            if (fieldValue.trim().toLowerCasePreservingASCIIRules() == "email" || fieldValue.trim()
-                    .toLowerCasePreservingASCIIRules() == "e-mail"
+            if (fieldValue.trim()
+                    .lowercase() == "email"
+                || fieldValue.trim()
+                    .lowercase() == "e-mail"
             ) {
-                BuildTextField(
+                BuildEmailTextField(
                     fields = fieldValues,
                     index = index,
                     label = fieldValue,
@@ -99,14 +106,20 @@ fun FormScaffold(
                 )
                 Spacer(Modifier.height(9.dp))
             }
-            if (fieldValue.trim()
-                    .toLowerCasePreservingASCIIRules() == "password"
-            ) {
+            if (fieldValue.trim().lowercase() == "password") {
                 SecurePasswordTextField(
                     value = fieldValues.getOrNull(index)?.invoke() ?: "",
                     onValueChange = onValueChange,
                     myLabel = fieldValue,
                     onDoneAction = onDoneAction
+                )
+            } else if(fieldValue.trim().lowercase() != "e-mail"
+                && fieldValue.trim().lowercase() != "email") {
+                BuildTextField(
+                    fields = fieldValues,
+                    index = index,
+                    label = fieldValue,
+                    onTextEditing = onValueChange
                 )
             }
             if (index == fields.lastIndex) {
@@ -117,7 +130,7 @@ fun FormScaffold(
 }
 
 @Composable
-fun BuildTextField(
+fun BuildEmailTextField(
     fields: List<() -> String>,
     label: String,
     index: Int,
@@ -138,6 +151,28 @@ fun BuildTextField(
     )
 }
 
+@Composable
+fun BuildTextField(
+    fields: List<() -> String>,
+    label: String,
+    index: Int,
+    onTextEditing: (String) -> Unit,
+) {
+    OutlinedTextField(
+        shape = RoundedCornerShape(20.dp),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
+        maxLines = 1,
+        modifier = Modifier.fillMaxWidth(),
+        value = fields.getOrNull(index)?.invoke() ?: "",
+        onValueChange = onTextEditing,
+        label = { Text(label) },
+        colors = textFieldColors()
+    )
+}
+
 
 
 @Composable
@@ -146,7 +181,7 @@ fun SecurePasswordTextField(
     onValueChange: (String) -> Unit,
     myLabel: String,
     modifier: Modifier = Modifier,
-    onDoneAction: () -> Unit,
+    onDoneAction: (() -> Unit)? = null,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -166,7 +201,7 @@ fun SecurePasswordTextField(
         keyboardActions = KeyboardActions(
             onDone = {
                 keyboardController?.hide()
-                onDoneAction()
+                onDoneAction?.invoke()
             }
         ),
         modifier = modifier
