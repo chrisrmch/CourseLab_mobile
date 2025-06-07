@@ -1,0 +1,8 @@
+<resources>
+    <string name="hello">Hola!</string>
+    <string name="es">Español</string>
+    <string name="en">Inglés</string>
+    <string name="fr">Francés</string>
+    <string name="app_language">Idioma de la aplicación: %1$s</string>
+    <string name="change_lang">Cambiar idioma</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="hello">Hi!</string>
+    <string name="en">English</string>
+    <string name="fr">Français</string>
+    <string name="app_language">App language: %1$s</string>
+    <string name="change_lang">Change language</string>
+</resources>

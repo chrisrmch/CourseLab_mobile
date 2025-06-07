@@ -1,7 +1,7 @@
 package org.courselab.app.di
 
-import org.courselab.app.ui.screens.sign_in.LogInViewModel
 import org.courselab.app.ui.screens.onboarding.UserViewModel
+import org.courselab.app.ui.screens.sign_in.LogInViewModel
 import org.courselab.app.ui.screens.sign_up.SignUpViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -13,7 +13,7 @@ val viewModelModules = module {
     factoryOf(::LogInViewModel)
     factoryOf(::SignUpViewModel)
 
-    // single { UserViewModel(get()) } crea una única instancia de UserViewModel (singleton)
+    // single { UserViewModel(get()) } cºrea una única instancia de UserViewModel (singleton)
     // que se reutilizará en toda la aplicación. Esto es apropiado para ViewModels que
     // gestionan datos globales o de sesión del usuario que deben ser consistentes.
     single { UserViewModel(get(), get())}

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 import org.courselab.app.data.AuthRepository
 import org.courselab.app.viewmodel.BaseViewModel
 

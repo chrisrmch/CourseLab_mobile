@@ -1,0 +1,7 @@
+<resources>
+    <string name="hello">Bonjour, j\'adore Kotlin</string>
+    <string name="en">English</string>
+    <string name="fr">Français</string>
+    <string name="app_language">Langue de l\'application: %1$s</string>
+    <string name="change_lang">Changer de langue</string>
+</resources>

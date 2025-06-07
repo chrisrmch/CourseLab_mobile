@@ -2,7 +2,6 @@ package org.courselab.app.di
 
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.dsl.module
 
 //iOSmain pasasus modules pero para que no salte excepcion implemento esto.
 interface TargetModule {
@@ -21,10 +20,14 @@ fun initKoinAndroid(additionalModules: List<Module>) {
 
 internal fun getBaseModules() = sharedKoinModules + platformModule
 
-expect val platformModule : Module;
+expect val platformModule : Module
 
 fun initKoiniOS(targetModule: TargetModule) {
-    (listOf(module { single { targetModule.module } } + sharedKoinModules))
+    startKoin {
+        modules(
+            listOf(targetModule.module) + getBaseModules()
+        )
+    }
 }
 
 

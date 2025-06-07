@@ -3,17 +3,23 @@ package org.courselab.app
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.onboarding.UserInformationStep
+import org.courselab.app.ui.screens.home.HomeScreen
 import org.courselab.app.ui.screens.onboarding.OnboardingStep2
+import org.courselab.app.ui.screens.onboarding.UserInformationStep
 import org.courselab.app.ui.screens.sign_in.LoginScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -29,11 +35,22 @@ object SignUpScreen
 @Serializable
 object HomeScreen
 
+@Serializable
+object FirstOnboardingScreen
+
+@Serializable
+object SecondOnboardingScreen
+
 val LocalNavController = staticCompositionLocalOf<NavHostController?> { null }
+
+val LocalAppLocalization = compositionLocalOf {
+    AppLang.English
+}
 
 @Preview
 @Composable
-fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()) {
+fun App(
+    logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()) {
     val currentThemePreference by userPreferences.themePreference.collectAsState(initial = "system")
     val useDarkTheme = when (currentThemePreference) {
         "light" -> false
@@ -50,28 +67,16 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
                     NavHost(
                         navController = navController,
                         enterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(500)
-                            )
+                            SlideInLeftAnimation()
                         },
                         exitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(500)
-                            )
+                            SlideOutLeftAnimation()
                         },
                         popEnterTransition = {
-                            slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(500)
-                            )
+                            SlideInRightAnimation()
                         },
                         popExitTransition = {
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(500)
-                            )
+                            SlideOutRightAnimation()
                         },
                         startDestination = LogInScreen
                     ) {
@@ -88,39 +93,31 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
                         composable<SignUpScreen> {
                             UserInformationStep(
                                 logo = logo,
-                                onNext = { nombre, apellidos, fechaNacimiento, genero ->
-                                    navController.navigate(HomeScreen)
+                                onNext = {
+                                    navController.navigate(SecondOnboardingScreen)
                                 },
-                                onBackToLogin = { navController.popBackStack() }
                             );
-//                            SignUpScreen(
-//                                logo = logo,
-//                                onSignUpComplete = { success ->
-//                                    if (success) navController.navigate(
-//                                        LogInScreen
-//                                    )
-//                                },
-//                                onNavigateToLogin = { navController.popBackStack() }
-//                            )
                         }
-                        composable<HomeScreen> {
+                        composable<FirstOnboardingScreen> {
                             UserInformationStep(
                                 logo = logo,
-                                onNext = { nombre: String, apellidos: String, fechaNacimiento: LocalDate, genero: String ->
-                                    OnboardingStep2(
-                                        initialNombre = nombre,
-                                        initialApellidos = apellidos,
-                                        initialFechaNacimiento = fechaNacimiento,
-                                        initialGenero = genero,
-                                        onBack = {   },
-                                    ){ fotoPerfilUri: String?, biografia: String, enlaceWeb: String, ubicacion: String, intereses: List<String> ->
-
-                                    }
+                                onNext = {
+                                    navController.navigate(SecondOnboardingScreen)
                                 },
-                                onBackToLogin = {
-
-                                }
                             )
+                        }
+                        composable<SecondOnboardingScreen> {
+                            OnboardingStep2(
+                                onBack = {
+                                    navController.popBackStack()
+                                    navController.navigate(FirstOnboardingScreen)
+                                },
+                            ) {
+                                navController.navigate(HomeScreen)
+                            }
+                        }
+                        composable<HomeScreen> {
+                            HomeScreen()
                         }
                     }
                 }
@@ -129,3 +126,27 @@ fun App(logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()
         }
     )
 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideOutRightAnimation() =
+    slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Right,
+        animationSpec = tween(500)
+    )
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideInRightAnimation() =
+    slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Right,
+        animationSpec = tween(500)
+    )
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideOutLeftAnimation() =
+    slideOutOfContainer(
+        AnimatedContentTransitionScope.SlideDirection.Left,
+        animationSpec = tween(500)
+    )
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideInLeftAnimation() =
+    slideIntoContainer(
+        AnimatedContentTransitionScope.SlideDirection.Left,
+        animationSpec = tween(500)
+    )

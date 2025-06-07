@@ -138,7 +138,7 @@ val surfaceBrightLightMediumContrast = Color(0xFFFCF8F8)
 val surfaceContainerLowestLightMediumContrast = Color(0xFFFFFFFF)
 val surfaceContainerLowLightMediumContrast = Color(0xFFF6F3F2)
 val surfaceContainerLightMediumContrast = Color(0xFFEBE7E7)
-val surfaceContainerHighLightMediumContrast = Color(0xFFDFDCDB)
+val surfaceContainerHighLightMediumContrast = Color(0xf2cec9c9)
 val surfaceContainerHighestLightMediumContrast = Color(0xFFD4D1D0)
 
 private val mediumContrastLightColorScheme = lightColorScheme(
