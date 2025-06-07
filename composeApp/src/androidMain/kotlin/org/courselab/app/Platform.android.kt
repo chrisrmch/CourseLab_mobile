@@ -1,12 +1,14 @@
 package org.courselab.app
 
 
-import android.content.Context
+import android.app.DatePickerDialog
 import android.content.res.Resources
 import android.os.Build
 import android.util.TypedValue
-import android.view.Window
-import android.view.WindowManager
+import androidx.appcompat.widget.DialogTitle
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"

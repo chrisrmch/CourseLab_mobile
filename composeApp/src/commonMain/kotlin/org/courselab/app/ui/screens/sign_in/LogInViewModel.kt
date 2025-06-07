@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.courselab.app.data.ApiResponse
 import org.courselab.app.data.AuthRepository
-import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.LogInResponse
+import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.viewmodel.BaseViewModel
 
 //DTO

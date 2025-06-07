@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,69 +40,83 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
-/**
- * Selector de género: usa RadioButtons para “Hombre” y “Mujer”.
- */
 @Composable
 fun GenderSelector(
     selected: String?,
     onSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
+    Column(
+        modifier = modifier.padding(vertical = 4.dp).fillMaxWidth()
+    ) {
         Text(
             text = "Género",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Row(modifier = Modifier.padding(top = 4.dp)) {
+
+        Column(Modifier.selectableGroup()) {
+            Row(
+                Modifier.fillMaxWidth().height(56.dp).selectable(
+                        selected = (selected == Sex.HOMBRE.name),
+                        onClick = { onSelected(Sex.HOMBRE.name) },
+                        role = Role.RadioButton
+                    ).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    modifier = Modifier.semantics {
+                        contentDescription = "Hombre"
+                    },
+                    selected = (selected == Sex.HOMBRE.name),
+                    onClick = null // null recommended for accessibility with screenreaders
+                )
+                Text(
+                    text = Sex.HOMBRE.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().height(56.dp).selectable(
+                    selected = (selected == Sex.MUJER.name),
+                    onClick = { onSelected(Sex.MUJER.name) },
+                    role = Role.RadioButton
+                ).padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             RadioButton(
-                selected = (selected == "Hombre"),
-                onClick = { onSelected("Hombre") }
+                modifier = Modifier.semantics {
+                    contentDescription = "Mujer" //TODO("i18n Must do Internationalization")
+                },
+                selected = (selected == Sex.MUJER.name),
+                onClick = null // null recommended for accessibility with screenreaders
             )
             Text(
-                text = "Hombre",
-                modifier = Modifier.padding(start = 4.dp, end = 16.dp),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            RadioButton(
-                selected = (selected == "Mujer"),
-                onClick = { onSelected("Mujer") }
-            )
-            Text(
-                text = "Mujer",
-                modifier = Modifier.padding(start = 4.dp),
-                color = MaterialTheme.colorScheme.onSurface
+                text = Sex.MUJER.name,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(start = 16.dp)
             )
         }
     }
 }
 
 
-/**
- * PhotoPicker: muestra un contenedor circular. Si `currentPhotoUri` está presente, se debe
- * mostrar la imagen; si no, un icono placeholder. Al hacer clic, dispara `onPickPhoto`.
- *
- * - currentPhotoUri: URI de la imagen seleccionada (puede ser String / URI).
- * - onPickPhoto: callback para la capa de presentación (Android/iOS/desktop) que abra la galería.
- *   La implementación concreta (por ejemplo con rememberLauncherForActivityResult) va en el módulo
- *   Android/iOS, aquí solo delegamos en un callback.
- */
 @Composable
 fun PhotoPicker(
     currentPhotoUri: String?,
     onPickPhoto: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .size(100.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { onPickPhoto() },
+        modifier = modifier.size(100.dp).clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surfaceVariant).clickable { onPickPhoto() },
         contentAlignment = Alignment.Center
     ) {
         if (currentPhotoUri != null) {
@@ -131,7 +147,6 @@ fun PhotoPicker(
 }
 
 
-
 /**
  * TextField que permite varias líneas (ideal para biografía).
  * - value / onValueChange: texto actual y callback
@@ -144,7 +159,7 @@ fun MultilineTextField(
     onValueChange: (String) -> Unit,
     label: String,
     minLines: Int = 3,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val colors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -180,12 +195,13 @@ fun MultilineTextField(
  * - onAddInterest: callback cuando se agrega un interés
  * - onRemoveInterest: callback cuando se elimina un interés
  */
+
 @Composable
 fun InterestsInput(
     interests: List<String>,
     onAddInterest: (String) -> Unit,
     onRemoveInterest: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var currentInput by remember { mutableStateOf("") }
 
@@ -195,9 +211,8 @@ fun InterestsInput(
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 4.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             OutlinedTextField(
@@ -220,12 +235,10 @@ fun InterestsInput(
                         onClick = {
                             onAddInterest(currentInput)
                             currentInput = ""
-                        },
-                        enabled = currentInput.isNotBlank()
+                        }, enabled = currentInput.isNotBlank()
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Agregar interés"
+                            imageVector = Icons.Default.Add, contentDescription = "Agregar interés"
                         )
                     }
                 },
@@ -236,9 +249,7 @@ fun InterestsInput(
         // Muestra los chips de intereses en una fila horizontal con scroll si excede ancho
         Spacer(modifier = Modifier.height(8.dp))
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp)
+            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
                 .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {

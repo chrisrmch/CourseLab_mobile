@@ -5,9 +5,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.data.UserRepository
 import org.courselab.app.models.TrainingActivity
@@ -33,9 +31,11 @@ HOMBRE, MUJER
 }
 
 class UserViewModel(
+//    savedStateHandle: SavedStateHandle,
     private val userPreferencesDataStore: UserPreferencesDataStore,
     private val userRepository: UserRepository
 ) : BaseViewModel() {
+//    private val profile = savedStateHandle.toRoute<User>()
 
     val userId : Flow<Int?> = userPreferencesDataStore.userId
 

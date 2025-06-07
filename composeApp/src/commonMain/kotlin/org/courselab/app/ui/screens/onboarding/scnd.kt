@@ -1,22 +1,35 @@
 package org.courselab.app.ui.screens.onboarding
 
-import androidx.compose.foundation.layout.*
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.courselab.app.ui.screens.sign_in.composables.BuildEmailTextField
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
+
 
 /**
  * OnboardingStep2: Pedimos datos de perfil adicionales:
@@ -28,20 +41,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
  */
 @Composable
 fun OnboardingStep2(
-    initialNombre: String,
-    initialApellidos: String,
-    initialFechaNacimiento: LocalDate,
-    initialGenero: String,
     onBack: () -> Unit,
-    onFinish: (
-        fotoPerfilUri: String?,
-        biografia: String,
-        enlaceWeb: String,
-        ubicacion: String,
-        intereses: List<String>
-    ) -> Unit
+    onFinish: () -> Unit,
 ) {
     // 1) Estados locales
+    val userViewModel = koinInject<UserViewModel>().userState
     var fotoPerfilUri by remember { mutableStateOf<String?>(null) }
     var biografia by remember { mutableStateOf("") }
     var enlaceWeb by remember { mutableStateOf("") }
@@ -89,17 +93,11 @@ fun OnboardingStep2(
                 Column(modifier = Modifier.padding(20.dp)) {
                     // 1. Foto de perfil (PhotoPicker)
 
-//                    PhotoPicker(
-//                        currentPhotoUri = fotoPerfilUri,
-//                        onPickPhoto = {
-//                            // Llamar a la capa nativa para abrir selector de imágenes
-//                            // La implementación concreta se hace en Android/iOS/desktop
-//                            // Aquí simplemente disparamos un callback
-//                            onPickPhotoImpl = { nuevaUri ->
-//                                fotoPerfilUri = nuevaUri
-//                            }
-//                        }
-//                    )
+                    PhotoPicker(
+                        currentPhotoUri = fotoPerfilUri,
+                        onPickPhoto = {
+                        }
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -110,16 +108,6 @@ fun OnboardingStep2(
                         label = "Biografía",
                         minLines = 3,
                         modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // 3. Enlace web (URL)
-                    BuildEmailTextField(
-                        fields = listOf({ enlaceWeb }),
-                        label = "Enlace Web",
-                        index = 0,
-                        onTextEditing = { enlaceWeb = it }
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -163,13 +151,6 @@ fun OnboardingStep2(
                         OutlinedWelcomeButtons.Primary(
                             text = "Finalizar",
                             onClick = {
-                                onFinish(
-                                    fotoPerfilUri,
-                                    biografia.trim(),
-                                    enlaceWeb.trim(),
-                                    ubicacion.trim(),
-                                    intereses
-                                )
                             },
                             enabled = isFormValid,
                             modifier = Modifier.weight(1f)
@@ -194,11 +175,21 @@ fun OnboardingStep2(
 @Composable
 fun Preview_OnboardingStep2() {
     OnboardingStep2(
-        initialNombre = "Juan",
-        initialApellidos = "Pérez",
-        initialFechaNacimiento = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-        initialGenero = "Hombre",
         onBack = {},
-        onFinish = { _, _, _, _, _ -> }
+        onFinish = {}
+    )
+}
+
+@Composable
+fun addEmail() {
+    Spacer(modifier = Modifier.height(12.dp))
+    var enlaceWeb by remember { mutableStateOf("") }
+
+    // 3. Enlace web (URL)
+    BuildEmailTextField(
+        fields = listOf({ enlaceWeb }),
+        label = "Enlace Web",
+        index = 0,
+        onTextEditing = { enlaceWeb = it }
     )
 }
