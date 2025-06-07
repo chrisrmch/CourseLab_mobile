@@ -53,6 +53,8 @@ kotlin {
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.constraintlayout)
+            // https://mvnrepository.com/artifact/androidx.compose.ui/ui
+            runtimeOnly("androidx.compose.ui:ui:1.9.0-alpha04")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -84,6 +86,7 @@ kotlin {
             implementation(libs.icons)
             implementation(libs.calendar)
             implementation(compose.material3)
+            implementation("com.kizitonwose.calendar:compose-multiplatform:2.7.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -111,7 +114,7 @@ android {
     defaultConfig {
         applicationId = "org.courselab.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk .get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -129,7 +132,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
+    androidResources {
+        generateLocaleConfig = true
+    }
     buildFeatures {
         compose = true
     }
