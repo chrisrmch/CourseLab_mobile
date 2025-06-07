@@ -27,6 +27,7 @@ kotlinx-datetime = "0.6.2"
 datastore = "1.1.7"
 icons = "1.7.3"
 calendar = "2.7.0"
+material3-alpha = "1.4.0-alpha15"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -47,7 +48,7 @@ okhttp-client = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 androidx-compose-material3-adaptative = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "material3-adaptative" }
 androidx-compose-material3-adaptative-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "material3-adaptative" }
 androidx-compose-material3-adaptative-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptative" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3-alpha" }
 androidx-compose-material3-wsc = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
 androidx-core-splashscreen = {module = "androidx.core:core-splashscreen", version.ref = "core-splashscreen"}
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }

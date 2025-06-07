@@ -1,7 +1,26 @@
 <resources>
-    <string name="hello">Bonjour, j\'adore Kotlin</string>
+    <string name="hello">Bonjour!</string>
+    <string name="es">Español</string>
     <string name="en">English</string>
     <string name="fr">Français</string>
-    <string name="app_language">Langue de l\'application: %1$s</string>
+    <string name="app_language">Langue de l'application: %1$s</string>
     <string name="change_lang">Changer de langue</string>
+    <string name="email">Courriel</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Se connecter</string>
+    <string name="sign_up">S’inscrire</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+
+    <string name="select_dob">Sélectionner la date</string>
+    <string name="headline_calendar">Date sélectionnée</string>
+    <string name="date_picker_title">Introduce tu fecha de nacimiento</string>
+    <string name="date">Fecha</string>
+    <string name="accept">Accepter</string>
+    <string name="cancel">Annuler</string>
+
+    <string name="sex">Genre</string>
+    <string name="male">Homme</string>
+    <string name="female">Femme</string>
+    <string name="next">Suivant</string>
 </resources>
+

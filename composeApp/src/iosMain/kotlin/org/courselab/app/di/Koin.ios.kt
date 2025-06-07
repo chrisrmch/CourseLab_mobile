@@ -3,6 +3,8 @@ package org.courselab.app.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.courselab.app.AppLocaleManager
+import org.courselab.app.IosAppLocaleManager
 import org.courselab.app.data.PREFERENCES_DB
 import org.courselab.app.data.createDataStore
 import org.koin.core.module.Module
@@ -17,6 +19,7 @@ actual val platformModule: Module
         single {
             dataStore()
         }
+        single<AppLocaleManager> { IosAppLocaleManager() }
     }
 
 

@@ -1,5 +1,6 @@
 package org.courselab.app
 
+import androidx.compose.material3.CalendarLocale
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import platform.Foundation.NSLocale
@@ -23,4 +24,13 @@ actual fun rememberAppLocale(): AppLang {
             else -> AppLang.Spanish
         }
     }
+}
+
+@Composable
+actual fun rememberUrlLauncher(): UrlLauncher {
+    TODO("Not yet implemented")
+}
+
+actual fun getCalendarLocale(): CalendarLocale {
+    TODO("Not yet implemented")
 }

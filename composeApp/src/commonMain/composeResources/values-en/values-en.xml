@@ -1,7 +1,26 @@
 <resources>
     <string name="hello">Hi!</string>
+    <string name="es">Español</string>
     <string name="en">English</string>
     <string name="fr">Français</string>
     <string name="app_language">App language: %1$s</string>
     <string name="change_lang">Change language</string>
+    <string name="e-mail">E-mail</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <string name="select_dob">Select date</string>
+    <string name="headline_calendar">Entered date</string>
+    <string name="date_picker_title">Enter your date of birth</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="sex">Sex</string>
+    <string name="date">Date</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="next">Next</string>
 </resources>

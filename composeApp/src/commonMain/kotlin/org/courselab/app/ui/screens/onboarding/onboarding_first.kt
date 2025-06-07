@@ -16,15 +16,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DateRange
-import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DisplayMode.Companion.Picker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +34,6 @@ import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,6 +57,9 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.kizitonwose.calendar.core.now
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.date_picker_title
+import courselab.composeapp.generated.resources.select_dob
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -66,11 +68,14 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.getCalendarLocale
+import org.courselab.app.rememberAppLocale
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -158,25 +163,30 @@ fun UserInformationStep(
         Clock.System.now().toEpochMilliseconds()
     }
 
-//    val r = remember {
-//        DatePickerState(
-//            locale = CalendarLocale("es", "ES"),
-//            initialSelectedDateMillis = null,
-//            yearRange = 1950..LocalDate.now().year,
-//            initialDisplayMode = DisplayMode.Picker,
-//            selectableDates = /* tu SelectableDates */
-//        )
-//    }
+    val localeManager = rememberAppLocale()
 
-    val datePickerState = rememberDatePickerState(
+    val datePickerState = remember {
+        DatePickerState(
+            locale = getCalendarLocale(),
+            initialSelectedDateMillis = null,
+            yearRange = 1950..LocalDate.now().year,
+            initialDisplayMode = Picker,
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                    return utcTimeMillis <= maxDateMillis
+                }
+            },
+        )
+    }
 
-        yearRange = IntRange(1950, LocalDate.now().year),
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis <= maxDateMillis
-            }
-        },
-    )
+//    val datePickerState = rememberDatePickerState(
+//        yearRange = IntRange(1950, LocalDate.now().year),
+//        selectableDates = object : SelectableDates {
+//                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+//                    return utcTimeMillis <= maxDateMillis
+//                }
+//            },
+//    )
 
     val datePickerFormatter = remember {
         DatePickerDefaults.dateFormatter(
@@ -320,44 +330,51 @@ fun UserInformationStep(
                             },
                             enabled = datePickerState.selectedDateMillis != null
                         ) {
-                            Text("Aceptar")
+//                            Text(stringResource(Res.string.accept))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showDatePicker = false }) {
-                            Text("Cancelar")
+//                            Text(stringResource(Res.string.cancel))
                         }
                     }
                 ) {
-
                     DatePicker(
                         state = datePickerState,
-                        // … tus otros parámetros …
+                        title = {
+//                            Text(stringResource(Res.string.date_picker_title))
+                        },
                         headline = {
                             Column {
-                                // 1) el “headline” por defecto, para conservar la fecha dinámica y el toggle de modo
                                 DatePickerDefaults.DatePickerHeadline(
                                     selectedDateMillis = datePickerState.selectedDateMillis,
                                     displayMode = datePickerState.displayMode,
                                     dateFormatter = datePickerFormatter,
-                                    modifier = Modifier.padding(PaddingValues(
-                                        start = 24.dp,
-                                        end = 12.dp,
-                                        bottom = 12.dp
-                                    )),
+                                    modifier = Modifier.padding(
+                                        PaddingValues(
+                                            start = 24.dp,
+                                            end = 12.dp,
+                                            bottom = 12.dp
+                                        )
+                                    ),
                                 )
                                 // 2) tu texto estático, justo debajo o encima
                                 Text(
                                     text = "Selecciona tu fecha de nacimiento",
                                     style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, bottom = 12.dp)
+                                    modifier = Modifier.padding(
+                                        start = 24.dp,
+                                        end = 12.dp,
+                                        bottom = 12.dp
+                                    )
                                 )
                             }
                         }
                     )
 
                     DatePicker(
+                        modifier = Modifier.selectableGroup(),
                         state = datePickerState,
                         dateFormatter = datePickerFormatter,
                         title = {
@@ -441,11 +458,11 @@ fun FechaConOverlay(
             value = fecha,
             onValueChange = {},
             readOnly = true,
-            label = { Text("Fecha de nacimiento") },
+            label = { Text(stringResource(Res.string.date_picker_title))},
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Sharp.DateRange,
-                    contentDescription = "Seleccionar fecha"
+                    contentDescription = stringResource(Res.string.select_dob)
                 )
             },
             modifier = Modifier
@@ -468,3 +485,28 @@ fun FechaConOverlay(
     }
 
 }
+
+//class MyDatePickerFormater(private val locale: CalendarLocale) : DatePickerFormatter {
+//    override fun formatDate(
+//        dateMillis: Long?,
+//        locale: CalendarLocale,
+//        forContentDescription: Boolean,
+//    ): String? {
+//        return dateMillis?.let {
+//            val instant = Instant.fromEpochMilliseconds(it)
+//            val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+//            val dateFormatter = LocalDate.Format { dayOfMonth(); char('/'); monthNumber(); char('/'); year() }
+//            localDate.format(dateFormatter)
+//        }
+//    }
+//
+//    override fun formatMonthYear(monthMillis: Long?, locale: CalendarLocale): String? {
+//        return monthMillis?.let {
+//            val instant = Instant.fromEpochMilliseconds(it)
+//            val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+//            // Example: "MMMM yyyy" -> "December 2023" using the app's locale
+//            val monthYearFormatter = LocalDate.Format { monthName(); char(' '); year() }
+//            localDate.format(monthYearFormatter)
+//        }
+//    }
+//}

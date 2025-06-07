@@ -33,11 +33,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.password
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -80,8 +84,8 @@ fun SignUpScreen(
             }
             FormScaffold(
                 fields = listOf(
-                    FormField("Email", { signUpViewModel.onSignUpInputChanged("E-mail", it) } ),
-                    FormField("Password",  { signUpViewModel.onSignUpInputChanged("Password", it) } )
+                    FormField(stringResource(Res.string.email), { signUpViewModel.onSignUpInputChanged("E-mail", it) } ),
+                    FormField(stringResource(Res.string.password),  { signUpViewModel.onSignUpInputChanged("Password", it) } )
                 ),
                 fieldValues = listOf(
                     { state.email },

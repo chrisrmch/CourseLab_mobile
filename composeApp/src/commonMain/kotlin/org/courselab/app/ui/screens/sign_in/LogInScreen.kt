@@ -42,13 +42,21 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.change_lang
+import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.forgot_password
+import courselab.composeapp.generated.resources.password
+import org.courselab.app.LocalAppLocalization
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.rememberUrlLauncher
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -69,6 +77,7 @@ fun LoginScreen(
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarMessages = remember { SnackbarHostState() }
+    val urlLauncher = rememberUrlLauncher()
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
@@ -92,10 +101,20 @@ fun LoginScreen(
                         .clip(RoundedCornerShape(15.dp))
                 )
             }
+
+            Button(
+                modifier = Modifier,
+                onClick = {
+                    urlLauncher.openAppSettings()
+                }
+            ) {
+                Text(stringResource(Res.string.change_lang))
+            }
+
             FormScaffold(
                 fields = listOf(
-                    FormField("E-mail", {loginViewModel.onLoginInputChanged(it, loginState.password)}),
-                    FormField("Password", {loginViewModel.onLoginInputChanged(loginState.email, it)})
+                    FormField(stringResource(Res.string.email, stringResource(LocalAppLocalization.current.stringRes)), {loginViewModel.onLoginInputChanged(it, loginState.password)}),
+                    FormField(stringResource(Res.string.password), {loginViewModel.onLoginInputChanged(loginState.email, it)})
                 ),
                 fieldValues = listOf({ loginState.email }, { loginState.password }),
                 onDoneAction = {
@@ -161,7 +180,7 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { showForgotDialog = true }) {
                 Text(
-                    "¿Has olvidado tu contraseña?", color = MaterialTheme.colorScheme.onSecondary
+                    stringResource(Res.string.forgot_password), color = MaterialTheme.colorScheme.onSecondary
                 )
             }
             ThemeToggle()

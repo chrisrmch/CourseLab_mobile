@@ -31,6 +31,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.e_mail
+import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.password
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -104,15 +109,16 @@ fun FormScaffold(
                 )
                 Spacer(Modifier.height(9.dp))
             }
-            if (fieldValue.trim().lowercase() == "password") {
+            if (fieldValue.trim().lowercase() == stringResource(Res.string.password)) {
                 SecurePasswordTextField(
                     value = fieldValues.getOrNull(index)?.invoke() ?: "",
                     onValueChange = onValueChange,
                     myLabel = fieldValue,
                     onDoneAction = onDoneAction
                 )
-            } else if(fieldValue.trim().lowercase() != "e-mail"
-                && fieldValue.trim().lowercase() != "email") {
+            } else if(fieldValue.trim().lowercase() != stringResource(Res.string.e_mail)
+                && fieldValue.trim().lowercase() != stringResource(Res.string.email)
+            ) {
                 BuildTextField(
                     fields = fieldValues,
                     index = index,

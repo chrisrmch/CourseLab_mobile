@@ -1,6 +1,4 @@
 package org.courselab.app
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.window.DialogProperties
 
 interface Platform {
     val name: String

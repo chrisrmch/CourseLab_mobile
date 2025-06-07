@@ -22,12 +22,6 @@ val networkModule = module {
                     }, contentType = ContentType.Application.Any
                 )
             }
-//            install(WebSockets) {
-//                println("SE HA INICIADO EL WEBSOCKET")
-//                extensions {
-//                    pingIntervalMillis = 50000L
-//                }
-//            }
         }
     }
 }

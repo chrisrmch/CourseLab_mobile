@@ -1,6 +1,9 @@
 package org.courselab.app
 
+import androidx.compose.material3.CalendarLocale
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.en
 import courselab.composeapp.generated.resources.es
@@ -24,10 +27,19 @@ interface AppLocaleManager {
 @Composable
 expect fun rememberAppLocale(): AppLang
 
-//
-//@Composable
-//fun MyApp() {
-//    Text(stringResource(Res.strings.app_name))
-//    Text(stringResource(Res.strings.greeting))
-//    Text(stringResource(Res.strings.welcome_message, "User"))
-//}
+
+interface UrlLauncher {
+    fun openAppSettings()
+}
+
+
+@Composable
+expect fun rememberUrlLauncher(): UrlLauncher
+
+@OptIn(ExperimentalMaterial3Api::class)
+expect fun getCalendarLocale() : CalendarLocale
+
+@ExperimentalMaterial3Api
+@ReadOnlyComposable
+@Composable
+internal expect fun defaultLocale(): CalendarLocale

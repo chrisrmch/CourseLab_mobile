@@ -44,13 +44,16 @@ object SecondOnboardingScreen
 val LocalNavController = staticCompositionLocalOf<NavHostController?> { null }
 
 val LocalAppLocalization = compositionLocalOf {
-    AppLang.English
+    AppLang.Spanish
 }
+
+val LocalUrlLauncher = compositionLocalOf<UrlLauncher?> { null }
 
 @Preview
 @Composable
 fun App(
-    logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject()) {
+    logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject(),
+) {
     val currentThemePreference by userPreferences.themePreference.collectAsState(initial = "system")
     val useDarkTheme = when (currentThemePreference) {
         "light" -> false
@@ -58,12 +61,19 @@ fun App(
         else -> isSystemInDarkTheme()
     }
 
+    val currentLanguage = rememberAppLocale()
+    val urlLauncher = rememberUrlLauncher()
+
     CourseLabAppTheme(
         darkTheme = useDarkTheme,
         content = @Composable {
             KoinContext {
                 val navController: NavHostController = rememberNavController()
-                CompositionLocalProvider(LocalNavController provides navController) {
+                CompositionLocalProvider(
+                    LocalNavController provides navController,
+                    LocalAppLocalization provides currentLanguage,
+                    LocalUrlLauncher provides urlLauncher
+                ) {
                     NavHost(
                         navController = navController,
                         enterTransition = {
