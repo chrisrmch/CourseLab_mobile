@@ -1,5 +1,8 @@
 package org.courselab.app
 
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
+
 interface Platform {
     val name: String
 }
@@ -18,3 +21,9 @@ data class ScreenDetails(
 
 expect fun screenDetails(): ScreenDetails
 
+interface PlatformContext {
+    val context : Any
+}
+
+
+val LocalPlatformContext: ProvidableCompositionLocal<PlatformContext?> = staticCompositionLocalOf { null }

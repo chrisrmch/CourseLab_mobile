@@ -3,7 +3,6 @@ package org.courselab.app
 import androidx.compose.material3.CalendarLocale
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.en
 import courselab.composeapp.generated.resources.es
@@ -19,6 +18,11 @@ enum class AppLang(
     French("fr", Res.string.fr)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+interface CalendarLocaleWithLanguage {
+    val language: String
+    fun getPlatformCalendarLocale(): CalendarLocale
+}
 
 interface AppLocaleManager {
     fun getLocale(): String
@@ -36,10 +40,4 @@ interface UrlLauncher {
 @Composable
 expect fun rememberUrlLauncher(): UrlLauncher
 
-@OptIn(ExperimentalMaterial3Api::class)
-expect fun getCalendarLocale() : CalendarLocale
-
-@ExperimentalMaterial3Api
-@ReadOnlyComposable
-@Composable
-internal expect fun defaultLocale(): CalendarLocale
+expect fun getCalendarLocale() : CalendarLocaleWithLanguage

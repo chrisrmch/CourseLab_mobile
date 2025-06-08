@@ -64,11 +64,11 @@ class LogInViewModel(
         }
     }
 
-    fun onForgotPassword(password: ForgotPassword, onResult: (Boolean) -> Unit) {
+    fun onForgotPassword(password: ForgotPassword, onResult: ((Boolean) -> Unit), recoveryLinkSent: String) {
         scope.launch {
             try {
                 _isLoading.value = true
-                _snackbarMsg.emit("Enlace de recuperación enviado")
+                _snackbarMsg.emit(recoveryLinkSent)
                 onResult(true)
             } catch (e: Exception) {
                 println(e.message)

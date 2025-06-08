@@ -52,6 +52,7 @@ import courselab.composeapp.generated.resources.password
 import courselab.composeapp.generated.resources.recover_password
 import courselab.composeapp.generated.resources.send
 import courselab.composeapp.generated.resources.sign_up
+import courselab.composeapp.generated.resources.snackbar_recovery_link_sent
 import org.courselab.app.LocalAppLocalization
 import org.courselab.app.LocalUrlLauncher
 import org.courselab.app.data.LoginRequestDTO
@@ -71,7 +72,7 @@ fun LoginScreen(
     logo: Painter?,
     onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
-    dataStore: UserPreferencesDataStore = koinInject()
+    dataStore: UserPreferencesDataStore = koinInject(),
 ) {
     val shouldDoOnboarding by dataStore.isFirstLogin.collectAsState(initial = false)
 
@@ -85,6 +86,9 @@ fun LoginScreen(
     val snackbarMessages = remember { SnackbarHostState() }
 
     val urlLauncher = LocalUrlLauncher.current
+
+    val recoveryLinkSent = stringResource(Res.string.snackbar_recovery_link_sent)
+
 
 
     LaunchedEffect(Unit) {
@@ -123,8 +127,14 @@ fun LoginScreen(
 
             FormScaffold(
                 fields = listOf(
-                    FormField(stringResource(Res.string.email, stringResource(LocalAppLocalization.current.stringRes)), {loginViewModel.onLoginInputChanged(it, loginState.password)}),
-                    FormField(stringResource(Res.string.password), {loginViewModel.onLoginInputChanged(loginState.email, it)})
+                    FormField(
+                        stringResource(
+                            Res.string.email,
+                            stringResource(LocalAppLocalization.current.stringRes)
+                        ), { loginViewModel.onLoginInputChanged(it, loginState.password) }),
+                    FormField(
+                        stringResource(Res.string.password),
+                        { loginViewModel.onLoginInputChanged(loginState.email, it) })
                 ),
                 fieldValues = listOf({ loginState.email }, { loginState.password }),
                 onDoneAction = {
@@ -190,7 +200,8 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             TextButton(onClick = { showForgotDialog = true }) {
                 Text(
-                    stringResource(Res.string.forgot_password), color = MaterialTheme.colorScheme.onSecondary
+                    stringResource(Res.string.forgot_password),
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
             ThemeToggle()
@@ -201,10 +212,18 @@ fun LoginScreen(
         initialEmail = forgotEmail,
         onEmailChange = { forgotEmail = it },
         onSend = {
-            loginViewModel.onForgotPassword(ForgotPassword(forgotEmail)) {}
-            showForgotDialog = false
+            loginViewModel.onForgotPassword(
+                ForgotPassword(forgotEmail),
+                onResult = {
+                    if (it) {
+                        showForgotDialog = false
+                    }
+                },
+                recoveryLinkSent = recoveryLinkSent
+            )
         },
-        onDismiss = { showForgotDialog = false })
+        onDismiss = { showForgotDialog = false }
+    )
 }
 
 
@@ -219,12 +238,22 @@ fun ForgotPasswordDialog(
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.primary,
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(Res.string.recover_password), color = MaterialTheme.colorScheme.onPrimary) },
+        title = {
+            Text(
+                stringResource(Res.string.recover_password),
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        },
         text = {
             OutlinedTextField(
                 value = initialEmail,
                 onValueChange = onEmailChange,
-                label = { Text(stringResource(Res.string.email), color = MaterialTheme.colorScheme.onPrimary) },
+                label = {
+                    Text(
+                        stringResource(Res.string.email),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,

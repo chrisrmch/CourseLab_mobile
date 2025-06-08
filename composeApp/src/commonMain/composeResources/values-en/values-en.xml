@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">COURSELAB</string>
+    <string name="app_name">CourseLab</string>
     <string name="hello">Hi!</string>
     <string name="es">Español</string>
     <string name="en">English</string>
@@ -16,6 +17,7 @@
     <string name="label_ask_personal_data">Let's start with your personal data...</string>
     <string name="recover_password">Recover password</string>
     <string name="sign_up_on_proces">Signing up...</string>
+    <string name="snackbar_recovery_link_sent">Recovery link sent</string>
 
 
     <string name="select_dob">Select date</string>
@@ -45,10 +47,24 @@
     <string name="select_your_date_of_birth">Select your date of birth</string>
 
 
-
     <string name="sex">Sex</string>
     <string name="date">Date</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="next">Next</string>
+
+
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+
 </resources>

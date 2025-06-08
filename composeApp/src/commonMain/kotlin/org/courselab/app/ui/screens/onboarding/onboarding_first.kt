@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DateRange
@@ -62,11 +61,9 @@ import courselab.composeapp.generated.resources.app_name
 import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.date_picker_title
 import courselab.composeapp.generated.resources.logo
-import courselab.composeapp.generated.resources.male
 import courselab.composeapp.generated.resources.name
 import courselab.composeapp.generated.resources.next
 import courselab.composeapp.generated.resources.select_dob
-import courselab.composeapp.generated.resources.select_your_date_of_birth
 import courselab.composeapp.generated.resources.surname
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -75,9 +72,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import org.courselab.app.CalendarLocaleWithLanguage
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.getCalendarLocale
-import org.courselab.app.rememberAppLocale
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
@@ -171,12 +167,11 @@ fun UserInformationStep(
         Clock.System.now().toEpochMilliseconds()
     }
 
-    val localeManager = rememberAppLocale()
+    val calendarLocale: CalendarLocaleWithLanguage = koinInject()
 
     val datePickerState = remember {
         DatePickerState(
-            locale = getCalendarLocale(),
-            initialSelectedDateMillis = null,
+            locale = calendarLocale.getPlatformCalendarLocale(),
             yearRange = 1950..LocalDate.now().year,
             initialDisplayMode = Picker,
             selectableDates = object : SelectableDates {
@@ -184,23 +179,6 @@ fun UserInformationStep(
                     return utcTimeMillis <= maxDateMillis
                 }
             },
-        )
-    }
-
-//    val datePickerState = rememberDatePickerState(
-//        yearRange = IntRange(1950, LocalDate.now().year),
-//        selectableDates = object : SelectableDates {
-//                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-//                    return utcTimeMillis <= maxDateMillis
-//                }
-//            },
-//    )
-
-    val datePickerFormatter = remember {
-        DatePickerDefaults.dateFormatter(
-            selectedDateDescriptionSkeleton = "dd MMMM yyyy", // Changed to include spaces and full month name
-            yearSelectionSkeleton = "yyyy",
-            selectedDateSkeleton = "MMMM d", // Changed to include day of the month
         )
     }
 
@@ -218,6 +196,7 @@ fun UserInformationStep(
                 && fechaNacimiento != null
                 && userSex != null
     }
+
     GradientScaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -232,7 +211,7 @@ fun UserInformationStep(
             logo?.let {
                 Image(
                     painter = it,
-                    contentDescription = "${stringResource(Res.string.logo)} ${stringResource(Res.string.app_name)}" ,
+                    contentDescription = "${stringResource(Res.string.logo)} ${stringResource(Res.string.app_name)}",
                     modifier = Modifier
                         .size(140.dp)
                         .clip(RoundedCornerShape(12.dp))
@@ -244,20 +223,6 @@ fun UserInformationStep(
             RequestDetailsCard(modifier = Modifier) {
                 //TODO("ADAPT TEXT TO GRAMMAR RULES") IF FR -> {} : {}
                 Column(modifier = Modifier.padding(20.dp)) {
-//                    Text(
-//                        text = "${stringResource(Res.string.welcome)} ${nombre} !",
-//                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-//                        color = MaterialTheme.colorScheme.onSurface,
-//                        maxLines = 1,
-//                        modifier = Modifier.align(Alignment.CenterHorizontally)
-//                    )
-//                    Spacer(modifier = Modifier.height(8.dp))
-//                    Text(
-//                        text = stringResource(Res.string.label_ask_personal_data), //Empecemos con tus datos personales...
-//                        style = MaterialTheme.typography.bodyMedium,
-//                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                        modifier = Modifier.align(Alignment.CenterHorizontally)
-//                    )
                     Spacer(modifier = Modifier.height(16.dp))
 
                     FormScaffold(
@@ -265,7 +230,9 @@ fun UserInformationStep(
                             FormField(stringResource(Res.string.name), {
                                 userViewModel.updateUserName(it)
                             }),
-                            FormField(stringResource(Res.string.surname), { userViewModel.updateUserSurname(it) })
+                            FormField(
+                                stringResource(Res.string.surname),
+                                { userViewModel.updateUserSurname(it) })
                         ),
                         fieldValues = listOf(
                             { nombre },
@@ -353,42 +320,6 @@ fun UserInformationStep(
                     DatePicker(
                         state = datePickerState,
                         title = {
-                            Text(stringResource(Res.string.date_picker_title))
-                        },
-                        headline = {
-                            Column {
-                                DatePickerDefaults.DatePickerHeadline(
-                                    selectedDateMillis = datePickerState.selectedDateMillis,
-                                    displayMode = datePickerState.displayMode,
-                                    dateFormatter = datePickerFormatter,
-                                    modifier = Modifier.padding(
-                                        PaddingValues(
-                                            start = 24.dp,
-                                            end = 12.dp,
-                                            bottom = 12.dp
-                                        )
-                                    ),
-                                )
-                                // 2) tu texto estático, justo debajo o encima
-                                Text(
-                                    text = stringResource(Res.string.select_your_date_of_birth),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.padding(
-                                        start = 24.dp,
-                                        end = 12.dp,
-                                        bottom = 12.dp
-                                    )
-                                )
-                            }
-                        }
-                    )
-
-                    DatePicker(
-                        modifier = Modifier.selectableGroup(),
-                        state = datePickerState,
-                        dateFormatter = datePickerFormatter,
-                        title = {
                             Text(
                                 text = stringResource(Res.string.select_dob),
                                 modifier = Modifier.padding(
@@ -402,32 +333,6 @@ fun UserInformationStep(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
-//                        headline = {
-//                            DatePickerDefaults.DatePickerHeadline(
-//                                selectedDateMillis = null,
-//                                displayMode = datePickerState.displayMode,
-//                                dateFormatter = datePickerFormatter,
-//                                modifier = Modifier.padding(
-//                                    paddingValues = PaddingValues(
-//                                        start = 24.dp,
-//                                        end = 12.dp,
-//                                        bottom = 12.dp
-//                                    )
-//                                )
-//                            )
-//                            Text(
-//                                "Selecciona tu fecha de nacimiento",
-//                                style = MaterialTheme.typography.labelLarge,
-//                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                                modifier = Modifier.padding(
-//                                    paddingValues = PaddingValues(
-//                                        start = 24.dp,
-//                                        end = 12.dp,
-//                                        bottom = 12.dp
-//                                    )
-//                                )
-//                            )
-//                        },
                         colors = DatePickerDefaults.colors(
                             selectedDayContainerColor = MaterialTheme.colorScheme.primary,
                             selectedDayContentColor = MaterialTheme.colorScheme.onPrimary
@@ -438,7 +343,6 @@ fun UserInformationStep(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // --- Toggle de tema (Light/Dark) ---
             ThemeToggle(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -446,15 +350,6 @@ fun UserInformationStep(
             )
         }
     }
-}
-
-
-@Composable
-fun Preview_OnboardingStep1() {
-    UserInformationStep(
-        logo = null,
-        onNext = {},
-    )
 }
 
 @Composable
@@ -469,7 +364,7 @@ fun FechaConOverlay(
             value = fecha,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(Res.string.date_picker_title))},
+            label = { Text(stringResource(Res.string.date_picker_title)) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Sharp.DateRange,
@@ -496,28 +391,3 @@ fun FechaConOverlay(
     }
 
 }
-
-//class MyDatePickerFormater(private val locale: CalendarLocale) : DatePickerFormatter {
-//    override fun formatDate(
-//        dateMillis: Long?,
-//        locale: CalendarLocale,
-//        forContentDescription: Boolean,
-//    ): String? {
-//        return dateMillis?.let {
-//            val instant = Instant.fromEpochMilliseconds(it)
-//            val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
-//            val dateFormatter = LocalDate.Format { dayOfMonth(); char('/'); monthNumber(); char('/'); year() }
-//            localDate.format(dateFormatter)
-//        }
-//    }
-//
-//    override fun formatMonthYear(monthMillis: Long?, locale: CalendarLocale): String? {
-//        return monthMillis?.let {
-//            val instant = Instant.fromEpochMilliseconds(it)
-//            val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
-//            // Example: "MMMM yyyy" -> "December 2023" using the app's locale
-//            val monthYearFormatter = LocalDate.Format { monthName(); char(' '); year() }
-//            localDate.format(monthYearFormatter)
-//        }
-//    }
-//}

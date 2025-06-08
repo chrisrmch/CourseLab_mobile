@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onRestart() {
         super.onRestart()
+        cacheDir.delete()
         recreate()
     }
 }

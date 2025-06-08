@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +41,6 @@ import courselab.composeapp.generated.resources.app_name
 import courselab.composeapp.generated.resources.home
 import courselab.composeapp.generated.resources.menu
 import courselab.composeapp.generated.resources.profile
-import courselab.composeapp.generated.resources.select_dob
 import org.courselab.app.LocalNavController
 import org.courselab.app.screenDetails
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold

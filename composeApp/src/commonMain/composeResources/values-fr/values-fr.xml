@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">COURSELAB</string>
+    <string name="app_name">CourseLab</string>
     <string name="hello">Bonjour!</string>
     <string name="es">Español</string>
     <string name="en">English</string>
@@ -7,6 +8,7 @@
     <string name="app_language">Langue de l'application: %1$s</string>
     <string name="change_lang">Changer de langue</string>
     <string name="email">Courriel</string>
+    <string name="e-mail">Curriel</string>
     <string name="password">Mot de passe</string>
     <string name="login">Se connecter</string>
     <string name="sign_up">S’inscrire</string>
@@ -15,7 +17,6 @@
     <string name="label_ask_personal_data">Commençons par vos données personnelles...</string>
     <string name="recover_password">Récupérer le mot de passe</string>
     <string name="last_step_confirm_account_HEAD">Il ne reste plus qu'une étape</string>
-
 
 
     <string name="select_dob">Sélectionner la date</string>
@@ -33,7 +34,6 @@
     <string name="height">Taille</string>
 
 
-
     <string name="sex">Genre</string>
     <string name="male">Homme</string>
     <string name="female">Femme</string>
@@ -47,14 +47,23 @@
     <string name="sign_up_succesfully_done">Utilisateur créé avec succès</string>
     <string name="error_while_creating_user">Erreur lors de la création de l'utilisateur</string>
     <string name="select_your_date_of_birth">Sélectionnez votre date de naissance</string>
-
-
-
+    <string name="snackbar_recovery_link_sent">Lien de réinitialisation envoyé</string>
 
 
     <string name="something_went_wrong">Quelque chose s\'est mal passé</string>
     <string name="try_againg_later">Réessayez plus tard</string>
 
-
+    <string name="month_january">Janvier</string>
+    <string name="month_february">Février</string>
+    <string name="month_march">Mars</string>
+    <string name="month_april">Avril</string>
+    <string name="month_may">Mai</string>
+    <string name="month_june">Juin</string>
+    <string name="month_july">Juillet</string>
+    <string name="month_august">Août</string>
+    <string name="month_september">Septembre</string>
+    <string name="month_october">Octobre</string>
+    <string name="month_november">Novembre</string>
+    <string name="month_december">Décembre</string>
 </resources>
 

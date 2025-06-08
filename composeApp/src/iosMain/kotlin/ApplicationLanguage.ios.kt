@@ -33,7 +33,7 @@ actual fun rememberUrlLauncher(): UrlLauncher {
     TODO("Not yet implemented")
 }
 
-actual fun getCalendarLocale(): CalendarLocale {
+actual fun getCalendarLocale(): CalendarLocaleWithLanguage {
     TODO("Not yet implemented")
 }
 

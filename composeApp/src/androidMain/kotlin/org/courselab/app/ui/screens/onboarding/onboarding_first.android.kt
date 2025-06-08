@@ -12,6 +12,5 @@ actual fun getDialogProperties(title: String): DialogProperties {
         dismissOnBackPress = true,
         dismissOnClickOutside = true,
         securePolicy = SecureFlagPolicy.SecureOn,
-        windowTitle = title
     )
 }

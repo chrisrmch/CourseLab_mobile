@@ -17,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.home.HomeScreen
 import org.courselab.app.ui.screens.onboarding.OnboardingStep2
 import org.courselab.app.ui.screens.onboarding.UserInformationStep
 import org.courselab.app.ui.screens.sign_in.LoginScreen
