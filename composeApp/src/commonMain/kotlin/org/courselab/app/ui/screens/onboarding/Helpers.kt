@@ -45,6 +45,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.female
+import courselab.composeapp.generated.resources.male
+import courselab.composeapp.generated.resources.sex
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GenderSelector(
@@ -56,7 +61,7 @@ fun GenderSelector(
         modifier = modifier.padding(vertical = 4.dp).fillMaxWidth()
     ) {
         Text(
-            text = "Género",
+            text = stringResource(Res.string.sex),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
@@ -71,13 +76,13 @@ fun GenderSelector(
             ) {
                 RadioButton(
                     modifier = Modifier.semantics {
-                        contentDescription = "Hombre"
+                        contentDescription = ""
                     },
                     selected = (selected == Sex.HOMBRE.name),
                     onClick = null // null recommended for accessibility with screenreaders
                 )
                 Text(
-                    text = Sex.HOMBRE.name,
+                    text = stringResource(Res.string.male),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -98,7 +103,7 @@ fun GenderSelector(
                 onClick = null // null recommended for accessibility with screenreaders
             )
             Text(
-                text = Sex.MUJER.name,
+                text = stringResource(Res.string.female),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(start = 16.dp)
             )

@@ -47,7 +47,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -58,8 +57,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.kizitonwose.calendar.core.now
 import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.accept
+import courselab.composeapp.generated.resources.app_name
+import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.date_picker_title
+import courselab.composeapp.generated.resources.logo
+import courselab.composeapp.generated.resources.male
+import courselab.composeapp.generated.resources.name
+import courselab.composeapp.generated.resources.next
 import courselab.composeapp.generated.resources.select_dob
+import courselab.composeapp.generated.resources.select_your_date_of_birth
+import courselab.composeapp.generated.resources.surname
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -75,7 +83,6 @@ import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -225,7 +232,7 @@ fun UserInformationStep(
             logo?.let {
                 Image(
                     painter = it,
-                    contentDescription = "Logo CourseLab",
+                    contentDescription = "${stringResource(Res.string.logo)} ${stringResource(Res.string.app_name)}" ,
                     modifier = Modifier
                         .size(140.dp)
                         .clip(RoundedCornerShape(12.dp))
@@ -255,10 +262,10 @@ fun UserInformationStep(
 
                     FormScaffold(
                         fields = listOf(
-                            FormField("Nombre", {
+                            FormField(stringResource(Res.string.name), {
                                 userViewModel.updateUserName(it)
                             }),
-                            FormField("Apellidos", { userViewModel.updateUserSurname(it) })
+                            FormField(stringResource(Res.string.surname), { userViewModel.updateUserSurname(it) })
                         ),
                         fieldValues = listOf(
                             { nombre },
@@ -279,8 +286,9 @@ fun UserInformationStep(
                         GenderSelector(
                             selected = genero,
                             onSelected = {
+                                println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------- $it")
                                 genero = it
-                                if (genero?.lowercase() == "hombre") {
+                                if (genero?.lowercase() == Sex.HOMBRE.name.lowercase()) {
                                     userViewModel.updateUserSex(Sex.HOMBRE)
                                 } else {
                                     userViewModel.updateUserSex(Sex.MUJER)
@@ -292,7 +300,7 @@ fun UserInformationStep(
                             selected = userSex.name,
                             onSelected = {
                                 genero = it
-                                if (genero?.lowercase() == "hombre") {
+                                if (genero?.lowercase() == Sex.HOMBRE.name.lowercase()) {
                                     userViewModel.updateUserSex(Sex.HOMBRE)
                                 } else {
                                     userViewModel.updateUserSex(Sex.MUJER)
@@ -305,7 +313,7 @@ fun UserInformationStep(
 
 
                     OutlinedWelcomeButtons.Primary(
-                        text = "Siguiente", //TODO("i18n Must do Internationalization")
+                        text = stringResource(Res.string.next), //TODO("i18n Must do Internationalization")
                         onClick = { onNext() },
                         enabled = isFormValid,
                         modifier = Modifier.fillMaxWidth()
@@ -317,7 +325,7 @@ fun UserInformationStep(
 
             if (showDatePicker) {
                 DatePickerDialog(
-                    properties = getDialogProperties(title = "Selecciona tu fecha de nacimiento"),
+                    properties = getDialogProperties(title = stringResource(Res.string.date_picker_title)),
                     onDismissRequest = { showDatePicker = false },
                     confirmButton = {
                         TextButton(
@@ -333,19 +341,19 @@ fun UserInformationStep(
                             },
                             enabled = datePickerState.selectedDateMillis != null
                         ) {
-//                            Text(stringResource(Res.string.accept))
+                            Text(stringResource(Res.string.accept))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showDatePicker = false }) {
-//                            Text(stringResource(Res.string.cancel))
+                            Text(stringResource(Res.string.cancel))
                         }
                     }
                 ) {
                     DatePicker(
                         state = datePickerState,
                         title = {
-//                            Text(stringResource(Res.string.date_picker_title))
+                            Text(stringResource(Res.string.date_picker_title))
                         },
                         headline = {
                             Column {
@@ -363,7 +371,7 @@ fun UserInformationStep(
                                 )
                                 // 2) tu texto estático, justo debajo o encima
                                 Text(
-                                    text = "Selecciona tu fecha de nacimiento",
+                                    text = stringResource(Res.string.select_your_date_of_birth),
                                     style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.padding(
@@ -382,7 +390,7 @@ fun UserInformationStep(
                         dateFormatter = datePickerFormatter,
                         title = {
                             Text(
-                                text = "Fecha de nacimiento",
+                                text = stringResource(Res.string.select_dob),
                                 modifier = Modifier.padding(
                                     PaddingValues(
                                         start = 24.dp,

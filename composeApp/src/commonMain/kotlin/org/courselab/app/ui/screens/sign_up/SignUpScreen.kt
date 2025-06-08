@@ -35,12 +35,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.error_while_creating_user
+import courselab.composeapp.generated.resources.last_step_confirm_account_HEAD
+import courselab.composeapp.generated.resources.logo
 import courselab.composeapp.generated.resources.password
+import courselab.composeapp.generated.resources.sign_up_on_proces
+import courselab.composeapp.generated.resources.sign_up_succesfully_done
+import courselab.composeapp.generated.resources.something_went_wrong
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -77,7 +84,7 @@ fun SignUpScreen(
             logo?.let {
                 Image(
                     it,
-                    contentDescription = "Logo",
+                    contentDescription = stringResource(Res.string.logo),
                     modifier = Modifier.size(180.dp).offset(y = (-50).dp)
                         .clip(RoundedCornerShape(15.dp))
                 )
@@ -122,7 +129,7 @@ fun SignUpScreen(
                         color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(Modifier.width(8.dp))
-                    Text("Registrando...", color = MaterialTheme.colorScheme.onSecondary)
+                    Text(stringResource(Res.string.sign_up_on_proces), color = MaterialTheme.colorScheme.onSecondary)
                 } else {
                     Text(
                         "Sign Up",
@@ -148,14 +155,14 @@ fun SignUpScreen(
             onDismissRequest = { showDialog = false },
             title = {
                 Text(
-                    text = if (lastSuccess) "Éxito" else "Error",
+                    text = if (lastSuccess) stringResource(Res.string.last_step_confirm_account_HEAD) else stringResource(Res.string.something_went_wrong),
                     style = MaterialTheme.typography.headlineSmall,
                     color = if (lastSuccess) Color.Black else Color.Red
                 )
             },
             text = {
                 Text(
-                    text = if (lastSuccess) "Usuario creado correctamente" else "Error al crear usuario",
+                    text = if (lastSuccess) stringResource(Res.string.sign_up_succesfully_done) else stringResource(Res.string.error_while_creating_user),
                     style = MaterialTheme.typography.bodyMedium
                 )
             },

@@ -187,7 +187,6 @@ fun SecurePasswordTextField(
     modifier: Modifier = Modifier,
     onDoneAction: (() -> Unit)? = null,
 ) {
-    val colorScheme = MaterialTheme.colorScheme
     val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
         value = value,

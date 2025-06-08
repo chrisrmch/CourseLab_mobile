@@ -43,15 +43,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.change_lang
 import courselab.composeapp.generated.resources.email
 import courselab.composeapp.generated.resources.forgot_password
+import courselab.composeapp.generated.resources.login
 import courselab.composeapp.generated.resources.password
+import courselab.composeapp.generated.resources.recover_password
+import courselab.composeapp.generated.resources.send
+import courselab.composeapp.generated.resources.sign_up
 import org.courselab.app.LocalAppLocalization
 import org.courselab.app.LocalUrlLauncher
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.rememberUrlLauncher
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
@@ -170,7 +174,7 @@ fun LoginScreen(
                     Text("Ingresando...", color = MaterialTheme.colorScheme.onSecondary)
                 } else {
                     Text(
-                        "Log In",
+                        stringResource(Res.string.login),
                         color = MaterialTheme.colorScheme.onSecondary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
@@ -179,7 +183,7 @@ fun LoginScreen(
             }
             Spacer(Modifier.height(8.dp))
             OutlinedWelcomeButtons.Secondary(
-                text = "Sign Up",
+                text = stringResource(Res.string.sign_up),
                 onClick = onSignUpNavigate,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -215,12 +219,12 @@ fun ForgotPasswordDialog(
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.primary,
         onDismissRequest = onDismiss,
-        title = { Text("Recuperar contraseña", color = MaterialTheme.colorScheme.onPrimary) },
+        title = { Text(stringResource(Res.string.recover_password), color = MaterialTheme.colorScheme.onPrimary) },
         text = {
             OutlinedTextField(
                 value = initialEmail,
                 onValueChange = onEmailChange,
-                label = { Text("E-mail", color = MaterialTheme.colorScheme.onPrimary) },
+                label = { Text(stringResource(Res.string.email), color = MaterialTheme.colorScheme.onPrimary) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = MaterialTheme.colorScheme.onPrimary,
                     unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,
@@ -239,7 +243,7 @@ fun ForgotPasswordDialog(
                 onClick = onSend,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Enviar", color = MaterialTheme.colorScheme.onPrimary)
+                Text(stringResource(Res.string.send), color = MaterialTheme.colorScheme.onPrimary)
             }
         },
         dismissButton = {
@@ -248,7 +252,7 @@ fun ForgotPasswordDialog(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text(
-                    "Cancelar",
+                    stringResource(Res.string.cancel),
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyLarge
                 )

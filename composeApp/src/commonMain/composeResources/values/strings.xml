@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">COURSELAB</string>
     <string name="hello">Hola!</string>
     <string name="es">Español</string>
     <string name="en">English</string>
@@ -13,6 +14,10 @@
     <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="welcome">Bienvenido</string>
     <string name="label_ask_personal_data">Empecemos con tus datos personales...</string>
+    <string name="recover_password">Recuperar contraseña</string>
+    <string name="last_step_confirm_account_HEAD">Solo te que queda un último más</string>
+    <string name="sign_up_succesfully_done">Usuario creado correctamente</string>
+    <string name="error_while_creating_user">Error al crear el usuario</string>
 
 
     <string name="select_dob">Seleccionar fecha</string>
@@ -21,6 +26,25 @@
     <string name="date">Fecha</string>
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancelar</string>
+    <string name="send">Enviar</string>
+    <string name="menu">Menu</string>
+    <string name="home">Inicio</string>
+    <string name="profile">Perfil</string>
+    <string name="logo">Logo</string>
+    <string name="settings">Ajustes</string>
+    <string name="name">Nombre</string>
+    <string name="surname">Apellidos</string>
+    <string name="country">País</string>
+    <string name="city">Ciudad</string>
+    <string name="height">Altura</string>
+    <string name="sign_up_on_proces">Registrando...</string>
+    <string name="select_your_date_of_birth">Selecciona tu fecha de nacimiento</string>
+
+
+
+    <string name="something_went_wrong">Algo salió mal</string>
+    <string name="try_againg_later">Vuelve a intentarlo más tarde</string>
+
 
     <string name="sex">Genero</string>
     <string name="male">Hombre</string>

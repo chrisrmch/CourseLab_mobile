@@ -37,10 +37,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.app_name
+import courselab.composeapp.generated.resources.home
+import courselab.composeapp.generated.resources.menu
+import courselab.composeapp.generated.resources.profile
+import courselab.composeapp.generated.resources.select_dob
 import org.courselab.app.LocalNavController
 import org.courselab.app.screenDetails
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -59,7 +66,7 @@ fun HomeScreen() {
                 TopAppBar(
                     title = {
                         Text(
-                            text = "COURSELAB",
+                            text = stringResource(Res.string.app_name),
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
                             letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
@@ -77,7 +84,7 @@ fun HomeScreen() {
                         IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
-                                contentDescription = "Menu"
+                                contentDescription = stringResource(Res.string.menu)
                             )
                         }
                     }
@@ -170,9 +177,9 @@ data class BottomNavItem(
 fun BottomNavigationBar() {
     val navigator = LocalNavController.current
     val items = listOf(
-        BottomNavItem(icon = Icons.Default.Home, label = "Home"),
-        BottomNavItem(icon = Icons.Default.Person, label = "Profile"),
-        BottomNavItem(icon = Icons.Default.Settings, label = "Settings")
+        BottomNavItem(icon = Icons.Default.Home, label = stringResource(Res.string.home)),
+        BottomNavItem(icon = Icons.Default.Person, label = stringResource(Res.string.profile)),
+//        BottomNavItem(icon = Icons.Default.Settings, label = stringResource(Res.string.))
     )
 
     var selectedIndex by remember { mutableStateOf(0) }
@@ -187,9 +194,9 @@ fun BottomNavigationBar() {
                 onClick = {
                     selectedIndex = index
 
-                    if (navItem.label == "Settings" && navigator != null) {
-                        navigator.navigateUp()
-                    }
+//                    if (navItem.label == stringResource(Res.string.select_dob) && navigator != null) {
+//                        navigator.navigateUp()
+//                    }
 
                 },
                 icon = {

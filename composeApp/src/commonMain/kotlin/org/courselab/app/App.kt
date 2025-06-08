@@ -127,7 +127,7 @@ fun App(
                             }
                         }
                         composable<HomeScreen> {
-                            HomeScreen()
+//                            HomeScreen()
                         }
                     }
                 }

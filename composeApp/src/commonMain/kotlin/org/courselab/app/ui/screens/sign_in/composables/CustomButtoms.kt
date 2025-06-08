@@ -50,9 +50,11 @@ import androidx.compose.ui.unit.dp
 
 object OutlinedWelcomeButtons {
 
+    private val TEXT_NOT_IMPLEMENTED = "TEXT NOT IMPLEMENTED"
+
     @Composable
     fun Primary(
-        text: String = "Button",
+        text: String = TEXT_NOT_IMPLEMENTED,
         onClick: () -> Unit,
         modifier: Modifier = Modifier.fillMaxWidth(),
         enabled: Boolean = true,
@@ -144,7 +146,7 @@ object OutlinedWelcomeButtons {
 
     @Composable
     fun Secondary(
-        text: String = "Button",
+        text: String = TEXT_NOT_IMPLEMENTED,
         onClick: () -> Unit,
         enabled: Boolean = true,
         modifier: Modifier = Modifier.fillMaxWidth(),

@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">COURSELAB</string>
     <string name="hello">Bonjour!</string>
     <string name="es">Español</string>
     <string name="en">English</string>
@@ -12,18 +13,48 @@
     <string name="forgot_password">Mot de passe oublié ?</string>
     <string name="welcome">Bienvenue</string>
     <string name="label_ask_personal_data">Commençons par vos données personnelles...</string>
+    <string name="recover_password">Récupérer le mot de passe</string>
+    <string name="last_step_confirm_account_HEAD">Il ne reste plus qu'une étape</string>
+
 
 
     <string name="select_dob">Sélectionner la date</string>
     <string name="headline_calendar">Date sélectionnée</string>
-    <string name="date_picker_title">Introduce tu fecha de nacimiento</string>
-    <string name="date">Fecha</string>
+    <string name="date_picker_title">Entrez votre date de naissance</string>
+    <string name="date">Date</string>
     <string name="accept">Accepter</string>
     <string name="cancel">Annuler</string>
+    <string name="send">Envoyer</string>
+    <string name="logo">Logo</string>
+    <string name="name">Prénom</string>
+    <string name="surname">Nom</string>
+    <string name="country">Pays</string>
+    <string name="city">Ville</string>
+    <string name="height">Taille</string>
+
+
 
     <string name="sex">Genre</string>
     <string name="male">Homme</string>
     <string name="female">Femme</string>
     <string name="next">Suivant</string>
+
+    <string name="home">Accueil</string>
+    <string name="profile">Profil</string>
+    <string name="menu">Menu</string>
+    <string name="settings">Paramètres</string>
+    <string name="sign_up_on_proces">Inscription...</string>
+    <string name="sign_up_succesfully_done">Utilisateur créé avec succès</string>
+    <string name="error_while_creating_user">Erreur lors de la création de l'utilisateur</string>
+    <string name="select_your_date_of_birth">Sélectionnez votre date de naissance</string>
+
+
+
+
+
+    <string name="something_went_wrong">Quelque chose s\'est mal passé</string>
+    <string name="try_againg_later">Réessayez plus tard</string>
+
+
 </resources>
 
