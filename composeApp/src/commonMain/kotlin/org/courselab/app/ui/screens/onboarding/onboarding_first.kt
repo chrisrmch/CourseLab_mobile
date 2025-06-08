@@ -75,6 +75,7 @@ import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -234,20 +235,22 @@ fun UserInformationStep(
             Spacer(modifier = Modifier.height(32.dp))
 
             RequestDetailsCard(modifier = Modifier) {
+                //TODO("ADAPT TEXT TO GRAMMAR RULES") IF FR -> {} : {}
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text(
-                        text = "¡Bienvenido ${nombre}!",
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Empecemos con tus datos personales:",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
+//                    Text(
+//                        text = "${stringResource(Res.string.welcome)} ${nombre} !",
+//                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+//                        color = MaterialTheme.colorScheme.onSurface,
+//                        maxLines = 1,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(
+//                        text = stringResource(Res.string.label_ask_personal_data), //Empecemos con tus datos personales...
+//                        style = MaterialTheme.typography.bodyMedium,
+//                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally)
+//                    )
                     Spacer(modifier = Modifier.height(16.dp))
 
                     FormScaffold(

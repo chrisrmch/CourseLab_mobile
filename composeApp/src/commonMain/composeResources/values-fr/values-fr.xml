@@ -10,6 +10,9 @@
     <string name="login">Se connecter</string>
     <string name="sign_up">S’inscrire</string>
     <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="label_ask_personal_data">Commençons par vos données personnelles...</string>
+
 
     <string name="select_dob">Sélectionner la date</string>
     <string name="headline_calendar">Date sélectionnée</string>

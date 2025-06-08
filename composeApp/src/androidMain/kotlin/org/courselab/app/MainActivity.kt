@@ -24,6 +24,11 @@ class MainActivity : ComponentActivity() {
             AndroidApp()
         }
     }
+
+    override fun onRestart() {
+        super.onRestart()
+        recreate()
+    }
 }
 
 @Composable

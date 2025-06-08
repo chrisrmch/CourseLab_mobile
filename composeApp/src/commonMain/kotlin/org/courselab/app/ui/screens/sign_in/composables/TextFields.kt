@@ -97,9 +97,9 @@ fun FormScaffold(
     Column(modifier) {
         fields.forEachIndexed { index, (fieldValue, onValueChange) ->
             if (fieldValue.trim()
-                    .lowercase() == "email"
+                    .lowercase() == stringResource(Res.string.email)
                 || fieldValue.trim()
-                    .lowercase() == "e-mail"
+                    .lowercase() == stringResource(Res.string.e_mail)
             ) {
                 BuildEmailTextField(
                     fields = fieldValues,

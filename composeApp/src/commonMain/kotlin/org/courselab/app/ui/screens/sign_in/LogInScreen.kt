@@ -48,6 +48,7 @@ import courselab.composeapp.generated.resources.email
 import courselab.composeapp.generated.resources.forgot_password
 import courselab.composeapp.generated.resources.password
 import org.courselab.app.LocalAppLocalization
+import org.courselab.app.LocalUrlLauncher
 import org.courselab.app.data.LoginRequestDTO
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.rememberUrlLauncher
@@ -70,20 +71,25 @@ fun LoginScreen(
 ) {
     val shouldDoOnboarding by dataStore.isFirstLogin.collectAsState(initial = false)
 
+    val lang_pref by dataStore.languagePreference.collectAsState(initial = LocalAppLocalization.current.code)
+
     val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
-
     var showForgotDialog by remember { mutableStateOf(false) }
     val isLoading by loginViewModel.isLoading.collectAsState()
     var forgotEmail by remember { mutableStateOf("") }
     val snackbarMessages = remember { SnackbarHostState() }
-    val urlLauncher = rememberUrlLauncher()
+
+    val urlLauncher = LocalUrlLauncher.current
+
 
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
             snackbarMessages.showSnackbar(msg)
         }
     }
+
+
 
     GradientScaffold(
         snackbarHost = { SnackbarHost(snackbarMessages) },
@@ -105,7 +111,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier,
                 onClick = {
-                    urlLauncher.openAppSettings()
+                    urlLauncher?.openAppSettings()
                 }
             ) {
                 Text(stringResource(Res.string.change_lang))

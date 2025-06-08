@@ -11,6 +11,10 @@
     <string name="login">Log In</string>
     <string name="sign_up">Sign Up</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="welcome">Welcome</string>
+    <string name="label_ask_personal_data">Let's start with your personal data...</string>
+
+
 
     <string name="select_dob">Select date</string>
     <string name="headline_calendar">Entered date</string>
