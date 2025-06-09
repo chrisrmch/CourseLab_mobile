@@ -51,7 +51,7 @@ val LocalUrlLauncher = compositionLocalOf<UrlLauncher?> { null }
 @Preview
 @Composable
 fun App(
-    logo: Painter?, userPreferences: UserPreferencesDataStore = koinInject(),
+    logo: Painter, userPreferences: UserPreferencesDataStore = koinInject(),
 ) {
     val currentThemePreference by userPreferences.themePreference.collectAsState(initial = "system")
     val useDarkTheme = when (currentThemePreference) {
@@ -117,13 +117,8 @@ fun App(
                         }
                         composable<SecondOnboardingScreen> {
                             OnboardingStep2(
-                                onBack = {
-                                    navController.popBackStack()
-                                    navController.navigate(FirstOnboardingScreen)
-                                },
-                            ) {
-                                navController.navigate(HomeScreen)
-                            }
+                                logo = logo,
+                            )
                         }
                         composable<HomeScreen> {
 //                            HomeScreen()

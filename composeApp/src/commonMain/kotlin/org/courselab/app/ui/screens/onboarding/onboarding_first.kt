@@ -2,7 +2,6 @@
 
 package org.courselab.app.ui.screens.onboarding
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.DateRange
@@ -41,7 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -57,10 +54,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.kizitonwose.calendar.core.now
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.accept
-import courselab.composeapp.generated.resources.app_name
 import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.date_picker_title
-import courselab.composeapp.generated.resources.logo
 import courselab.composeapp.generated.resources.name
 import courselab.composeapp.generated.resources.next
 import courselab.composeapp.generated.resources.select_dob
@@ -151,7 +146,7 @@ fun Previews() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserInformationStep(
-    logo: Painter?,
+    logo: Painter,
     onNext: () -> Unit,
 ) {
     val userViewModel = koinInject<UserViewModel>()
@@ -206,18 +201,7 @@ fun UserInformationStep(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            logo?.let {
-                Image(
-                    painter = it,
-                    contentDescription = "${stringResource(Res.string.logo)} ${stringResource(Res.string.app_name)}",
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                )
-            }
-
+            HeaderOnBoardingPages(logo)
             Spacer(modifier = Modifier.height(32.dp))
 
             RequestDetailsCard(modifier = Modifier) {

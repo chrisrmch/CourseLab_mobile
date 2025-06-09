@@ -7,6 +7,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DockedSearchBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,6 +53,9 @@ import androidx.compose.ui.unit.dp
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.female
 import courselab.composeapp.generated.resources.male
+import courselab.composeapp.generated.resources.photo_picker_label
+import courselab.composeapp.generated.resources.photo_picker_photo_selected
+import courselab.composeapp.generated.resources.photo_picker_select_profile_photo
 import courselab.composeapp.generated.resources.sex
 import org.jetbrains.compose.resources.stringResource
 
@@ -112,6 +120,7 @@ fun GenderSelector(
 }
 
 
+
 @Composable
 fun PhotoPicker(
     currentPhotoUri: String?,
@@ -119,37 +128,36 @@ fun PhotoPicker(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier.size(100.dp).clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant).clickable { onPickPhoto() },
+        modifier = modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clickable { onPickPhoto() },
         contentAlignment = Alignment.Center
     ) {
         if (currentPhotoUri != null) {
-            // En un módulo Android real haríamos algo como:
-            // val painter = rememberAsyncImagePainter(currentPhotoUri)
-            // Image(painter = painter, contentDescription = "Foto de perfil", modifier = Modifier.fillMaxSize().clip(CircleShape))
             Icon(
                 imageVector = Icons.Default.Person,
-                contentDescription = "Foto seleccionada",
+                contentDescription = stringResource(Res.string.photo_picker_photo_selected),
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Seleccionar foto de perfil",
+                contentDescription = stringResource(Res.string.photo_picker_select_profile_photo),
                 modifier = Modifier.size(48.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
     Text(
-        text = "Foto de perfil",
+        text = stringResource(Res.string.photo_picker_label),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(top = 4.dp)
     )
 }
-
 
 /**
  * TextField que permite varias líneas (ideal para biografía).
@@ -274,4 +282,59 @@ fun InterestsInput(
             }
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = {
+        Icon(Icons.Default.Search, contentDescription = null)
+    },
+    trailingIcon: @Composable (() -> Unit)? = {
+        if (active && query.isNotEmpty()) {
+            IconButton(onClick = { onQueryChange("") }) {
+                Icon(Icons.Default.Close, contentDescription = "Clear query")
+            }
+        }
+    },
+    content: @Composable (ColumnScope.() -> Unit),
+) {
+    DockedSearchBar(
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = "QUERYYYYYY",
+                onQueryChange = onQueryChange,
+                onSearch = onSearch,
+                expanded = active,
+                onExpandedChange = onActiveChange,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = true,
+                placeholder = placeholder,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                colors = SearchBarDefaults.inputFieldColors(
+                ),
+            )
+        },
+        expanded = active,
+        onExpandedChange = onActiveChange,
+        modifier = modifier.fillMaxWidth(),
+        shape = SearchBarDefaults.dockedShape,
+        colors = SearchBarDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
+        tonalElevation = SearchBarDefaults.TonalElevation,
+        shadowElevation = SearchBarDefaults.ShadowElevation,
+        content = {
+            content()
+        }
+    )
 }

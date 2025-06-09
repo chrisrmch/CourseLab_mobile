@@ -67,4 +67,20 @@
     <string name="month_november">November</string>
     <string name="month_december">December</string>
 
+    <!-- Onboarding Step 2 -->
+    <string name="onboarding_create_your_profile">Create your profile!</string>
+    <string name="onboarding_complete_final_data">Complete the final data:</string>
+
+    <!-- Profile fields -->
+    <string name="profile_biography_label">Biography</string>
+    <string name="profile_location_label">Location</string>
+    <string name="profile_website_label">Website Link</string>
+
+    <!-- Navigation buttons -->
+    <string name="onboarding_button_back">Back</string>
+    <string name="onboarding_button_finish">Finish</string>
+
+    <string name="photo_picker_photo_selected">Photo selected</string>
+    <string name="photo_picker_select_profile_photo">Select profile photo</string>
+    <string name="photo_picker_label">Profile photo</string>
 </resources>

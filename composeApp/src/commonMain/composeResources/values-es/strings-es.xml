@@ -64,4 +64,20 @@
     <string name="month_october">Octubre</string>
     <string name="month_november">Noviembre</string>
     <string name="month_december">Diciembre</string>
+
+
+    <!-- Onboarding Step 2 -->
+    <string name="onboarding_create_your_profile">¡Crea tu perfil!</string>
+    <string name="onboarding_complete_final_data">Completa los datos finales:</string>
+    <!-- Campos de perfil -->
+    <string name="profile_biography_label">Biografía</string>
+    <string name="profile_location_label">Ubicación</string>
+    <string name="profile_website_label">Enlace Web</string>
+    <!-- Botones de navegación -->
+    <string name="onboarding_button_back">Atrás</string>
+    <string name="onboarding_button_finish">Finalizar</string>
+
+    <string name="photo_picker_photo_selected">Foto seleccionada</string>
+    <string name="photo_picker_select_profile_photo">Seleccionar foto de perfil</string>
+    <string name="photo_picker_label">Foto de perfil</string>
 </resources>
