@@ -71,7 +71,7 @@
     <string name="onboarding_complete_final_data">Complétez les données finales :</string>
 
     <!-- Champs de profil -->
-    <string name="profile_biography_label">Biographie</string>
+    <string name="profile_biography_label">Rédigez une courte description</string>
     <string name="profile_location_label">Localisation</string>
     <string name="profile_website_label">Lien Web</string>
 

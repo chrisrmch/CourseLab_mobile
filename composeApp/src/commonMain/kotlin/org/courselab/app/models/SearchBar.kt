@@ -1,8 +1,8 @@
 package org.courselab.app.org.courselab.app.models
 
-data class MunicipioSearchBarResult(
-    val comunidad_autonoma_ID : Int,
-    val provincia_ID : Int,
+data class MunicipioSearchResult(
+    val comunidad_autonoma_ID : Int? = null,
+    val provincia_ID : Int? = null,
     val municipio_ID : Int,
     val municipio : String,
 )

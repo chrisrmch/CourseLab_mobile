@@ -28,6 +28,10 @@ datastore = "1.1.7"
 icons = "1.7.3"
 calendar = "2.7.0"
 material3-alpha = "1.4.0-alpha15"
+cameraLifecycle = "1.4.2"
+cameraView = "1.4.2"
+accompanist-permissions ="0.37.3"
+firebaseCrashlyticsBuildtools = "3.0.4"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -54,7 +58,7 @@ androidx-core-splashscreen = {module = "androidx.core:core-splashscreen", versio
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 koin-androidx-compose = {module = "io.insert-koin:koin-androidx-compose", version.ref = "koin"}
 koin-android = {module = "io.insert-koin:koin-android", version.ref = "koin"}
-
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
 
 #TARGET: MULTIPLATFORM
 navigation-compose-common = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "kmp-navigation" }
@@ -80,6 +84,9 @@ compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", v
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 preferences-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 icons = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "icons" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 
 

@@ -55,6 +55,7 @@ kotlin {
             implementation(libs.androidx.constraintlayout)
             // https://mvnrepository.com/artifact/androidx.compose.ui/ui
             runtimeOnly("androidx.compose.ui:ui:1.9.0-alpha04")
+            implementation(libs.accompanist.permissions)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -141,6 +142,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.firebase.crashlytics.buildtools)
     debugImplementation(compose.uiTooling)
 }
 

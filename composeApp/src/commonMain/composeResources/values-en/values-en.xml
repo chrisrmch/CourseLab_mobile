@@ -72,7 +72,7 @@
     <string name="onboarding_complete_final_data">Complete the final data:</string>
 
     <!-- Profile fields -->
-    <string name="profile_biography_label">Biography</string>
+    <string name="profile_biography_label">Write a short description</string>
     <string name="profile_location_label">Location</string>
     <string name="profile_website_label">Website Link</string>
 

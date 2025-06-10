@@ -70,7 +70,7 @@
     <string name="onboarding_create_your_profile">¡Crea tu perfil!</string>
     <string name="onboarding_complete_final_data">Completa los datos finales:</string>
     <!-- Campos de perfil -->
-    <string name="profile_biography_label">Biografía</string>
+    <string name="profile_biography_label">Escribe una breve descripción</string>
     <string name="profile_location_label">Ubicación</string>
     <string name="profile_website_label">Enlace Web</string>
     <!-- Botones de navegación -->

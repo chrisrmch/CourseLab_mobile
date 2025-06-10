@@ -8,6 +8,10 @@ import kotlinx.serialization.json.Json
 import org.courselab.app.data.AuthRepository
 import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.data.UserRepository
+import org.courselab.app.org.courselab.app.data.domain.GetMunicipiosUseCase
+import org.courselab.app.org.courselab.app.data.repository.ApiMunicipioRepository
+import org.courselab.app.org.courselab.app.data.repository.FakeMunicipioRepository
+import org.courselab.app.org.courselab.app.data.repository.MunicipioRepository
 import org.koin.dsl.module
 
 val networkModule = module {
@@ -29,7 +33,12 @@ val networkModule = module {
 
 val repositoriesModules = module {
     val serverURL = "http://192.168.1.12:8081"
+    val geoapiURL = "https://apiv1.geoapi.es/municipios/?"
+    val API_KEY = "84b693743141c621ecf6e6c2e00c345067972b320ac2c95263dae0caa8f34e38"
     single { UserPreferencesDataStore(get()) }
     single { AuthRepository(get(), serverURL, get()) }
     single { UserRepository(get(), serverURL, get()) }
+    single<MunicipioRepository> { ApiMunicipioRepository(get(), geoapiURL, API_KEY ) }
+    single { GetMunicipiosUseCase( get() ) }
+    single { FakeMunicipioRepository() }
 }

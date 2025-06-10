@@ -1,7 +1,9 @@
 package org.courselab.app
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
 
 interface Platform {
     val name: String
@@ -27,3 +29,7 @@ interface PlatformContext {
 
 
 val LocalPlatformContext: ProvidableCompositionLocal<PlatformContext?> = staticCompositionLocalOf { null }
+
+
+@Composable
+expect fun CameraView(modifier : Modifier = Modifier)

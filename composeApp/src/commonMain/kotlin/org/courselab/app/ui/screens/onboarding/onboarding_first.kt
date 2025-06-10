@@ -202,7 +202,7 @@ fun UserInformationStep(
             verticalArrangement = Arrangement.Top
         ) {
             HeaderOnBoardingPages(logo)
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
             RequestDetailsCard(modifier = Modifier) {
                 //TODO("ADAPT TEXT TO GRAMMAR RULES") IF FR -> {} : {}

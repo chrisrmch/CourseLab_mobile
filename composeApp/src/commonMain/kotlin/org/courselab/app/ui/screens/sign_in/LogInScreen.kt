@@ -208,6 +208,8 @@ fun LoginScreen(
         }
     }
 
+
+
     if (showForgotDialog) ForgotPasswordDialog(
         initialEmail = forgotEmail,
         onEmailChange = { forgotEmail = it },
@@ -267,6 +269,7 @@ fun ForgotPasswordDialog(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
         },
+
         confirmButton = {
             Button(
                 onClick = onSend,
