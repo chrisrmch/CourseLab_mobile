@@ -42,11 +42,11 @@ import courselab.composeapp.generated.resources.password
 import courselab.composeapp.generated.resources.sign_up_on_proces
 import courselab.composeapp.generated.resources.sign_up_succesfully_done
 import courselab.composeapp.generated.resources.something_went_wrong
-import org.courselab.app.ui.screens.sign_in.composables.FormField
-import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
-import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
-import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
-import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.courselab.app.ui.screens.log_in.composables.FormField
+import org.courselab.app.ui.screens.log_in.composables.FormScaffold
+import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.log_in.composables.OutlinedWelcomeButtons
+import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject

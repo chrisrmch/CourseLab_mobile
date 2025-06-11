@@ -52,9 +52,11 @@ kotlin {
             implementation(libs.koin.androidx.compose)
             implementation(libs.androidx.core.ktx)
             implementation(libs.androidx.appcompat)
+            implementation(libs.mapbox.sdk.compose.extention)
+            implementation(libs.androidx.activity.ktx)
+            implementation(libs.mapbox.android)
             implementation(libs.androidx.constraintlayout)
-            // https://mvnrepository.com/artifact/androidx.compose.ui/ui
-            runtimeOnly("androidx.compose.ui:ui:1.9.0-alpha04")
+            runtimeOnly(libs.androidx.ui)
             implementation(libs.accompanist.permissions)
         }
         commonMain.dependencies {
@@ -67,6 +69,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.ktor)
+            implementation(libs.maplibre.compose)
             implementation(libs.ktor.negotiation)
             implementation(libs.ktor.serialization)
             implementation(libs.navigation.compose.common)
@@ -87,7 +90,6 @@ kotlin {
             implementation(libs.icons)
             implementation(libs.calendar)
             implementation(compose.material3)
-            implementation("com.kizitonwose.calendar:compose-multiplatform:2.7.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

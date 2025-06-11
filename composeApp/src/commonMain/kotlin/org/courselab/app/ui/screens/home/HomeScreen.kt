@@ -2,6 +2,7 @@
 
 package org.courselab.app.ui.screens.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -41,10 +41,13 @@ import courselab.composeapp.generated.resources.app_name
 import courselab.composeapp.generated.resources.home
 import courselab.composeapp.generated.resources.menu
 import courselab.composeapp.generated.resources.profile
-import org.courselab.app.LocalNavController
+import dev.sargunv.maplibrecompose.compose.MaplibreMap
+import dev.sargunv.maplibrecompose.compose.layer.RasterLayer
+import dev.sargunv.maplibrecompose.core.source.RasterSource
+import org.courselab.app.org.courselab.app.LocalNavController
 import org.courselab.app.screenDetails
-import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
-import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -53,61 +56,80 @@ fun HomeScreen() {
     val size = screenDetails()
     val scope = rememberCoroutineScope()
 
+    val lightTiles = listOf(
+        "https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
+    )
+    val darkTiles = listOf(
+        "https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
+    )
+
     GradientScaffold(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        Scaffold(
-            bottomBar = {
-                BottomNavigationBar()
-            },
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(Res.string.app_name),
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                            letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
-                            modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
+        bottomBar = {
+            BottomNavigationBar()
+        },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(Res.string.app_name),
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = TextUnit(size.widthDp * 0.025f, TextUnitType.Sp),
+                        modifier = Modifier.fillMaxWidth().padding(end = 45.dp)
+                    )
+                },
+                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = colorScheme.surfaceBright,
+                    navigationIconContentColor = colorScheme.onPrimaryContainer,
+                    titleContentColor = colorScheme.onPrimary,
+                    actionIconContentColor = colorScheme.primary
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = stringResource(Res.string.menu)
                         )
-                    },
-                    scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-                    colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = colorScheme.primaryContainer,
-                        navigationIconContentColor = colorScheme.onPrimaryContainer,
-                        titleContentColor = colorScheme.onPrimary,
-                        actionIconContentColor = colorScheme.primary
-                    ),
-                    navigationIcon = {
-                        IconButton(onClick = { /* TODO: abrir menú si quieres */ }) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,
-                                contentDescription = stringResource(Res.string.menu)
-                            )
-                        }
                     }
-                )
-            }
+                }
+            )
+        },
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(15.dp)
         ) {
-                paddingValues ->
-            Column(
+            Text("Home Screen Content")
+            Spacer(modifier = Modifier.height(10.dp))
+            ThemeToggle()
+
+            val screenHeight = size.heightDp
+            val screenWidth = size.widthDp
+            Text("Screen Height: $screenHeight")
+            Text("Screen Width: $screenWidth")
+
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(15.dp)
+                    .weight(1f)
             ) {
-                Text("Home Screen Content")
-                Spacer(modifier = Modifier.height(10.dp))
-                ThemeToggle()
-
-                val screenHeight = size.heightDp
-                val screenWidth = size.widthDp
-                Text("Screen Height: $screenHeight")
-                Text("Screen Width: $screenWidth")
+                MaplibreMap(
+                    modifier = Modifier.fillMaxSize(),
+                    styleUri = "mapbox://styles/mapbox/streets-v11?api_key=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
+                ) {
+                    RasterSource(
+                        id       = "base",
+                        tileSize = 256,
+                        tiles    = lightTiles
+                    )
+                }
             }
         }
-        }
     }
+}
 //    GradientScaffold(
 //        bottomBar = {
 //            BottomNavigationBar()
@@ -168,7 +190,7 @@ fun HomeScreenPreview() {
 
 data class BottomNavItem(
     val icon: ImageVector,
-    val label: String
+    val label: String,
 )
 
 @Composable

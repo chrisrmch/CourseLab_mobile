@@ -1,5 +1,7 @@
 [versions]
 agp = "8.10.1"
+mapbox_android = "11.12.3"
+mapbox_android_compose_extention = "11.12.3"
 composeMultiplatform = "1.8.1"
 kotlin = "2.1.21"
 android-compileSdk = "35"
@@ -32,8 +34,12 @@ cameraLifecycle = "1.4.2"
 cameraView = "1.4.2"
 accompanist-permissions ="0.37.3"
 firebaseCrashlyticsBuildtools = "3.0.4"
+ui = "1.9.0-alpha04"
+uiTextGoogleFonts = "1.8.2"
 
 [libraries]
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+mapbox_android = { module = "com.mapbox.maps:android", version.ref = "mapbox_android" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -47,6 +53,8 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 
 #TARGET: ANDROID
+mapbox-sdk-compose-extention = { module = "com.mapbox.extension:maps-compose", version.ref = "mapbox_android_compose_extention" }
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
 navigation-compose-android = { module = "androidx.navigation:navigation-compose", version.ref = "nav_version"}
 okhttp-client = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 androidx-compose-material3-adaptative = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "material3-adaptative" }
@@ -61,6 +69,7 @@ koin-android = {module = "io.insert-koin:koin-android", version.ref = "koin"}
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
 
 #TARGET: MULTIPLATFORM
+maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "0.8.2" }
 navigation-compose-common = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "kmp-navigation" }
 ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 curl-client = { module = "io.ktor:ktor-client-curl", version.ref = "ktor" }
@@ -87,6 +96,7 @@ icons = { module = "org.jetbrains.compose.material:material-icons-core", version
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraLifecycle" }
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 
 

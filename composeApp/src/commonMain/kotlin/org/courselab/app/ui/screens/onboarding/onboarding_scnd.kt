@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -89,21 +90,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalDate
-import org.courselab.app.HomeScreen
-import org.courselab.app.LocalNavController
 import org.courselab.app.PermissionCallback
 import org.courselab.app.PermissionStatus
 import org.courselab.app.PermissionType
 import org.courselab.app.createPermissionsManager
+import org.courselab.app.org.courselab.app.HomeScreen
+import org.courselab.app.org.courselab.app.LocalNavController
 import org.courselab.app.org.courselab.app.ui.screens.AlertMessageDialog
 import org.courselab.app.org.courselab.app.ui.screens.ImageSourceOptionDialog
 import org.courselab.app.org.courselab.app.ui.screens.onboarding.MunicipioSearchViewModel
 import org.courselab.app.rememberCameraManager
 import org.courselab.app.rememberGalleryManager
 import org.courselab.app.screenDetails
-import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
-import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
-import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.log_in.composables.OutlinedWelcomeButtons
+import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
 import org.courselab.app.viewmodel.BaseViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -311,7 +312,7 @@ fun OnboardingStep2(
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp),
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp).imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
