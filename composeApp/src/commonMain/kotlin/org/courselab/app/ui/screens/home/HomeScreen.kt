@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontSynthesis.Companion.Style
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -41,10 +43,9 @@ import courselab.composeapp.generated.resources.app_name
 import courselab.composeapp.generated.resources.home
 import courselab.composeapp.generated.resources.menu
 import courselab.composeapp.generated.resources.profile
-import dev.sargunv.maplibrecompose.compose.MaplibreMap
-import dev.sargunv.maplibrecompose.compose.layer.RasterLayer
-import dev.sargunv.maplibrecompose.core.source.RasterSource
+import org.courselab.app.org.courselab.app.LocalLocationPermissionGranted
 import org.courselab.app.org.courselab.app.LocalNavController
+import org.courselab.app.org.courselab.app.LocalRequestLocationPermission
 import org.courselab.app.screenDetails
 import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
 import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
@@ -56,12 +57,8 @@ fun HomeScreen() {
     val size = screenDetails()
     val scope = rememberCoroutineScope()
 
-    val lightTiles = listOf(
-        "https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
-    )
-    val darkTiles = listOf(
-        "https://api.mapbox.com/styles/v1/mapbox/dark-v10/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
-    )
+    val requestPermission = LocalRequestLocationPermission.current
+    val granted = LocalLocationPermissionGranted.current
 
     GradientScaffold(
         bottomBar = {
@@ -92,15 +89,11 @@ fun HomeScreen() {
                             contentDescription = stringResource(Res.string.menu)
                         )
                     }
-                }
-            )
+                })
         },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(15.dp)
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(15.dp)
         ) {
             Text("Home Screen Content")
             Spacer(modifier = Modifier.height(10.dp))
@@ -111,22 +104,21 @@ fun HomeScreen() {
             Text("Screen Height: $screenHeight")
             Text("Screen Width: $screenWidth")
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f)
-            ) {
-                MaplibreMap(
-                    modifier = Modifier.fillMaxSize(),
-                    styleUri = "mapbox://styles/mapbox/streets-v11?api_key=pk.eyJ1IjoiY2hyaXN0aWFucm1jaCIsImEiOiJjbWJydGZpaHEwZGd6MnFzN3BkNDNzajZwIn0.oLAUCeM_G-BrAdMuF4W9Uw"
+
+            if (!granted) {
+                OutlinedButton(onClick = requestPermission) {
+                    Text("Activar mi ubicación")
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize().weight(1f)
                 ) {
-                    RasterSource(
-                        id       = "base",
-                        tileSize = 256,
-                        tiles    = lightTiles
-                    )
+                    TargetMapboxMap(modifier = Modifier.fillMaxSize())
                 }
             }
+
+
+
         }
     }
 }
@@ -146,7 +138,7 @@ fun HomeScreen() {
 //                    )
 //                },
 //                scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-//                colors = TopAppBarDefaults.largeTopAppBarColors(
+//                colors = TopAppBarDefaults.largeTopAppBarColors(BottomNavigationBar
 //                    containerColor = colorScheme.primaryContainer,
 //                    navigationIconContentColor = colorScheme.onPrimaryContainer,
 //                    titleContentColor = colorScheme.onPrimary,
@@ -180,6 +172,7 @@ fun HomeScreen() {
 //        }
 //    }
 //}
+
 
 @Preview
 @Composable

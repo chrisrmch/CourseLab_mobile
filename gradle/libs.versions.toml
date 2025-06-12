@@ -36,6 +36,7 @@ accompanist-permissions ="0.37.3"
 firebaseCrashlyticsBuildtools = "3.0.4"
 ui = "1.9.0-alpha04"
 uiTextGoogleFonts = "1.8.2"
+lifecycleService = "2.9.1"
 
 [libraries]
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
@@ -69,7 +70,6 @@ koin-android = {module = "io.insert-koin:koin-android", version.ref = "koin"}
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
 
 #TARGET: MULTIPLATFORM
-maplibre-compose = { module = "dev.sargunv.maplibre-compose:maplibre-compose", version = "0.8.2" }
 navigation-compose-common = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "kmp-navigation" }
 ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 curl-client = { module = "io.ktor:ktor-client-curl", version.ref = "ktor" }
@@ -97,6 +97,7 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
 
 
 

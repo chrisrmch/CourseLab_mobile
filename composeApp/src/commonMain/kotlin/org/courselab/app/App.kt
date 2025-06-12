@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -71,6 +72,15 @@ val LocalAppLocalization = compositionLocalOf { AppLang.Spanish }
 
 val LocalUrlLauncher = compositionLocalOf<UrlLauncher?> { null }
 
+// Lanza la solicitud de permiso; hace *nothing* por defecto
+val LocalRequestLocationPermission =
+    staticCompositionLocalOf<() -> Unit> { {  } }
+
+
+// true si el permiso está concedido; false por defecto
+val LocalLocationPermissionGranted =
+    compositionLocalOf { false }
+
 @Preview
 @Composable
 fun App(
@@ -93,7 +103,7 @@ fun App(
                 CompositionLocalProvider(
                     LocalNavController provides navController,
                     LocalAppLocalization provides currentLanguage,
-                    LocalUrlLauncher provides urlLauncher
+                    LocalUrlLauncher provides urlLauncher,
                 ) {
                     NavHost(
                         navController = navController,

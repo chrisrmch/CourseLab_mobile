@@ -69,7 +69,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.ktor)
-            implementation(libs.maplibre.compose)
             implementation(libs.ktor.negotiation)
             implementation(libs.ktor.serialization)
             implementation(libs.navigation.compose.common)
@@ -147,6 +146,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.lifecycle.service)
     debugImplementation(compose.uiTooling)
 }
 
