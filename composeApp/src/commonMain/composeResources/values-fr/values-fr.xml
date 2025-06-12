@@ -17,6 +17,7 @@
     <string name="label_ask_personal_data">Commençons par vos données personnelles...</string>
     <string name="recover_password">Récupérer le mot de passe</string>
     <string name="last_step_confirm_account_HEAD">Il ne reste plus qu'une étape</string>
+    <string name="already_have_account">Vous avez déjà un compte ?</string>
 
 
     <string name="select_dob">Sélectionner la date</string>

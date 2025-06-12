@@ -41,6 +41,8 @@
     <string name="sign_up_on_proces">Registrando...</string>
     <string name="select_your_date_of_birth">Selecciona tu fecha de nacimiento</string>
     <string name="snackbar_recovery_link_sent">Enlace de recuperación enviado</string>
+    <string name="already_have_account">¿Ya estás registrado?</string>
+
 
 
     <string name="something_went_wrong">Algo salió mal</string>

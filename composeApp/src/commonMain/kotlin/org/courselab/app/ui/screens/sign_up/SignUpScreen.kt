@@ -34,14 +34,21 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import courselab.composeapp.generated.resources.Res
+import courselab.composeapp.generated.resources.accept
+import courselab.composeapp.generated.resources.already_have_account
 import courselab.composeapp.generated.resources.email
 import courselab.composeapp.generated.resources.error_while_creating_user
 import courselab.composeapp.generated.resources.last_step_confirm_account_HEAD
 import courselab.composeapp.generated.resources.logo
 import courselab.composeapp.generated.resources.password
+import courselab.composeapp.generated.resources.sign_up
 import courselab.composeapp.generated.resources.sign_up_on_proces
 import courselab.composeapp.generated.resources.sign_up_succesfully_done
 import courselab.composeapp.generated.resources.something_went_wrong
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.courselab.app.org.courselab.app.LocalNavController
+import org.courselab.app.org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
 import org.courselab.app.ui.screens.log_in.composables.FormField
 import org.courselab.app.ui.screens.log_in.composables.FormScaffold
 import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
@@ -51,17 +58,18 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
+
 @Preview
 @Composable
 fun SignUpScreen(
     logo: Painter?,
-    onSignUpComplete: (Boolean) -> Unit = {},
-    onNavigateToLogin: () -> Unit = {},
 ) {
     val signUpViewModel = koinInject<SignUpViewModel>()
+    val navController = LocalNavController.current
 
-    val state by signUpViewModel.signUpState.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
+//VARIABLES CONTROL ESTADO PANTALLA
+    val formState by signUpViewModel.signUpState.collectAsState()
+    var isDialogVisible: Boolean by remember { mutableStateOf(false) }
     var lastSuccess by remember { mutableStateOf(false) }
     val isLoading by signUpViewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -94,16 +102,19 @@ fun SignUpScreen(
                     FormField(stringResource(Res.string.password),  { signUpViewModel.onSignUpInputChanged("Password", it) } )
                 ),
                 fieldValues = listOf(
-                    { state.email },
-                    { state.password }
+                    { formState.email },
+                    { formState.password }
                 ), onDoneAction = {
                     signUpViewModel.onSignUpFormSubmitted(
                         SignUpRequestDTO(
-                            email = state.email,
-                            password = state.password
+                            email = formState.email,
+                            password = formState.password
                         )
-                    ) { success ->
-                        lastSuccess = success; showDialog = true; onSignUpComplete(success)
+                    ) { success -> lastSuccess = success; isDialogVisible = true
+                        signUpViewModel.scope.launch {
+                            delay(3000)
+                        }
+                        navController?.popBackStack()
                     }
                 }
             )
@@ -112,14 +123,18 @@ fun SignUpScreen(
                 onClick = {
                     signUpViewModel.onSignUpFormSubmitted(
                         SignUpRequestDTO(
-                            email = state.email,
-                            password = state.password
+                            email = formState.email,
+                            password = formState.password
                         )
                     ) { success ->
-                        lastSuccess = success; showDialog = true; onSignUpComplete(success)
+                        lastSuccess = success; isDialogVisible = true
+                        signUpViewModel.scope.launch {
+                            delay(3000)
+                            navController?.popBackStack()
+                        }
                     }
                 },
-                enabled = state.isValid,
+                enabled = formState.isValid,
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
@@ -131,7 +146,7 @@ fun SignUpScreen(
                     Text(stringResource(Res.string.sign_up_on_proces), color = MaterialTheme.colorScheme.onSecondary)
                 } else {
                     Text(
-                        "Sign Up",
+                        stringResource(Res.string.sign_up),
                         color = MaterialTheme.colorScheme.onSecondary,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold
@@ -141,17 +156,17 @@ fun SignUpScreen(
 
             Spacer(Modifier.height(8.dp))
             OutlinedWelcomeButtons.Secondary(
-                text = "Already have an account?",
-                onClick = onNavigateToLogin,
+                text = stringResource(Res.string.already_have_account),
+                onClick = { navController?.popBackStack()},
             )
 
             ThemeToggle()
         }
     }
 
-    if (showDialog) {
+    if (isDialogVisible) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { isDialogVisible = false },
             title = {
                 Text(
                     text = if (lastSuccess) stringResource(Res.string.last_step_confirm_account_HEAD) else stringResource(Res.string.something_went_wrong),
@@ -166,9 +181,9 @@ fun SignUpScreen(
                 )
             },
             confirmButton = {
-                TextButton(onClick = { showDialog = false }) {
+                TextButton(onClick = { isDialogVisible = false }) {
                     Text(
-                        "OK",
+                        stringResource(Res.string.accept),
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }

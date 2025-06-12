@@ -10,7 +10,7 @@ import io.ktor.client.statement.request
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
-import org.courselab.app.ui.screens.sign_up.SignUpRequestDTO
+import org.courselab.app.org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
 
 @Serializable
 data class LoginRequestDTO(

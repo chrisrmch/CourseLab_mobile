@@ -79,6 +79,7 @@
     <!-- Navigation buttons -->
     <string name="onboarding_button_back">Back</string>
     <string name="onboarding_button_finish">Finish</string>
+    <string name="already_have_account">Already have an account?</string>
 
     <string name="photo_picker_photo_selected">Photo selected</string>
     <string name="photo_picker_select_profile_photo">Select profile photo</string>

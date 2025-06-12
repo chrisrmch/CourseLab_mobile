@@ -4,7 +4,7 @@ import org.courselab.app.ui.screens.onboarding.UserProfileViewModel
 import org.courselab.app.ui.screens.onboarding.UserViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
-import org.courselab.app.ui.screens.log_in.LogInViewModel
+import org.courselab.app.ui.screens.sign_in.LogInViewModel
 import org.courselab.app.ui.screens.sign_up.SignUpViewModel
 import org.courselab.app.org.courselab.app.ui.screens.onboarding.MunicipioSearchViewModel
 

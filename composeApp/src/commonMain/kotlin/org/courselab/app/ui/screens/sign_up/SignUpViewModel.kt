@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import org.courselab.app.data.AuthRepository
+import org.courselab.app.org.courselab.app.ui.screens.log_in.dto.Validator
+import org.courselab.app.org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
 import org.courselab.app.viewmodel.BaseViewModel
 
 
@@ -19,22 +20,7 @@ data class SignUpFormState(
     val password: String = "",
     val fechaNacimiento: String = "",
     val genero: String = "",
-    val isValid: Boolean = false,
-)
-
-/**
-firstname": "$firstname",
-"lastname": "$lastname",
-"email": "$email",
-"password": "$password",
-"role": "ROLE_USER"
- */
-
-@Serializable
-data class SignUpRequestDTO(
-    val email: String,
-    val password: String,
-    val role: String = "ROLE_USER",
+    val isValid: Boolean = Validator.validateEmail(email) && Validator.validatePassword(password),
 )
 
 class SignUpViewModel(
@@ -51,7 +37,6 @@ class SignUpViewModel(
     val snackbarMsg: SharedFlow<String> = _snackbarMsg
 
     fun onSignUpInputChanged(field: String, value: String) {
-        println("se ha llegado aqui + $value")
         val current = _signUpState.value
         val updated = when (field.trim()
             .toLowerCasePreservingASCIIRules()) {

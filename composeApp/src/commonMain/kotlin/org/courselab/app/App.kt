@@ -8,22 +8,18 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.waterfall
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -40,8 +36,9 @@ import org.courselab.app.rememberAppLocale
 import org.courselab.app.rememberUrlLauncher
 import org.courselab.app.ui.screens.home.HomeScreen
 import org.courselab.app.ui.screens.onboarding.OnboardingStep2
+import org.courselab.app.ui.screens.sign_in.LoginScreen
 import org.courselab.app.ui.screens.onboarding.UserInformationStep
-import org.courselab.app.ui.screens.log_in.LoginScreen
+import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -53,9 +50,6 @@ object LogInScreen
 
 @Serializable
 object SignUpScreen
-
-@Serializable
-object OnBoarding
 
 @Serializable
 object HomeScreen
@@ -119,25 +113,18 @@ fun App(
                         popExitTransition = {
                             SlideOutRightAnimation()
                         },
-                        startDestination = HomeScreen
+                        startDestination = FirstOnboardingScreen
                     ) {
                         composable<LogInScreen> {
                             LoginScreen(
-                                onLoginSuccess = {
-                                    println("LOGIN SUCCESSFUL, NAVIGATING TO HOME")
-                                    navController.navigate(HomeScreen)
-                                },
                                 onSignUpNavigate = { navController.navigate(SignUpScreen) },
                                 logo = logo
                             )
                         }
                         composable<SignUpScreen> {
-                            UserInformationStep(
+                            SignUpScreen(
                                 logo = logo,
-                                onNext = {
-                                    navController.navigate(SecondOnboardingScreen)
-                                },
-                            );
+                            )
                         }
                         composable<FirstOnboardingScreen> {
                             UserInformationStep(

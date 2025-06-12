@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package org.courselab.app.ui.screens.onboarding
 
 
@@ -12,7 +14,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,15 +47,15 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.SearchBarDefaults.InputField
-import androidx.compose.material3.SearchBarDefaults.inputFieldColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,12 +63,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -96,6 +94,7 @@ import org.courselab.app.PermissionType
 import org.courselab.app.createPermissionsManager
 import org.courselab.app.org.courselab.app.HomeScreen
 import org.courselab.app.org.courselab.app.LocalNavController
+import org.courselab.app.org.courselab.app.models.MunicipioSearchResult
 import org.courselab.app.org.courselab.app.ui.screens.AlertMessageDialog
 import org.courselab.app.org.courselab.app.ui.screens.ImageSourceOptionDialog
 import org.courselab.app.org.courselab.app.ui.screens.onboarding.MunicipioSearchViewModel
@@ -156,27 +155,13 @@ class UserProfileViewModel : BaseViewModel() {
 }
 
 
-/**
- * OnboardingStep2: Pedimos datos de perfil adicionales:
- * - nombre (texto)
- * - apellidos (texto)
- * - fechaNacimiento (DatePicker)
- * - fotoPerfil (PhotoPicker)
- * - descrpcionPersonal (Multilínea)
- * - enlaceWeb (URL)
- * - ubicacion (texto)
- * - intereses (lista dinámica de chips)
- */
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class,
-    ExperimentalMaterial3WindowSizeClassApi::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun OnboardingStep2(
     logo: Painter,
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
     var imageSourceOptionDialog by remember { mutableStateOf(value = false) }
@@ -267,22 +252,21 @@ fun OnboardingStep2(
             },
             onNegativeClick = {
                 permissionRationalDialog = false
-            }
-        )
+            })
     }
 
     //--------------------------------------------------------------------------------
     val navController = LocalNavController.current
     val userProfileVM = koinInject<UserProfileViewModel>()
-    val userProfileState = userProfileVM.userState.collectAsState()
-    val vm: MunicipioSearchViewModel = koinInject()
-    LaunchedEffect(Unit) { vm.initialize() }
-    val query by vm.inputText.collectAsState()
+    val profile = userProfileVM.userState.collectAsState()
+    val searchViewModel: MunicipioSearchViewModel = koinInject()
+    LaunchedEffect(Unit) { searchViewModel.initialize() }
+    val query by searchViewModel.inputText.collectAsState()
     val focusRequester = remember { FocusRequester() }
-    val viewState by vm.viewState.collectAsState()
+    val viewState by searchViewModel.viewState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
 
-    var ubicacion by remember { mutableStateOf(userProfileState.value.ubicacion) }
+    val ubicacion by remember { mutableStateOf(profile.value.ubicacion) }
     val isFormValid = ubicacion.isNotBlank()
 
     val items = when (viewState) {
@@ -299,9 +283,6 @@ fun OnboardingStep2(
     val maxTableHeight = screenHeightDp * (2f / 3f)
     val tableHeight = (itemHeight * items.size.toFloat()).coerceAtMost(maxTableHeight)
 
-
-
-
     GradientScaffold(
         modifier = Modifier.pointerInput(expanded) {
             detectTapGestures {
@@ -309,10 +290,9 @@ fun OnboardingStep2(
                     expanded = false
                 }
             }
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp).imePadding(),
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -321,85 +301,27 @@ fun OnboardingStep2(
 
             RequestDetailsCard(modifier = Modifier) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    PhotoPicker(
-                        modifier = Modifier.clipToBounds(),
-                        currentPhotoUri = userProfileState.value.fotoPerfil,
-                        onPickPhoto = {
-                            imageSourceOptionDialog = true
-//                            userProfileVM.setFotoPerfil()
-                        })
+                    PhotoPickerWrapper(profile, imageSourceOptionDialog)
                     Spacer(modifier = Modifier.height(10.dp))
 
 
+                    // SEARCH BAR
                     AdaptiveDockedSearchBar(
                         inputField = {
-                            InputField(
-                                query = query,
-                                onQueryChange = { new ->
-                                    vm.updateInput(new)
-                                    if (new.isEmpty()) {
-                                        vm.revertToInitialState()
-                                    }
+                            val displayText = profile.value.ubicacion.ifEmpty { query }
+                            SearchInputField(
+                                text = displayText,
+                                placeholder = "Buscar municipio",
+                                onValueChange = {
+                                    searchViewModel.updateInput(it)
+                                    if (!expanded) expanded = true
                                 },
-                                onSearch = {
-                                    expanded = false
+                                onClear = {
+                                    searchViewModel.clearInput()
                                 },
-                                expanded = expanded,
-                                onExpandedChange = { isOpen ->
-                                    expanded = isOpen
-                                    if (!isOpen) vm.revertToInitialState()
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                                enabled = true,
-                                placeholder = { Text("Buscar municipio") },
-                                leadingIcon = {
-                                    Icon(Icons.Default.Search, contentDescription = "Buscar")
-                                },
-                                trailingIcon = {
-                                    if (query.isNotBlank()) {
-                                        IconButton(onClick = {
-                                            vm.clearInput()
-                                            expanded = false
-                                        }) {
-                                            Icon(Icons.Default.Close, contentDescription = "Borrar")
-                                        }
-                                    }
-                                },
-                                colors = inputFieldColors(
-                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    cursorColor = MaterialTheme.colorScheme.primary,
-                                    selectionColors = TextSelectionColors(
-                                        handleColor = MaterialTheme.colorScheme.primary,
-                                        backgroundColor = MaterialTheme.colorScheme.primary.copy(
-                                            alpha = 0.4f
-                                        )
-                                    ),
-                                    focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                ),
-                                // The IME action to delete a letter is not a specific ImeAction.
-                                // Deletion is typically handled by the backspace key on the software keyboard,
-                                // and the `onQueryChange` lambda is triggered with the updated text.
-                                // If you want to perform a specific action when the query is cleared by the user,
-                                // you can check if `new` is empty within the `onQueryChange` lambda.
-                                // Opcional: Para controlar acciones del teclado como 'Done' o 'Search'
+                                showClear = query.isNotBlank(),
+                                enabled = profile.value.ubicacion.isBlank(),
                             )
-                        },
-                        expanded = expanded,
-                        onExpandedChange = { isOpen ->
-                            expanded = isOpen
-                            if (!isOpen) {
-                                vm.revertToInitialState()
-                            }
                         },
                         colors = SearchBarDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surface,
@@ -407,61 +329,25 @@ fun OnboardingStep2(
                         ),
                         modifier = Modifier,
                         tonalElevation = 4.dp,
-                        shadowElevation = 8.dp
+                        shadowElevation = 8.dp,
+                        expanded = expanded
                     ) {
+                        // CONTENIDO DEL DROPDOWN
                         when (viewState) {
-                            MunicipioSearchViewModel.ViewState.Loading -> {
-                                Box(
-                                    Modifier.fillMaxWidth().padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-
-                            MunicipioSearchViewModel.ViewState.NoResults -> {
-                                Text(
-                                    "No hay resultados",
-                                    Modifier.fillMaxWidth().padding(16.dp),
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            }
-
+                            MunicipioSearchViewModel.ViewState.Loading -> LoadingIndicator()
+                            MunicipioSearchViewModel.ViewState.NoResults -> NoResultsMessage()
                             is MunicipioSearchViewModel.ViewState.MunicipioSearchResultFetch -> {
-                                val resultados =
-                                    (viewState as MunicipioSearchViewModel.ViewState.MunicipioSearchResultFetch).municipios
-                                Column(
-                                    modifier = Modifier.height(tableHeight).fillMaxWidth()
-                                        .background(
-                                            Color.Red
-                                        )
-                                ) {
-                                    LazyColumn {
-                                        items(items, key = { it.municipio_ID }) { municipio ->
-                                            ListItem(
-                                                headlineContent = { Text(municipio.municipio) },
-                                                modifier = Modifier.fillMaxWidth()
-                                                    .height(itemHeight).clickable {})
-                                        }
+                                SearchResultsList(
+                                    items = (viewState as MunicipioSearchViewModel.ViewState.MunicipioSearchResultFetch).municipios,
+                                    onItemClick = { m ->
+                                        userProfileVM.setUbicacion(m.municipio)
+                                        searchViewModel.revertToInitialState()
+                                        expanded = false
                                     }
-                                }
-                            }
-
-                            MunicipioSearchViewModel.ViewState.Error -> {
-                                Text(
-                                    "Error al buscar",
-                                    Modifier.fillMaxWidth().padding(16.dp),
-                                    color = MaterialTheme.colorScheme.error
                                 )
                             }
-
-                            else -> {
-                                Text(
-                                    "Teclea para buscar tu municipio",
-                                    Modifier.fillMaxWidth().padding(16.dp),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                            MunicipioSearchViewModel.ViewState.Error -> ErrorMessage()
+                            else -> HintMessage("Teclea para buscar tu municipio")
                         }
                     }
 
@@ -470,7 +356,7 @@ fun OnboardingStep2(
                     )
 
                     MultilineTextField(
-                        value = userProfileState.value.descrpcionPersonal,
+                        value = profile.value.descrpcionPersonal,
                         onValueChange = { userProfileVM.setDescripcionPersonal(it) },
                         label = stringResource(Res.string.profile_biography_label),
                         minLines = 1,
@@ -508,6 +394,117 @@ fun OnboardingStep2(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchInputField(
+    text: String,
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    onClear: () -> Unit,
+    showClear: Boolean,
+    enabled: Boolean
+) {
+    SearchBarDefaults.InputField(
+        query = text,
+        onQueryChange = { if (enabled) onValueChange(it) },
+        onSearch = { /* opcional */ },
+        expanded = true,
+        onExpandedChange = { /* noop */ },
+        modifier = Modifier.fillMaxWidth(),
+        enabled = enabled,
+        placeholder = { Text(placeholder) },
+        leadingIcon = { Icon(Icons.Default.Search, null) },
+        trailingIcon = {
+            if (showClear) {
+                IconButton(onClick = onClear) {
+                    Icon(Icons.Default.Close, null)
+                }
+            }
+        },
+        colors = CustomInputFieldColors()
+    )
+}
+
+
+@Composable
+private fun SearchResultsList(
+    items: List<MunicipioSearchResult>,
+    onItemClick: (MunicipioSearchResult) -> Unit
+) {
+    LazyColumn {
+        items(items, key = { it.municipio_ID }) { municipio ->
+            ListItem(
+                headlineContent = { Text(municipio.municipio) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onItemClick(municipio) }
+            )
+            HorizontalDivider()
+        }
+    }
+}
+
+@Composable private fun LoadingIndicator() = Box(
+    Modifier.fillMaxWidth().padding(16.dp),
+    contentAlignment = Alignment.Center
+) { CircularProgressIndicator() }
+
+@Composable private fun NoResultsMessage() = Text(
+    "No hay resultados",
+    Modifier.fillMaxWidth().padding(16.dp),
+    color = MaterialTheme.colorScheme.error
+)
+
+@Composable private fun ErrorMessage() = Text(
+    "Error al buscar",
+    Modifier.fillMaxWidth().padding(16.dp),
+    color = MaterialTheme.colorScheme.error
+)
+
+@Composable private fun HintMessage(text: String) = Text(
+    text,
+    Modifier.fillMaxWidth().padding(16.dp),
+    color = MaterialTheme.colorScheme.onSurfaceVariant
+)
+@Composable
+private fun CustomInputFieldColors() =  TextFieldDefaults.colors(
+    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    cursorColor = MaterialTheme.colorScheme.primary,
+    selectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.primary.copy(
+            alpha = 0.4f
+        )
+    ),
+    focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
+    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    focusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+
+)
+
+@Composable
+private fun PhotoPickerWrapper(
+    userProfileState: State<userProfile>, imageSourceOptionDialog: Boolean
+) {
+    var imageSourceOptionDialog1 = imageSourceOptionDialog
+    PhotoPicker(
+        modifier = Modifier.clipToBounds(),
+        currentPhotoUri = userProfileState.value.fotoPerfil,
+        onPickPhoto = {
+            imageSourceOptionDialog1 = true
+//                            userProfileVM.setFotoPerfil()
+        })
+}
+
+
 /**
  * Un DockedSearchBar personalizado que adapta la altura del panel de resultados
  * al número de elementos (vía [contentMaxHeight]) y con un máximo predefinido.
@@ -518,7 +515,6 @@ fun OnboardingStep2(
 fun AdaptiveDockedSearchBar(
     inputField: @Composable () -> Unit,
     expanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     colors: SearchBarColors = SearchBarDefaults.colors(),
     tonalElevation: Dp = SearchBarDefaults.TonalElevation,
@@ -543,8 +539,7 @@ fun AdaptiveDockedSearchBar(
                 exit = DockedExitTransition,
             ) {
                 Column(
-                    modifier = Modifier
-                        .widthIn(min = SearchBarMinWidth)
+                    modifier = Modifier.widthIn(min = SearchBarMinWidth)
                         .heightIn(max = contentMaxHeight)
                 ) {
                     HorizontalDivider(color = colors.dividerColor)
@@ -564,22 +559,20 @@ val animationDelayMillis = 100
 
 val AnimationEnterEasing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1.0f)
 
-val AnimationEnterSizeSpec: FiniteAnimationSpec<IntSize> =
-    tween(
-        durationMillis = animationEnterDurationMillis,
-        delayMillis = animationDelayMillis,
-        easing = AnimationEnterEasing,
-    )
+val AnimationEnterSizeSpec: FiniteAnimationSpec<IntSize> = tween(
+    durationMillis = animationEnterDurationMillis,
+    delayMillis = animationDelayMillis,
+    easing = AnimationEnterEasing,
+)
 
 const val AnimationExitDurationMillis = 350.0
 val AnimationExitEasing = CubicBezierEasing(0.0f, 1.0f, 0.0f, 1.0f)
 
-val AnimationExitSizeSpec: FiniteAnimationSpec<IntSize> =
-    tween(
-        durationMillis = AnimationExitDurationMillis.toInt(),
-        delayMillis = animationDelayMillis,
-        easing = AnimationExitEasing,
-    )
+val AnimationExitSizeSpec: FiniteAnimationSpec<IntSize> = tween(
+    durationMillis = AnimationExitDurationMillis.toInt(),
+    delayMillis = animationDelayMillis,
+    easing = AnimationExitEasing,
+)
 
 
 val DockedEnterTransition: EnterTransition
@@ -587,20 +580,18 @@ val DockedEnterTransition: EnterTransition
 private val DockedExitTransition: ExitTransition
     get() = fadeOut(AnimationExitFloatSpec) + shrinkVertically(AnimationExitSizeSpec)
 
-val AnimationEnterFloatSpec: FiniteAnimationSpec<Float> =
-    tween(
-        durationMillis = animationEnterDurationMillis,
-        delayMillis = animationDelayMillis,
-        easing = AnimationEnterEasing,
-    )
+val AnimationEnterFloatSpec: FiniteAnimationSpec<Float> = tween(
+    durationMillis = animationEnterDurationMillis,
+    delayMillis = animationDelayMillis,
+    easing = AnimationEnterEasing,
+)
 
 
-val AnimationExitFloatSpec: FiniteAnimationSpec<Float> =
-    tween(
-        durationMillis = AnimationExitDurationMillis.toInt(),
-        delayMillis = animationDelayMillis,
-        easing = AnimationExitEasing,
-    )
+val AnimationExitFloatSpec: FiniteAnimationSpec<Float> = tween(
+    durationMillis = AnimationExitDurationMillis.toInt(),
+    delayMillis = animationDelayMillis,
+    easing = AnimationExitEasing,
+)
 
 @Composable
 fun HeaderOnBoardingPages(logo: Painter) {
@@ -638,10 +629,9 @@ fun HeaderOnBoardingPages(logo: Painter) {
 @Preview
 @Composable
 fun Preview_OnboardingStep2() {
-    val wsc =
-        WindowSizeClass.calculateFromSize(
-            DpSize(400.dp, 800.dp)
-        )
+    val wsc = WindowSizeClass.calculateFromSize(
+        DpSize(400.dp, 800.dp)
+    )
     println("WindowSizeClass.widthSizeClass ${wsc.widthSizeClass} ++++++++++++++++++++  WindowSizeClass.widthSizeClass ${wsc.heightSizeClass}")
     OnboardingStep2(logo = painterResource(Res.drawable.compose_multiplatform))
 }

@@ -42,20 +42,26 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.change_lang
 import courselab.composeapp.generated.resources.email
 import courselab.composeapp.generated.resources.forgot_password
 import courselab.composeapp.generated.resources.login
+import courselab.composeapp.generated.resources.logo
 import courselab.composeapp.generated.resources.password
 import courselab.composeapp.generated.resources.recover_password
 import courselab.composeapp.generated.resources.send
 import courselab.composeapp.generated.resources.sign_up
 import courselab.composeapp.generated.resources.snackbar_recovery_link_sent
+import org.courselab.app.UrlLauncher
 import org.courselab.app.data.LoginRequestDTO
-import org.courselab.app.data.UserPreferencesDataStore
+import org.courselab.app.org.courselab.app.FirstOnboardingScreen
+import org.courselab.app.org.courselab.app.HomeScreen
 import org.courselab.app.org.courselab.app.LocalAppLocalization
+import org.courselab.app.org.courselab.app.LocalNavController
 import org.courselab.app.org.courselab.app.LocalUrlLauncher
 import org.courselab.app.ui.screens.sign_in.composables.FormField
 import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
@@ -66,17 +72,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
-@Preview
 @Composable
 fun LoginScreen(
     logo: Painter?,
-    onLoginSuccess: () -> Unit,
     onSignUpNavigate: () -> Unit,
-    dataStore: UserPreferencesDataStore = koinInject(),
 ) {
-    val shouldDoOnboarding by dataStore.isFirstLogin.collectAsState(initial = false)
-
-    val lang_pref by dataStore.languagePreference.collectAsState(initial = LocalAppLocalization.current.code)
+    val navController = LocalNavController.current
 
     val loginViewModel = koinInject<LogInViewModel>()
     val loginState by loginViewModel.loginState.collectAsState()
@@ -89,15 +90,11 @@ fun LoginScreen(
 
     val recoveryLinkSent = stringResource(Res.string.snackbar_recovery_link_sent)
 
-
-
     LaunchedEffect(Unit) {
         loginViewModel.snackbarMsg.collect { msg ->
             snackbarMessages.showSnackbar(msg)
         }
     }
-
-
 
     GradientScaffold(
         snackbarHost = { SnackbarHost(snackbarMessages) },
@@ -107,108 +104,17 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            logo?.let {
-                Image(
-                    it,
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(180.dp).offset(y = (-50).dp)
-                        .clip(RoundedCornerShape(15.dp))
-                )
-            }
-
-            Button(
-                modifier = Modifier,
-                onClick = {
-                    urlLauncher?.openAppSettings()
-                }
-            ) {
-                Text(stringResource(Res.string.change_lang))
-            }
-
-            FormScaffold(
-                fields = listOf(
-                    FormField(
-                        stringResource(
-                            Res.string.email,
-                            stringResource(LocalAppLocalization.current.stringRes)
-                        ), { loginViewModel.onLoginInputChanged(it, loginState.password) }),
-                    FormField(
-                        stringResource(Res.string.password),
-                        { loginViewModel.onLoginInputChanged(loginState.email, it) })
-                ),
-                fieldValues = listOf({ loginState.email }, { loginState.password }),
-                onDoneAction = {
-                    loginViewModel.onLogInEvent(
-                        LoginRequestDTO(
-                            loginState.email, loginState.password
-                        ),
-                    ) { success, firstLogIn ->
-                        println("SUCCESS: $success, FIRST LOGIN: $firstLogIn")
-                        if (success && !firstLogIn) {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 1")
-                            onLoginSuccess()
-                        } else if (success && firstLogIn) {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 2")
-                        } else {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 3")
-                        }
-                    }
-                }
-            )
-            OutlinedWelcomeButtons.Primary(
-                onClick = {
-                    loginViewModel.onLogInEvent(
-                        LoginRequestDTO(
-                            loginState.email, loginState.password
-                        )
-                    ) { success, firstLogIn ->
-                        if (success && !firstLogIn) {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 1")
-                            onLoginSuccess()
-                        } else if (success && firstLogIn) {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 2")
-                        } else {
-                            println("se ha llegado a NAVCONTROLLER TO HOMESCREEN 3")
-                        }
-                    }
-                },
-                enabled = loginState.isValid && !isLoading,
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text("Ingresando...", color = MaterialTheme.colorScheme.onSecondary)
-                } else {
-                    Text(
-                        stringResource(Res.string.login),
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
+            logoInsideLogIn(logo)
+            ChangeLanguageButton(urlLauncher)
+            LogInForm(loginViewModel, loginState, navController)
+            LogInButton(loginViewModel, loginState, navController, isLoading)
             Spacer(Modifier.height(8.dp))
-            OutlinedWelcomeButtons.Secondary(
-                text = stringResource(Res.string.sign_up),
-                onClick = onSignUpNavigate,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            SignUpButton(onSignUpNavigate)
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = { showForgotDialog = true }) {
-                Text(
-                    stringResource(Res.string.forgot_password),
-                    color = MaterialTheme.colorScheme.onSecondary
-                )
-            }
+            ForgotPassworTextButton(showForgotDialog)
             ThemeToggle()
         }
     }
-
-
 
     if (showForgotDialog) ForgotPasswordDialog(
         initialEmail = forgotEmail,
@@ -226,6 +132,117 @@ fun LoginScreen(
         },
         onDismiss = { showForgotDialog = false }
     )
+}
+
+@Composable
+private fun ChangeLanguageButton(urlLauncher: UrlLauncher?) {
+    Button(
+        modifier = Modifier,
+        onClick = {
+            urlLauncher?.openAppSettings()
+        }
+    ) {
+        Text(stringResource(Res.string.change_lang))
+    }
+}
+
+@Composable
+private fun LogInForm(
+    loginViewModel: LogInViewModel,
+    loginState: LoginFormState,
+    navController: NavHostController?
+) {
+    FormScaffold(
+        fields = listOf(
+            FormField(
+                stringResource(
+                    Res.string.email,
+                    stringResource(LocalAppLocalization.current.stringRes)
+                ), { loginViewModel.onLoginInputChanged(it, loginState.password) }),
+            FormField(
+                stringResource(Res.string.password),
+                { loginViewModel.onLoginInputChanged(loginState.email, it) })
+        ),
+        fieldValues = listOf({ loginState.email }, { loginState.password }),
+        onDoneAction = {
+            loginViewModel.onLogInEvent(
+                LoginRequestDTO(email = loginState.email, password = loginState.password),
+            ) { success, firstLogIn ->
+                handleNavigation(success, firstLogIn, navController!!)
+            }
+        }
+    )
+}
+
+@Composable
+private fun ForgotPassworTextButton(showForgotDialog: Boolean) {
+    var showForgotDialog1 = showForgotDialog
+    TextButton(onClick = { showForgotDialog1 = true }) {
+        Text(
+            stringResource(Res.string.forgot_password),
+            color = MaterialTheme.colorScheme.onSecondary
+        )
+    }
+}
+
+@Composable
+private fun SignUpButton(onSignUpNavigate: () -> Unit) {
+    OutlinedWelcomeButtons.Secondary(
+        text = stringResource(Res.string.sign_up),
+        onClick = onSignUpNavigate,
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+
+@Composable
+private fun LogInButton(
+    loginViewModel: LogInViewModel,
+    loginState: LoginFormState,
+    navController: NavHostController?,
+    isLoading: Boolean
+) {
+    OutlinedWelcomeButtons.Primary(
+        onClick = {
+            loginViewModel.onLogInEvent(
+                LoginRequestDTO(
+                    loginState.email, loginState.password
+                )
+            ) { success, firstLogIn ->
+                handleNavigation(success, firstLogIn, navController!!)
+            }
+        },
+        enabled = loginState.isValid && !isLoading,
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.onSecondary
+            )
+            Spacer(Modifier.width(8.dp))
+            Text("Ingresando...", color = MaterialTheme.colorScheme.onSecondary)
+        } else {
+            Text(
+                stringResource(Res.string.login),
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+private fun logoInsideLogIn(logo: Painter?) {
+    logo?.let {
+        Image(
+            it,
+            contentDescription = stringResource(Res.string.logo),
+            modifier = Modifier.size(180.dp).offset(y = (-50).dp)
+                .clip(RoundedCornerShape(15.dp))
+        )
+    }
 }
 
 
@@ -292,14 +309,6 @@ fun ForgotPasswordDialog(
         })
 }
 
-
-/**
- * Contenedor genérico para formularios:
- * • Tarjeta con gradiente de fondo según modo (light/dark).
- * • Esquinas extra redondeadas.
- * • Slot para ilustración/icono, título y contenido inyectable.
- * • Botón de acción fuera de scope (se inyecta con content).
- */
 @Preview
 @Composable
 fun FormContainer(
@@ -319,5 +328,20 @@ fun FormContainer(
         )
         Spacer(modifier = Modifier.height(20.dp))
         content()
+    }
+}
+
+private fun handleNavigation(
+    success: Boolean,
+    isFirstLogin: Boolean,
+    navController: NavController
+) {
+    println("SUCCESS: $success, FIRST LOGIN: $isFirstLogin")
+    if (success && !isFirstLogin) {
+        navController.navigate(HomeScreen)
+    } else if (success && isFirstLogin) {
+        navController.navigate(FirstOnboardingScreen)
+    } else {
+        print(" SUCCESS $success %% FIRST LOGIN $isFirstLogin")
     }
 }

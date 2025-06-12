@@ -1,10 +1,6 @@
 package org.courselab.app
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,13 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
-import com.mapbox.maps.R
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
-import org.courselab.app.org.courselab.app.App
-import androidx.core.graphics.toColorInt
-import com.mapbox.maps.plugin.locationcomponent.generated.LocationComponentSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.courselab.app.org.courselab.app.App
 import org.courselab.app.org.courselab.app.LocalLocationPermissionGranted
 import org.courselab.app.org.courselab.app.LocalRequestLocationPermission
 
