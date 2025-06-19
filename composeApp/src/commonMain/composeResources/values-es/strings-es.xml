@@ -65,6 +65,8 @@
     <string name="month_october">Octubre</string>
     <string name="month_november">Noviembre</string>
     <string name="month_december">Diciembre</string>
+    <string name="logout">Cerrar sesión</string>
+
 
 
     <!-- Onboarding Step 2 -->

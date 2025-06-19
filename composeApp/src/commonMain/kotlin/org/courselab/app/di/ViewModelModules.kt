@@ -17,5 +17,5 @@ val viewModelModules = module {
     single { UserProfileViewModel(get(), get()) }
     single { UserViewModel(get(), get()) }
     single { ActivityViewModelCommon(get(), get()) }
-    single { UserPageStateViewModel(get()) }
+    single { UserPageStateViewModel(get(), get()) }
 }

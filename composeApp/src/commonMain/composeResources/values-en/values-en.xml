@@ -107,6 +107,7 @@
     <string name="select_image_source">Select an image source</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="logout">Log Out</string>
 
     <string name="permission_required">Permission Required</string>
     <string name="permission_profile_picture_message">To set your profile picture, please grant this permission. You can manage permissions in your device settings.</string>

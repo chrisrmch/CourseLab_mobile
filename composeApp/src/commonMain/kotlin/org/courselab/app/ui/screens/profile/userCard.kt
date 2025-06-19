@@ -2,7 +2,6 @@ package org.courselab.app.ui.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +18,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,12 +40,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.change_lang
 import courselab.composeapp.generated.resources.date
-import courselab.composeapp.generated.resources.edit_profile
 import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.logo
+import courselab.composeapp.generated.resources.logout
 import courselab.composeapp.generated.resources.profile
 import courselab.composeapp.generated.resources.profile_location_label
 import courselab.composeapp.generated.resources.sex
@@ -50,8 +55,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.courselab.app.LocalNavController
 import org.courselab.app.LocalUrlLauncher
+import org.courselab.app.Screen
 import org.courselab.app.UrlLauncher
+import org.courselab.app.data.UserPreferencesDataStore
 import org.courselab.app.data.repository.UserRepository
 import org.courselab.app.models.PerfilUsuarioResponseDTO
 import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
@@ -82,7 +90,8 @@ data class UsuarioPageState(
 
 
 class UserPageStateViewModel(
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    private val userPrefs: UserPreferencesDataStore,
 ) : BaseViewModel() {
     val _userState = MutableStateFlow(UsuarioPageState())
     val userState = _userState
@@ -107,16 +116,29 @@ class UserPageStateViewModel(
                 }
         }
     }
+
+    suspend fun logout() {
+        userPrefs.setUserId(-1)
+        userPrefs.setUserEmail("")
+        userPrefs.setSessionToken("")
+        userPrefs.setIsFirstLogin(false)
+    }
 }
 
 @Composable
 fun UserProfileDetailsScreen(
-    userPageStateViewModel: UserPageStateViewModel = koinInject()
+    userPageStateViewModel: UserPageStateViewModel = koinInject(),
 ) {
-    val state = userPageStateViewModel.userState.value
-    val profileImageUrl = state.perfil?.fotoPerfilUrl ?: "https://via.placeholder.com/300"
+    val state = userPageStateViewModel.userState.collectAsState()
+    val profileImageUrl = state.value.perfil?.fotoPerfilUrl ?: "https://via.placeholder.com/300"
     val urlLauncher = LocalUrlLauncher.current
+    val navController = LocalNavController.current
 
+    LaunchedEffect(Unit){
+        userPageStateViewModel.scope.launch {
+            userPageStateViewModel.userRepository.getCurrentUser()
+        }
+    }
 
     GradientScaffold {
         Column(modifier = Modifier
@@ -151,7 +173,7 @@ fun UserProfileDetailsScreen(
                     .align(Alignment.BottomCenter)
                 ) {
                     AsyncImage(
-                        model = state.perfil?.fotoPerfilUrl,
+                        model = state.value.perfil?.fotoPerfilUrl,
                         contentDescription = stringResource(Res.string.profile),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -166,26 +188,36 @@ fun UserProfileDetailsScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                Column(modifier = Modifier.padding(16.dp).fillMaxHeight()) {
-                    Text(
-                        text = state.nombre.ifEmpty { "Usuario" },
+                Column(modifier = Modifier.padding(16.dp).fillMaxHeight().clip(shape = RoundedCornerShape(percent = 5)), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text    (
+                        text = state.value.nombre.ifEmpty { "Usuario" },
                         style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    ProfileDetailRow(icon = Icons.Filled.Email, label = stringResource(Res.string.email), value = state.email)
-                    ProfileDetailRow(icon = Icons.Filled.DateRange, label = stringResource(Res.string.date), value = state.fechaNacimiento.orEmpty())
-                    ProfileDetailRow(icon = Icons.Filled.Person, label = stringResource(Res.string.sex), value = state.genero)
+                    ProfileDetailRow(icon = Icons.Filled.Email, label = stringResource(Res.string.email), value = state.value.email)
+                    ProfileDetailRow(icon = Icons.Filled.DateRange, label = stringResource(Res.string.date), value = state.value.fechaNacimiento.orEmpty())
+                    ProfileDetailRow(icon = Icons.Filled.Person, label = stringResource(Res.string.sex), value = state.value.genero)
 
-                    state.perfil?.localizacion?.let {
+                    state.value.perfil?.localizacion?.let {
                         ProfileDetailRow(icon = Icons.Filled.LocationOn, label = stringResource(Res.string.profile_location_label), value = it.nombre)
                     }
 
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                         ChangeLanguageButton(urlLauncher)
                         ThemeToggle()
                     }
+                    LogoutButton(
+                        onLogout = {
+                            userPageStateViewModel.scope.launch {
+                                userPageStateViewModel.logout()
+                                navController?.popBackStack(Screen.LogInScreen, false,
+                                    saveState = false
+                                )
+                            }
+                        }
+                    )
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -223,5 +255,15 @@ private fun ChangeLanguageButton(urlLauncher: UrlLauncher?) {
         }
     ) {
         Text(stringResource(Res.string.change_lang))
+    }
+}
+
+
+@Composable
+private fun LogoutButton(onLogout: () -> Unit) {
+    Button(onClick = onLogout) {
+        Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = null)
+        Spacer(modifier = Modifier.padding(start = 4.dp))
+        Text(stringResource(Res.string.logout))
     }
 }

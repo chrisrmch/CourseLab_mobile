@@ -18,6 +18,7 @@
     <string name="recover_password">Récupérer le mot de passe</string>
     <string name="last_step_confirm_account_HEAD">Il ne reste plus qu'une étape</string>
     <string name="already_have_account">Vous avez déjà un compte ?</string>
+    <string name="logout">Se déconnecter</string>
 
 
     <string name="select_dob">Sélectionner la date</string>
