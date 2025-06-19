@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.waterfall
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,11 +19,15 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -33,7 +38,10 @@ import androidx.compose.ui.unit.dp
 import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.e_mail
 import courselab.composeapp.generated.resources.email
+import courselab.composeapp.generated.resources.invalid_email
+import courselab.composeapp.generated.resources.invalid_email_no_spaces_allowed
 import courselab.composeapp.generated.resources.password
+import org.courselab.app.ui.screens.onboarding.dto.Validator
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -44,10 +52,10 @@ fun GradientScaffold(
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    floatingActionButtonPosition: FabPosition = FabPosition.End,
-    containerColor: Color = colorScheme.background,
-    contentColor: Color = colorScheme.onBackground,
-    contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
+    floatingActionButtonPosition: FabPosition = FabPosition.EndOverlay,
+    containerColor: Color = colorScheme.surfaceBright,
+    contentColor: Color = colorScheme.onSurface,
+    contentWindowInsets: WindowInsets = WindowInsets.waterfall,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
     Scaffold(
@@ -63,21 +71,24 @@ fun GradientScaffold(
     ) { padding ->
         Box(
             modifier = Modifier.fillMaxSize()
-                .padding(padding)
+                .windowInsetsPadding(contentWindowInsets)
                 .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        colorScheme.surfaceBright,
-                        colorScheme.surfaceContainerHigh
-                    )
-                )
-            ),
+                    brush = GradientScaffoldBrush()
+                ),
         ) {
             content(padding)
         }
     }
+}
 
-
+@Composable
+fun GradientScaffoldBrush(): Brush {
+    return Brush.verticalGradient(
+        colors = listOf(
+            colorScheme.surfaceContainerHigh,
+            colorScheme.surfaceBright,
+        )
+    )
 }
 
 data class FormField(
@@ -92,40 +103,42 @@ fun FormScaffold(
     fieldValues: List<() -> String> = emptyList(),
     modifier: Modifier = Modifier,
     onDoneAction: (() -> Unit)? = null,
+    canDoDoneAction: Boolean = true,
+    showLastSpace: Boolean = true
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     Column(modifier) {
-        fields.forEachIndexed { index, (fieldValue, onValueChange) ->
-            if (fieldValue.trim()
-                    .lowercase() == stringResource(Res.string.email)
-                || fieldValue.trim()
-                    .lowercase() == stringResource(Res.string.e_mail)
-            ) {
+        fields.forEachIndexed { index, (label, onValueChange) ->
+            if (isEmail(label)) {
+                val emailTextFieldTouched = remember { mutableStateOf(false) }
+
                 BuildEmailTextField(
-                    fields = fieldValues,
-                    index = index,
-                    label = fieldValue,
-                    onTextEditing = onValueChange
+                    text = fieldValues[index].invoke(),
+                    label = label,
+                    onTextEditing = onValueChange,
+                    focusRequester = focusRequester,
+                    emailTextFieldTouched = emailTextFieldTouched.value,
+                    onEmailTextFieldFocusChange = { emailTextFieldTouched.value = it },
                 )
                 Spacer(Modifier.height(9.dp))
-            }
-            if (fieldValue.trim().lowercase() == stringResource(Res.string.password)) {
+            } else if (isPassword(label)) {
                 SecurePasswordTextField(
-                    value = fieldValues.getOrNull(index)?.invoke() ?: "",
+                    value = fieldValues[index].invoke(),
                     onValueChange = onValueChange,
-                    myLabel = fieldValue,
-                    onDoneAction = onDoneAction
+                    myLabel = label,
+                    onDoneAction = onDoneAction,
+                    canDoDoneAction = canDoDoneAction,
+                    focusRequester = focusRequester
                 )
-            } else if(fieldValue.trim().lowercase() != stringResource(Res.string.e_mail)
-                && fieldValue.trim().lowercase() != stringResource(Res.string.email)
-            ) {
+            } else {
                 BuildTextField(
-                    fields = fieldValues,
-                    index = index,
-                    label = fieldValue,
+                    text = fieldValues[index].invoke(),
+                    label = label,
                     onTextEditing = onValueChange
                 )
             }
-            if (index == fields.lastIndex) {
+            if (index == fields.lastIndex && showLastSpace) {
                 Spacer(Modifier.height(19.dp))
             }
         }
@@ -133,21 +146,64 @@ fun FormScaffold(
 }
 
 @Composable
+private fun isPassword(label: String) =
+    label.lowercase() == stringResource(Res.string.password).lowercase()
+
+@Composable
+private fun isEmail(label: String) =
+    (label.lowercase() == stringResource(Res.string.email).lowercase()
+            || label.lowercase() == stringResource(Res.string.e_mail).lowercase())
+
+@Composable
 fun BuildEmailTextField(
-    fields: List<() -> String>,
+    text: String,
     label: String,
-    index: Int,
     onTextEditing: (String) -> Unit,
+    focusRequester: FocusRequester,
+    onEmailTextFieldFocusChange: (Boolean) -> Unit,
+    emailTextFieldTouched: Boolean
 ) {
+
     OutlinedTextField(
         shape = RoundedCornerShape(20.dp),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next
         ),
-        maxLines = 1,
-        modifier = Modifier.fillMaxWidth(),
-        value = fields.getOrNull(index)?.invoke() ?: "",
+        keyboardActions = KeyboardActions(
+            onNext = {
+                onEmailTextFieldFocusChange(true)
+                focusRequester.requestFocus()
+            }
+        ),
+        singleLine = true,
+        modifier = Modifier.fillMaxWidth().onFocusChanged { focusState ->
+            if (focusState.isFocused) {
+                onEmailTextFieldFocusChange(true)
+            } else {
+                onEmailTextFieldFocusChange(false)
+            }
+        },
+        isError = !Validator.validateEmail(text) && text.isNotEmpty() && !emailTextFieldTouched,
+        supportingText = {
+            when {
+                !text.contains("@") && text.isNotBlank() && emailTextFieldTouched -> Text(
+                    "user@example.com",
+                    color = colorScheme.outline.copy(alpha = 0.9f)
+                )
+
+                !Validator.validateEmail(text) && text.isNotEmpty() && !emailTextFieldTouched -> Text(
+                    stringResource(Res.string.invalid_email, "user@example.com"),
+                    color = colorScheme.errorContainer
+                )
+
+                text.contains(" ") -> Text(
+                    stringResource(Res.string.invalid_email_no_spaces_allowed),
+                    color = colorScheme.error
+                )
+            }
+        },
+        value = text,
         onValueChange = onTextEditing,
         label = { Text(label) },
         colors = textFieldColors()
@@ -156,9 +212,8 @@ fun BuildEmailTextField(
 
 @Composable
 fun BuildTextField(
-    fields: List<() -> String>,
+    text: String,
     label: String,
-    index: Int,
     onTextEditing: (String) -> Unit,
 ) {
     OutlinedTextField(
@@ -169,13 +224,12 @@ fun BuildTextField(
         ),
         maxLines = 1,
         modifier = Modifier.fillMaxWidth(),
-        value = fields.getOrNull(index)?.invoke() ?: "",
+        value = text,
         onValueChange = onTextEditing,
         label = { Text(label) },
         colors = textFieldColors()
     )
 }
-
 
 
 @Composable
@@ -185,11 +239,13 @@ fun SecurePasswordTextField(
     myLabel: String,
     modifier: Modifier = Modifier,
     onDoneAction: (() -> Unit)? = null,
+    canDoDoneAction: Boolean = true,
+    focusRequester: FocusRequester,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
         value = value,
-        onValueChange = {
+        onValueChange = { it: String ->
             if (it.length <= (value.length + 1)) {
                 onValueChange(it)
             }
@@ -202,26 +258,28 @@ fun SecurePasswordTextField(
         ),
         keyboardActions = KeyboardActions(
             onDone = {
-                keyboardController?.hide()
-                onDoneAction?.invoke()
+                if (canDoDoneAction) {
+                    keyboardController?.hide()
+                    onDoneAction?.invoke()
+                } else {
+                    focusRequester.requestFocus()
+                }
             }
         ),
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().focusRequester(focusRequester),
         shape = RoundedCornerShape(20.dp),
         colors = textFieldColors(),
-            singleLine = true,
+        singleLine = true,
         maxLines = 1
     )
 }
 
 
-
 @Composable
-private fun textFieldColors() : TextFieldColors {
+private fun textFieldColors(): TextFieldColors {
     return OutlinedTextFieldDefaults.colors(
         focusedTextColor = colorScheme.primary,
-        unfocusedTextColor = colorScheme.outlineVariant,
+        unfocusedTextColor = colorScheme.primary,
         cursorColor = colorScheme.primary,
         unfocusedBorderColor = colorScheme.outlineVariant,
         focusedBorderColor = colorScheme.onBackground,

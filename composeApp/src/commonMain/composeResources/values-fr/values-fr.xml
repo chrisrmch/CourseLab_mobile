@@ -83,5 +83,33 @@
     <string name="photo_picker_photo_selected">Photo sélectionnée</string>
     <string name="photo_picker_select_profile_photo">Sélectionner la photo de profil</string>
     <string name="photo_picker_label">Photo de profil</string>
+
+    <string name="invalid_email">Veuillez saisir une adresse e-mail valide, pour exemple: %1$s</string>
+    <string name="invalid_email_no_spaces_allowed">les espaces sont interdits !</string>
+    <string name="weight">poids</string>
+
+    <string name="image_source_dialog_title">Sélectionnez une source d'image</string>
+    <string name="image_source_camera">Caméra</string>
+    <string name="image_source_gallery">Galerie</string>
+
+    <string name="error_sign_up_failed">Échec de l’inscription</string>
+    <string name="error_network">Erreur réseau : %1$s</string>
+    <string name="role_user">ROLE_USER</string>
+    <string name="logging_in">Connexion en cours…</string>
+    <string name="edit_profile">Modifier le profil</string>
+    <string name="connexion_en_cours">Connexion en cours…</string>
+    <string name="search_municipio_placeholder">Rechercher une commune</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="error_search">Erreur lors de la recherche</string>
+    <string name="hint_search_municipio">Tapez pour rechercher votre commune</string>
+
+    <!-- res/values-fr/strings.xml (francés) -->
+    <string name="select_image_source">Sélectionner une source d’image</string>
+    <string name="camera">Appareil photo</string>
+    <string name="gallery">Galerie</string>
+
+    <string name="permission_required">Autorisation requise</string>
+    <string name="permission_profile_picture_message">Pour définir votre photo de profil, accordez cette autorisation. Vous pouvez gérer les autorisations dans les paramètres de votre appareil.</string>
+
 </resources>
 

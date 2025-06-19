@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -47,17 +48,16 @@ import courselab.composeapp.generated.resources.sign_up_succesfully_done
 import courselab.composeapp.generated.resources.something_went_wrong
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.courselab.app.org.courselab.app.LocalNavController
-import org.courselab.app.org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
-import org.courselab.app.ui.screens.log_in.composables.FormField
-import org.courselab.app.ui.screens.log_in.composables.FormScaffold
-import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
-import org.courselab.app.ui.screens.log_in.composables.OutlinedWelcomeButtons
-import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
+import org.courselab.app.LocalNavController
+import org.courselab.app.ui.screens.sign_in.composables.FormField
+import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
+import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
+import org.courselab.app.ui.screens.sign_in.composables.ThemeToggle
+import org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-
 
 @Preview
 @Composable
@@ -84,7 +84,7 @@ fun SignUpScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { it ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(it).padding(16.dp).offset(y = (-26.9).dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp).offset(y = (-26.9).dp).imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -92,7 +92,7 @@ fun SignUpScreen(
                 Image(
                     it,
                     contentDescription = stringResource(Res.string.logo),
-                    modifier = Modifier.size(180.dp).offset(y = (-50).dp)
+                    modifier = Modifier.size(160.dp).offset(y = (-50).dp)
                         .clip(RoundedCornerShape(15.dp))
                 )
             }
@@ -159,8 +159,6 @@ fun SignUpScreen(
                 text = stringResource(Res.string.already_have_account),
                 onClick = { navController?.popBackStack()},
             )
-
-            ThemeToggle()
         }
     }
 

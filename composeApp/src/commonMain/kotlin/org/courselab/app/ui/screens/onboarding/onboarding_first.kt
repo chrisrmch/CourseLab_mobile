@@ -2,33 +2,27 @@
 
 package org.courselab.app.ui.screens.onboarding
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.DateRange
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode.Companion.Picker
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -39,16 +33,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.kizitonwose.calendar.core.now
@@ -56,10 +46,15 @@ import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.accept
 import courselab.composeapp.generated.resources.cancel
 import courselab.composeapp.generated.resources.date_picker_title
+import courselab.composeapp.generated.resources.female
+import courselab.composeapp.generated.resources.male
 import courselab.composeapp.generated.resources.name
 import courselab.composeapp.generated.resources.next
+import courselab.composeapp.generated.resources.permission_profile_picture_message
+import courselab.composeapp.generated.resources.permission_required
 import courselab.composeapp.generated.resources.select_dob
-import courselab.composeapp.generated.resources.surname
+import courselab.composeapp.generated.resources.settings
+import courselab.composeapp.generated.resources.weight
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -68,136 +63,145 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 import org.courselab.app.CalendarLocaleWithLanguage
-import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.ui.screens.log_in.composables.FormField
-import org.courselab.app.ui.screens.log_in.composables.FormScaffold
-import org.courselab.app.ui.screens.log_in.composables.GradientScaffold
-import org.courselab.app.ui.screens.log_in.composables.OutlinedWelcomeButtons
-import org.courselab.app.ui.screens.log_in.composables.ThemeToggle
+import org.courselab.app.PermissionType
+import org.courselab.app.rememberCameraManager
+import org.courselab.app.rememberGalleryManager
+import org.courselab.app.ui.screens.AlertMessageDialog
+import org.courselab.app.ui.screens.ImageSourceOptionDialog
+import org.courselab.app.ui.screens.onboarding.composables.FechaConOverlay
+import org.courselab.app.ui.screens.onboarding.composables.GenderCard
+import org.courselab.app.ui.screens.onboarding.composables.NumberField
+import org.courselab.app.ui.screens.onboarding.composables.PhotoPicker
+import org.courselab.app.ui.screens.onboarding.composables.RequestDetailsCard
+import org.courselab.app.ui.screens.onboarding.viewModel.Sex
+import org.courselab.app.ui.screens.onboarding.viewModel.UserProfileViewModel
+import org.courselab.app.ui.screens.sign_in.composables.FormField
+import org.courselab.app.ui.screens.sign_in.composables.FormScaffold
+import org.courselab.app.ui.screens.sign_in.composables.GradientScaffold
+import org.courselab.app.ui.screens.sign_in.composables.OutlinedWelcomeButtons
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 
 @Composable
 expect fun getDialogProperties(title: String = ""): DialogProperties
 
-@Preview
-@Composable
-fun RequestDetailsCard(
-    modifier: Modifier = Modifier,
-    body: @Composable () -> Unit,
-) {
-
-    val datastore = koinInject<UserPreferencesDataStore>()
-    val themePreferences = datastore.themePreference.collectAsState(initial = "System")
-    println("theme preferemce: ${themePreferences.value}")
-    Surface(
-        tonalElevation = 4.dp,
-        shape = RoundedCornerShape(25.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .shadow(
-                elevation = 6.dp,
-                shape = RoundedCornerShape(25.dp),
-                ambientColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-            ).offset(y = (-4).dp, x = (-4).dp)
-            .then(modifier)
-    ) {
-        body()
-    }
-}
-
-@Composable
-@Preview
-fun Previews() {
-    Box(
-        modifier = Modifier.background(color = Color(255, 157, 157, 202)).padding(20.dp)
-    ) {
-        RequestDetailsCard() {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(
-                    "PREVIEW",
-                    modifier = Modifier.align {
-                            current: IntSize,
-                            parent: IntSize,
-                            layoutDirection: LayoutDirection,
-                        ->
-                        val x = (parent.width - current.width) / 2
-                        val y = (parent.height - current.height) / 2
-                        IntOffset(x, y)
-                    },
-                    color = Color.Red,
-                    textAlign = TextAlign.Center,
-                    letterSpacing = TextUnit(value = 0.5f, type = TextUnitType.Em)
-                )
-            }
-        }
-
-    }
-}
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInformationStep(
+fun UserProfileDetailsScreenFirst(
     logo: Painter,
     onNext: () -> Unit,
 ) {
-    val userViewModel = koinInject<UserViewModel>()
-    val userSate by userViewModel.userState.collectAsState()
+    val userProfileViewModel = koinInject<UserProfileViewModel>()
+    val calendarLocale: CalendarLocaleWithLanguage = koinInject()
+    val userState = userProfileViewModel.userState.collectAsState()
 
-    val nombre = userSate.name
-    val apellidos = userSate.surname
-    val fechaNacimiento = userSate.dateOfBirth
-    val userSex = userSate.sex
-    var genero by remember { mutableStateOf<String?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
     val maxDateMillis = remember {
         Clock.System.now().toEpochMilliseconds()
     }
 
-    val calendarLocale: CalendarLocaleWithLanguage = koinInject()
+    val datePickerState = datePickerState(calendarLocale, maxDateMillis)
 
-    val datePickerState = remember {
-        DatePickerState(
-            locale = calendarLocale.getPlatformCalendarLocale(),
-            yearRange = 1950..LocalDate.now().year,
-            initialDisplayMode = Picker,
-            selectableDates = object : SelectableDates {
-                override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                    return utcTimeMillis <= maxDateMillis
-                }
+    val stringDateFormatter = dateTimeFormat()
+    val isFormValid =
+        remember(userState.value.nombre, userState.value.fechaNacimiento, userState.value.sex) {
+            userState.value.nombre.isNotEmpty()
+                    && userState.value.fechaNacimiento != null
+                    && userState.value.sex != null
+        }
+
+    var showImageSourceDialog by remember { mutableStateOf(value = false) }
+    var launchCamera by remember { mutableStateOf(value = false) }
+    var launchGallery by remember { mutableStateOf(value = false) }
+    var permissionRationalDialog by remember { mutableStateOf(value = false) }
+    var launchSetting by remember { mutableStateOf(value = false) }
+
+
+    val permissionsManager = fetchActualPermissionManager(
+        launchCamera = { launchCamera = it },
+        launchGallery = { launchGallery = it },
+        permissionRationalDialog = { permissionRationalDialog = it }
+    )
+
+
+    val cameraManager = rememberCameraManager { shared ->
+        shared?.let {
+            val bmp = it.toImageBitmap()
+            val bytes = it.toByteArray()
+            userProfileViewModel.cachePreview(bmp)
+            userProfileViewModel.cachePhotoBytes(bytes)
+        }
+    }
+
+    val galleryManager = rememberGalleryManager { shared ->
+        shared?.let {
+            val bmp = it.toImageBitmap()
+            val bytes = it.toByteArray()
+            userProfileViewModel.cachePreview(bmp)
+            userProfileViewModel.cachePhotoBytes(bytes)
+        }
+    }
+
+    if (launchSetting) {
+        permissionsManager.launchSettings()
+        launchSetting = false
+    }
+    if (permissionRationalDialog) {
+        AlertMessageDialog(
+            title = stringResource(Res.string.permission_required),
+            message = stringResource(Res.string.permission_profile_picture_message),
+            positiveButtonText = stringResource(Res.string.settings),
+            negativeButtonText = stringResource(Res.string.cancel),
+            onPositiveClick = {
+                permissionRationalDialog = false
+                launchSetting = true
+
             },
+            onNegativeClick = {
+                permissionRationalDialog = false
+            })
+    }
+
+    if (showImageSourceDialog) {
+        ImageSourceOptionDialog(
+            onDismissRequest = { showImageSourceDialog = false },
+            onCameraRequest = {
+                showImageSourceDialog = false
+                launchCamera = true
+            },
+            onGalleryRequest = {
+                showImageSourceDialog = false
+                launchGallery = true
+            }
         )
     }
 
-    val stringDateFormatter = LocalDate.Format {
-        dayOfMonth()
-        char('/')
-        monthNumber()
-        char('/')
-        year()
+    if (launchCamera) {
+        if (permissionsManager.isPermissionGranted(PermissionType.CAMERA)) {
+            cameraManager.launch()
+        } else {
+            permissionsManager.askPermission(PermissionType.CAMERA)
+        }
+        launchCamera = false
     }
 
-    val isFormValid = remember(nombre, apellidos, fechaNacimiento, genero) {
-        nombre.isNotBlank()
-                && apellidos.isNotBlank()
-                && fechaNacimiento != null
-                && userSex != null
+    if (launchGallery) {
+        if (permissionsManager.isPermissionGranted(PermissionType.GALLERY)) {
+            galleryManager.launch()
+        } else {
+            permissionsManager.askPermission(PermissionType.GALLERY)
+        }
+        launchGallery = false
     }
 
     GradientScaffold { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 20.dp, vertical = 40.dp),
+                .padding(paddingValues).clearFocusOnTapOutside().windowInsetsPadding(WindowInsets.statusBars)
+                .padding(horizontal = 20.dp, vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -205,66 +209,94 @@ fun UserInformationStep(
             Spacer(modifier = Modifier.height(10.dp))
 
             RequestDetailsCard(modifier = Modifier) {
-                //TODO("ADAPT TEXT TO GRAMMAR RULES") IF FR -> {} : {}
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    PhotoPickerWrapper(
+                        photo = userProfileViewModel.previewBitmap.collectAsState().value,
+                        onOpenPicker = { showImageSourceDialog = true },
+                        modifier = Modifier
+                    )
 
                     FormScaffold(
                         fields = listOf(
                             FormField(stringResource(Res.string.name), {
-                                userViewModel.updateUserName(it)
+                                userProfileViewModel.updateName(it)
                             }),
-                            FormField(
-                                stringResource(Res.string.surname),
-                                { userViewModel.updateUserSurname(it) })
                         ),
                         fieldValues = listOf(
-                            { nombre },
-                            { apellidos }
+                            { userState.value.nombre },
                         ),
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
-
                     FechaConOverlay(
-                        fecha = fechaNacimiento?.format(stringDateFormatter) ?: "",
+                        fecha = userState.value.fechaNacimiento?.format(stringDateFormatter) ?: "",
                         onClickAbrirPicker = { showDatePicker = true },
+                        modifier = Modifier
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    if (userSex == null) {
-                        GenderSelector(
-                            selected = genero,
-                            onSelected = {
-                                println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!---------------- $it")
-                                genero = it
-                                if (genero?.lowercase() == Sex.HOMBRE.name.lowercase()) {
-                                    userViewModel.updateUserSex(Sex.HOMBRE)
-                                } else {
-                                    userViewModel.updateUserSex(Sex.MUJER)
-                                }
-                            }
-                        )
-                    } else {
-                        GenderSelector(
-                            selected = userSex.name,
-                            onSelected = {
-                                genero = it
-                                if (genero?.lowercase() == Sex.HOMBRE.name.lowercase()) {
-                                    userViewModel.updateUserSex(Sex.HOMBRE)
-                                } else {
-                                    userViewModel.updateUserSex(Sex.MUJER)
-                                }
-                            }
-                        )
+                    NumberField(
+                        value = userState.value.pesoText,
+                        onValueChange = { it -> userProfileViewModel.updateWeight(it) },
+                        label = stringResource(Res.string.weight),
+                        modifier = Modifier
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            GenderCard(
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .fillMaxWidth(),
+                                selectedGender = if (userState.value.sex == Sex.HOMBRE) Sex.HOMBRE else null,
+                                cardGender = Sex.HOMBRE,
+                                onGenderSelected = { userProfileViewModel.updateSex(Sex.HOMBRE) }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                text = stringResource(Res.string.male),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(0.1f))
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            GenderCard(
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                                    .fillMaxWidth(),
+                                selectedGender = if (userState.value.sex == Sex.MUJER) Sex.MUJER else null,
+                                cardGender = Sex.MUJER,
+                                onGenderSelected = { userProfileViewModel.updateSex(Sex.MUJER) }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                text = stringResource(Res.string.female),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
 
 
                     OutlinedWelcomeButtons.Primary(
-                        text = stringResource(Res.string.next), //TODO("i18n Must do Internationalization")
+                        text = stringResource(Res.string.next),
                         onClick = { onNext() },
                         enabled = isFormValid,
                         modifier = Modifier.fillMaxWidth()
@@ -286,7 +318,7 @@ fun UserInformationStep(
                                     val selectedLocalDate = instant
                                         .toLocalDateTime(TimeZone.currentSystemDefault())
                                         .date
-                                    userViewModel.updateUserDateOfBirth(selectedLocalDate)
+                                    userProfileViewModel.updateBirthDate(selectedLocalDate)
                                 }
                                 showDatePicker = false
                             },
@@ -327,51 +359,52 @@ fun UserInformationStep(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            ThemeToggle(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 16.dp)
-            )
         }
     }
 }
 
 @Composable
-fun FechaConOverlay(
-    fecha: String,
-    onClickAbrirPicker: () -> Unit,
-) {
+@OptIn(ExperimentalMaterial3Api::class)
+private fun datePickerState(
+    calendarLocale: CalendarLocaleWithLanguage,
+    maxDateMillis: Long
+) = remember {
+    DatePickerState(
+        locale = calendarLocale.getPlatformCalendarLocale(),
+        yearRange = 1950..LocalDate.now().year,
+        initialDisplayMode = Picker,
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis <= maxDateMillis
+            }
+        },
+    )
+}
 
+private fun dateTimeFormat() = LocalDate.Format {
+    dayOfMonth()
+    char('/')
+    monthNumber()
+    char('/')
+    year()
+}
 
-    Box(modifier = Modifier.fillMaxWidth().clipToBounds().offset(y = (-2).dp)) {
-        OutlinedTextField(
-            value = fecha,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(stringResource(Res.string.date_picker_title)) },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Sharp.DateRange,
-                    contentDescription = stringResource(Res.string.select_dob)
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                focusedLabelColor = MaterialTheme.colorScheme.primary
-            )
-        )
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .clickable { onClickAbrirPicker() }
-        )
+fun Modifier.clearFocusOnTapOutside(): Modifier = composed {
+    val focusManager = LocalFocusManager.current
+    pointerInput(Unit) {
+        detectTapGestures(onTap = { focusManager.clearFocus() })
     }
+}
 
+@Composable
+private fun PhotoPickerWrapper(
+    photo: ImageBitmap?,
+    onOpenPicker: () -> Unit,
+    modifier: Modifier
+) {
+    PhotoPicker(
+        modifier = modifier.clipToBounds(),
+        currentPhoto = photo,
+        onClick = onOpenPicker
+    )
 }

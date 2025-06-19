@@ -3,7 +3,7 @@ package org.courselab.app.di
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 
-//iOSmain pasasus modules pero para que no salte excepcion implemento esto.
+
 interface TargetModule {
     val module: Module
 }

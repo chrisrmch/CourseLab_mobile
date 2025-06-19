@@ -15,8 +15,8 @@ import platform.AVFoundation.AVCaptureDevice
 import platform.AVFoundation.AVCaptureDeviceInput
 import platform.AVFoundation.AVCaptureDevicePositionBack
 import platform.AVFoundation.AVCapturePhoto
-import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoCaptureDelegateProtocol
+import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoQualityPrioritizationQuality
 import platform.AVFoundation.AVCapturePhotoSettings
 import platform.AVFoundation.AVCaptureSession
@@ -24,17 +24,13 @@ import platform.AVFoundation.AVCaptureSessionPresetPhoto
 import platform.AVFoundation.AVCaptureVideoPreviewLayer
 import platform.AVFoundation.AVLayerVideoGravityResizeAspectFill
 import platform.AVFoundation.AVMediaTypeVideo
-import platform.AVFoundation.AVVideoCodecJPEG
-import platform.AVFoundation.AVVideoCodecKey
 import platform.AVFoundation.position
 import platform.CoreGraphics.CGRectZero
+import platform.Foundation.NSError
 import platform.UIKit.UIDevice
 import platform.UIKit.UIScreen
 import platform.UIKit.UIView
 import platform.darwin.NSObject
-import platform.Foundation.NSError
-import platform.posix.`true`
-import kotlin.native.internal.collectReferenceFieldValues
 
 class IOSPlatform : Platform {
     override val name: String =
@@ -70,9 +66,7 @@ actual fun CameraView(modifier: Modifier) {
 
     val avCapturePhotoOutput = AVCapturePhotoOutput()
 
-    // -------- 1. Configuración de cámara -----------
     val cameraSession = remember {
-        // Dispositivo back-camera
         val device = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
             .firstNotNullOf { it as AVCaptureDevice? }
             .takeIf { it.position == AVCaptureDevicePositionBack }
@@ -80,8 +74,7 @@ actual fun CameraView(modifier: Modifier) {
 
         val input  = AVCaptureDeviceInput.deviceInputWithDevice(device, null) as AVCaptureDeviceInput
         val output = avCapturePhotoOutput.apply {
-            // Foto de > 12 Mpx, HDR, RAW, etc. funcionan sólo si dejas esto en true
-            highResolutionCaptureEnabled = true       // ✅
+            highResolutionCaptureEnabled = true
             livePhotoCaptureEnabled = true
             appleProRAWEnabled = true
             maxPhotoQualityPrioritization = AVCapturePhotoQualityPrioritizationQuality
@@ -101,7 +94,6 @@ actual fun CameraView(modifier: Modifier) {
         }.also { cameraSession.addOutput(it) }
     }
 
-    // --- para manejar la foto capturada ---
     val photoCaptureDelegate = remember {
         object : NSObject(), AVCapturePhotoCaptureDelegateProtocol {
             override fun captureOutput(output: AVCapturePhotoOutput, didFinishProcessingPhoto: AVCapturePhoto, error: NSError?) {
@@ -109,12 +101,10 @@ actual fun CameraView(modifier: Modifier) {
                     println("Error capturing photo: ${error.localizedDescription}")
                     return
                 }
-                // Aquí puedes procesar `didFinishProcessingPhoto.fileDataRepresentation()`
                 println("Photo captured successfully!")
             }
         }
     }
-    // --- cuando el usuario pulse el disparo ---
     fun takePhoto() {
         val settings = AVCapturePhotoSettings.photoSettings()
         output.highResolutionCaptureEnabled = true
@@ -126,7 +116,6 @@ actual fun CameraView(modifier: Modifier) {
         videoGravity = AVLayerVideoGravityResizeAspectFill
     }}
 
-    // -------- 2. UIKit interop -----------
     UIKitView(
         factory = {
             UIView(frame = CGRectZero.readValue()).apply {
@@ -136,15 +125,12 @@ actual fun CameraView(modifier: Modifier) {
         },
         modifier = modifier.fillMaxSize(),
 
-        // Se llama en cada recomposición (aqua sólo reajustamos el frame)
 
         update = { view -> previewLayer.frame = view.bounds },
 
-        // Liberamos recursos cuando el composable sale de la jerarquía
 
         onRelease = { cameraSession.stopRunning() },
 
-        // No queremos que consuma toques: falso => deja pasar los eventos
 
         properties = UIKitInteropProperties(
             isInteractive = false,

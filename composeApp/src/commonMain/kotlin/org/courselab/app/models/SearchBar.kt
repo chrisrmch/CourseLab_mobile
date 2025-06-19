@@ -1,10 +1,11 @@
-package org.courselab.app.org.courselab.app.models
+package org.courselab.app.models
 
 data class MunicipioSearchResult(
-    val comunidad_autonoma_ID : Int? = null,
-    val provincia_ID : Int? = null,
-    val municipio_ID : Int,
+    val comunidad_autonoma_ID : Long? = null,
+    val provincia_ID : Long? = null,
+    val municipio_ID : Long,
     val municipio : String,
+    val provincia : String? = null,
 )
 
 /**

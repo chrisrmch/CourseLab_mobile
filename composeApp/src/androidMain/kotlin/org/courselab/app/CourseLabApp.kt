@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import org.courselab.app.di.initKoinAndroid
 import org.courselab.app.viewmodel.getViewModelScope
-import org.koin.core.logger.Level
 import org.koin.dsl.module
 
 class CourseLabApp : Application() {

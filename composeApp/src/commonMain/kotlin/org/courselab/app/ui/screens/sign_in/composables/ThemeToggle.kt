@@ -1,5 +1,7 @@
-package org.courselab.app.ui.screens.sign_in.composables
+package  org.courselab.app.ui.screens.sign_in.composables
 
+
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -28,8 +30,8 @@ fun ThemeToggle(
     val isDark = (themePref == "dark")
     val scope = rememberCoroutineScope()
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(8.dp)
     ) {
         Text(

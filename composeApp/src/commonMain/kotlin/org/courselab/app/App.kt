@@ -1,5 +1,4 @@
-
-package org.courselab.app.org.courselab.app
+package org.courselab.app
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -29,15 +28,12 @@ import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.logo_dark
 import courselab.composeapp.generated.resources.logo_light
 import kotlinx.serialization.Serializable
-import org.courselab.app.AppLang
-import org.courselab.app.UrlLauncher
 import org.courselab.app.data.UserPreferencesDataStore
-import org.courselab.app.rememberAppLocale
-import org.courselab.app.rememberUrlLauncher
-import org.courselab.app.ui.screens.home.HomeScreen
-import org.courselab.app.ui.screens.onboarding.OnboardingStep2
+import org.courselab.app.ui.screens.SplashRoute
+import org.courselab.app.ui.screens.homeNavigation.HomeScreenNavigationHolder
+import org.courselab.app.ui.screens.onboarding.UserProfileDetailsScreenFirst
+import org.courselab.app.ui.screens.onboarding.UserProfileDetailsScreenSecond
 import org.courselab.app.ui.screens.sign_in.LoginScreen
-import org.courselab.app.ui.screens.onboarding.UserInformationStep
 import org.courselab.app.ui.screens.sign_up.SignUpScreen
 import org.courselab.app.ui.theme.CourseLabAppTheme
 import org.jetbrains.compose.resources.painterResource
@@ -46,19 +42,21 @@ import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
 
 @Serializable
-object LogInScreen
+sealed interface Screen {
+    @Serializable
+    data object SplashScreen : Screen
+    @Serializable
+    data object LogInScreen : Screen
+    @Serializable
+    data object SignUpScreen : Screen
+    @Serializable
+    data object HomeScreen : Screen
+    @Serializable
+    data object FirstOnboardingScreen : Screen
+    @Serializable
+    data object SecondOnboardingScreen : Screen
+}
 
-@Serializable
-object SignUpScreen
-
-@Serializable
-object HomeScreen
-
-@Serializable
-object FirstOnboardingScreen
-
-@Serializable
-object SecondOnboardingScreen
 
 val LocalNavController = staticCompositionLocalOf<NavHostController?> { null }
 
@@ -66,14 +64,9 @@ val LocalAppLocalization = compositionLocalOf { AppLang.Spanish }
 
 val LocalUrlLauncher = compositionLocalOf<UrlLauncher?> { null }
 
-// Lanza la solicitud de permiso; hace *nothing* por defecto
-val LocalRequestLocationPermission =
-    staticCompositionLocalOf<() -> Unit> { {  } }
+val LocalRequestLocationPermission = staticCompositionLocalOf<() -> Unit> { { } }
 
-
-// true si el permiso está concedido; false por defecto
-val LocalLocationPermissionGranted =
-    compositionLocalOf { false }
+val LocalLocationPermissionGranted = compositionLocalOf { false }
 
 @Preview
 @Composable
@@ -88,66 +81,64 @@ fun App(
     }
     val currentLanguage = rememberAppLocale()
     val urlLauncher = rememberUrlLauncher()
-    val logo = if(useDarkTheme)  painterResource(Res.drawable.logo_dark) else painterResource(Res.drawable.logo_light)
+    val logo =
+        if (useDarkTheme) painterResource(Res.drawable.logo_dark) else painterResource(Res.drawable.logo_light)
+    val navController: NavHostController = rememberNavController()
+
     CourseLabAppTheme(
-        darkTheme = useDarkTheme,
-        content = @Composable {
+        darkTheme = useDarkTheme, content = @Composable {
             KoinContext {
-                val navController: NavHostController = rememberNavController()
                 CompositionLocalProvider(
                     LocalNavController provides navController,
                     LocalAppLocalization provides currentLanguage,
                     LocalUrlLauncher provides urlLauncher,
                 ) {
                     NavHost(
-                        navController = navController,
-                        enterTransition = {
+                        navController = navController, enterTransition = {
                             SlideInLeftAnimation()
-                        },
-                        exitTransition = {
+                        }, exitTransition = {
                             SlideOutLeftAnimation()
-                        },
-                        popEnterTransition = {
+                        }, popEnterTransition = {
                             SlideInRightAnimation()
-                        },
-                        popExitTransition = {
+                        }, popExitTransition = {
                             SlideOutRightAnimation()
-                        },
-                        startDestination = FirstOnboardingScreen
+                        }, startDestination = Screen.SplashScreen
                     ) {
-                        composable<LogInScreen> {
+                        composable<Screen.SplashScreen> {
+                            SplashRoute(userPreferences, navController)
+                        }
+                        composable<Screen.LogInScreen> {
                             LoginScreen(
-                                onSignUpNavigate = { navController.navigate(SignUpScreen) },
-                                logo = logo
+                                logo = logo,
+                                onSignUpNavigate = { navController.navigate(Screen.SignUpScreen) }
                             )
                         }
-                        composable<SignUpScreen> {
+                        composable<Screen.SignUpScreen> {
                             SignUpScreen(
                                 logo = logo,
                             )
                         }
-                        composable<FirstOnboardingScreen> {
-                            UserInformationStep(
+                        composable<Screen.FirstOnboardingScreen> {
+                            UserProfileDetailsScreenFirst(
                                 logo = logo,
                                 onNext = {
-                                    navController.navigate(SecondOnboardingScreen)
+                                    navController.navigate(Screen.SecondOnboardingScreen)
                                 },
                             )
                         }
-                        composable<SecondOnboardingScreen> {
-                            OnboardingStep2(
+                        composable<Screen.SecondOnboardingScreen> {
+                            UserProfileDetailsScreenSecond(
                                 logo = logo,
                             )
                         }
-                        composable<HomeScreen> {
-                            HomeScreen()
+                        composable<Screen.HomeScreen> {
+                            HomeScreenNavigationHolder()
                         }
                     }
                 }
             }
             StatusBarProtection()
-        }
-    )
+        })
 }
 
 
@@ -161,12 +152,8 @@ private fun StatusBarProtection(
         val calculatedHeight = heightProvider()
         val gradient = Brush.verticalGradient(
             colors = listOf(
-                color.copy(alpha = 1f),
-                color.copy(alpha = .8f),
-                Color.Transparent
-            ),
-            startY = 0f,
-            endY = calculatedHeight
+                color.copy(alpha = 1f), color.copy(alpha = .8f), Color.Transparent
+            ), startY = 0f, endY = calculatedHeight
         )
         drawRect(
             brush = gradient,
@@ -185,24 +172,20 @@ fun calculateGradientHeight(): () -> Float {
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideOutRightAnimation() =
     slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Right,
-        animationSpec = tween(500)
+        AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(500)
     )
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideInRightAnimation() =
     slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Right,
-        animationSpec = tween(500)
+        AnimatedContentTransitionScope.SlideDirection.Right, animationSpec = tween(500)
     )
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideOutLeftAnimation() =
     slideOutOfContainer(
-        AnimatedContentTransitionScope.SlideDirection.Left,
-        animationSpec = tween(500)
+        AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(500)
     )
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.SlideInLeftAnimation() =
     slideIntoContainer(
-        AnimatedContentTransitionScope.SlideDirection.Left,
-        animationSpec = tween(500)
+        AnimatedContentTransitionScope.SlideDirection.Left, animationSpec = tween(500)
     )

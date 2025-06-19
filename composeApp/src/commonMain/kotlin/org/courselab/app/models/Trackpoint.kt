@@ -3,22 +3,19 @@ package org.courselab.app.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Trackpoint(
-    val idTrackpoint: Long,
-    val lap: Lap,
-    val time: String, // TODO(CAMBIAR A LLIBRERIA KOTLINX DATETIME)
-    val latitude: Double,
-    val longitude: Double,
-    val altitudeMeters: Float,
-    val distanceMeters: Float,
-    val heartRate: Int,
-    val extension: TrackpointExtension,
+data class TrackpointDTO(
+    val idTrackpoint: Long? = null,
+    val time: String,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    val altitudeMeters: Float? = null,
+    val distanceMeters: Float? = null,
+    val extension: TrackpointExtensionDTO? = null
 )
 
 @Serializable
-data class TrackpointExtension(
-    val idTrackpointExtension: Long,
-    val trackpoint: Trackpoint,
-    val speed: Float?,
-    val runCadence: Int?,
+data class TrackpointExtensionDTO(
+    val idTrackpointExtension: Long? = null,
+    val speed: Float? = null,
+    val runCadence: Int? = null
 )

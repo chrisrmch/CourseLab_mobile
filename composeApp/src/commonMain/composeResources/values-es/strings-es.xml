@@ -44,7 +44,6 @@
     <string name="already_have_account">¿Ya estás registrado?</string>
 
 
-
     <string name="something_went_wrong">Algo salió mal</string>
     <string name="try_againg_later">Vuelve a intentarlo más tarde</string>
 
@@ -82,4 +81,33 @@
     <string name="photo_picker_photo_selected">Foto seleccionada</string>
     <string name="photo_picker_select_profile_photo">Seleccionar foto de perfil</string>
     <string name="photo_picker_label">Foto de perfil</string>
+
+    <string name="invalid_email">Por favor, introduce un correo electrónico válido, por ejemplo: %1$s</string>
+    <string name="invalid_email_no_spaces_allowed">los espacios no están permitidos!</string>
+    <string name="weight">peso</string>
+
+    <string name="image_source_dialog_title">Selecciona una fuente de imagen</string>
+    <string name="image_source_camera">Cámara</string>
+    <string name="image_source_gallery">Galería</string>
+
+    <string name="error_sign_up_failed">Error en registro</string>
+    <string name="error_network">Error de red: %1$s</string>
+    <string name="role_user">ROLE_USER</string>
+    <string name="logging_in">Iniciando sesión…</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="connexion_en_cours">Ingresando…</string>
+
+    <string name="search_municipio_placeholder">Buscar municipio</string>
+    <string name="no_results">No hay resultados</string>
+    <string name="error_search">Error al buscar</string>
+    <string name="hint_search_municipio">Teclea para buscar tu municipio</string>
+
+    <!-- res/values-es/strings.xml (español) -->
+    <string name="select_image_source">Selecciona una fuente de imagen</string>
+    <string name="camera">Cámara</string>
+    <string name="gallery">Galería</string>
+
+    <string name="permission_required">Permiso requerido</string>
+    <string name="permission_profile_picture_message">Para establecer tu foto de perfil, concede este permiso. Puedes gestionar los permisos en la configuración de tu dispositivo.</string>
+
 </resources>

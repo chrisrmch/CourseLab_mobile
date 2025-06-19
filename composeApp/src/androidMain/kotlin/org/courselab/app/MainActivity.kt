@@ -8,31 +8,30 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.maps.plugin.locationcomponent.createDefault2DPuck
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.courselab.app.org.courselab.app.App
-import org.courselab.app.org.courselab.app.LocalLocationPermissionGranted
-import org.courselab.app.org.courselab.app.LocalRequestLocationPermission
+import org.jetbrains.compose.resources.stringResource
 
 class MainActivity : ComponentActivity(), PermissionsListener {
 
     private var permissionsManager: PermissionsManager? = null
 
-    // StateFlow para exponer el estado a Compose
     private val _locationGranted = MutableStateFlow(false)
     val locationGranted: StateFlow<Boolean> = _locationGranted
 
-    //LYFECICLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         actionBar?.hide()
-        installSplashScreen()
+
+        _locationGranted.value =
+            PermissionsManager.areLocationPermissionsGranted(this)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             CompositionLocalProvider(

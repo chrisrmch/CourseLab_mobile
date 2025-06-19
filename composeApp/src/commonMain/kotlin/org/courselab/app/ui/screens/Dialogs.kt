@@ -1,4 +1,4 @@
-package org.courselab.app.org.courselab.app.ui.screens
+package org.courselab.app.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,8 +34,12 @@ import courselab.composeapp.generated.resources.Res
 import courselab.composeapp.generated.resources.ic_camera
 import courselab.composeapp.generated.resources.ic_error_dialog
 import courselab.composeapp.generated.resources.ic_images
+import courselab.composeapp.generated.resources.image_source_camera
+import courselab.composeapp.generated.resources.image_source_dialog_title
+import courselab.composeapp.generated.resources.image_source_gallery
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -53,7 +57,7 @@ fun ImageSourceOptionDialog(
                 .padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Select an Image Source",
+                text = stringResource(Res.string.image_source_dialog_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
@@ -71,7 +75,7 @@ fun ImageSourceOptionDialog(
                     painter = painterResource(Res.drawable.ic_camera),
                     contentDescription = null
                 )
-                Text(text = "Camera", color = MaterialTheme.colorScheme.onSurface)
+                Text(text = stringResource(Res.string.image_source_camera), color = MaterialTheme.colorScheme.onSurface)
             }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp).clickable {
@@ -86,7 +90,7 @@ fun ImageSourceOptionDialog(
                     painter = painterResource(Res.drawable.ic_images),
                     contentDescription = null
                 )
-                Text(text = "Gallery", color = MaterialTheme.colorScheme.onSurface)
+                Text(text = stringResource(Res.string.image_source_gallery), color = MaterialTheme.colorScheme.onSurface)
             }
         }
     }

@@ -6,7 +6,6 @@ import androidx.core.content.FileProvider
 import java.io.File
 import java.util.Objects
 
-
 class ComposeFileProvider : FileProvider(
     R.xml.path_provider
 ) {

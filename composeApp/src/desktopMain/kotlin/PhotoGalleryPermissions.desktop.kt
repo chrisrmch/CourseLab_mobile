@@ -4,17 +4,17 @@ package org.courselab.app
 
 import androidx.compose.runtime.Composable
 
-// PermissionsManager.kt
-actual class PermissionsManager actual constructor(callback: PermissionCallback) :
-    PermissionHandler {
+
+actual class PermissionsManager actual constructor(callback: PermissionCallback) : PermissionHandler {
+    @Composable
     override fun askPermission(permission: PermissionType) {
         TODO("Not yet implemented")
     }
-
+    @Composable
     override fun isPermissionGranted(permission: PermissionType): Boolean {
         TODO("Not yet implemented")
     }
-
+    @Composable
     override fun launchSettings() {
         TODO("Not yet implemented")
     }

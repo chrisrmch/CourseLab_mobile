@@ -7,21 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.courselab.app.data.AuthRepository
-import org.courselab.app.org.courselab.app.ui.screens.log_in.dto.Validator
-import org.courselab.app.org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
+import org.courselab.app.data.repository.AuthRepository
+import org.courselab.app.ui.screens.onboarding.dto.SignUpFormState
+import org.courselab.app.ui.screens.sign_up.dto.SignUpRequestDTO
 import org.courselab.app.viewmodel.BaseViewModel
 
 
-data class SignUpFormState(
-    val nombre: String = "",
-    val apellidos: String = "",
-    val email: String = "",
-    val password: String = "",
-    val fechaNacimiento: String = "",
-    val genero: String = "",
-    val isValid: Boolean = Validator.validateEmail(email) && Validator.validatePassword(password),
-)
 
 class SignUpViewModel(
     private val authRepository: AuthRepository,

@@ -65,8 +65,8 @@ class UserPreferencesDataStore(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    val isFirstLogin: Flow<Boolean?> = dataStore.data.map { preferences ->
-        preferences[IS_FIRST_LOGIN]
+    val isFirstLogin: Flow<Boolean?> = dataStore.data.map { prefs ->
+        if (prefs.contains(IS_FIRST_LOGIN)) prefs[IS_FIRST_LOGIN] else null
     }
 
     suspend fun setIsFirstLogin(isFirst: Boolean) {
@@ -75,8 +75,8 @@ class UserPreferencesDataStore(private val dataStore: DataStore<Preferences>) {
         }
     }
 
-    val isLoggedIn: Flow<Boolean?> = dataStore.data.map { preferences ->
-        preferences[IS_LOGGED_IN]
+    val isLoggedIn: Flow<Boolean?> = dataStore.data.map { prefs ->
+        if (prefs.contains(IS_LOGGED_IN)) prefs[IS_LOGGED_IN] else null
     }
 
     suspend fun setIsLoggedIn(loggedIn: Boolean) {

@@ -84,4 +84,30 @@
     <string name="photo_picker_photo_selected">Photo selected</string>
     <string name="photo_picker_select_profile_photo">Select profile photo</string>
     <string name="photo_picker_label">Profile photo</string>
+
+    <string name="invalid_email">Please enter a valid email, e.g.: %1$s</string>
+    <string name="invalid_email_no_spaces_allowed">spaces are not allowed!</string>
+    <string name="weight">weight</string>
+
+    <string name="image_source_dialog_title">Select an Image Source</string>
+    <string name="image_source_camera">Camera</string>
+    <string name="image_source_gallery">Gallery</string>
+
+    <string name="error_sign_up_failed">Sign-up failed</string>
+    <string name="error_network">Network error: %1$s</string>
+    <string name="role_user">ROLE_USER</string>
+    <string name="logging_in">Signing in…</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="connexion_en_cours">Logging in…</string>
+    <string name="search_municipio_placeholder">Search municipality</string>
+    <string name="no_results">No results</string>
+    <string name="error_search">Error while searching</string>
+    <string name="hint_search_municipio">Type to search your municipality</string>
+
+    <string name="select_image_source">Select an image source</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_profile_picture_message">To set your profile picture, please grant this permission. You can manage permissions in your device settings.</string>
 </resources>

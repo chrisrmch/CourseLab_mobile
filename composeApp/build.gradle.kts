@@ -40,7 +40,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.compose.material3)
             implementation(libs.androidx.compose.material3.wsc)
             implementation(libs.androidx.compose.material3.adaptative)
@@ -51,12 +50,15 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.androidx.core.ktx)
+            implementation(libs.maps.locationcomponent)
             implementation(libs.androidx.appcompat)
             implementation(libs.mapbox.sdk.compose.extention)
             implementation(libs.androidx.activity.ktx)
             implementation(libs.mapbox.android)
+            implementation(libs.okhttp)
             implementation(libs.androidx.constraintlayout)
             runtimeOnly(libs.androidx.ui)
+            implementation(libs.coil.network.okhttp)
             implementation(libs.accompanist.permissions)
         }
         commonMain.dependencies {
@@ -69,6 +71,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.ktor)
+            implementation(libs.coil.compose)
             implementation(libs.ktor.negotiation)
             implementation(libs.ktor.serialization)
             implementation(libs.navigation.compose.common)
@@ -83,6 +86,7 @@ kotlin {
             implementation(libs.compose.material3.adaptative.navigation)
             implementation(compose.material3AdaptiveNavigationSuite)
             implementation(libs.compose.window.sizeClass)
+            implementation(libs.ktor.client.logging)
             implementation(libs.preferences.datastore)
             implementation(libs.datastore)
             implementation(libs.compose.foundation)
@@ -147,6 +151,7 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.play.services.location)
     debugImplementation(compose.uiTooling)
 }
 

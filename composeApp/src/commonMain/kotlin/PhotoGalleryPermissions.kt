@@ -4,7 +4,7 @@ package org.courselab.app
 
 import androidx.compose.runtime.Composable
 
-// PermissionsManager.kt
+
 expect class PermissionsManager(callback: PermissionCallback) : PermissionHandler
 
 interface PermissionCallback {

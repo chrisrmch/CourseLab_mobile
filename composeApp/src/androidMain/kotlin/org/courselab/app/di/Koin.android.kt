@@ -8,6 +8,7 @@ import org.courselab.app.CalendarLocaleLanguage
 import org.courselab.app.CalendarLocaleWithLanguage
 import org.courselab.app.UrlLauncher
 import org.courselab.app.di.data.dataStore
+import org.courselab.app.ui.screens.activity.ActivityViewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -20,4 +21,5 @@ actual val platformModule: Module
         single<AppLocaleManager> { AndroidAppLocaleManager(get<Context>()) }
         single<CalendarLocaleWithLanguage> { CalendarLocaleLanguage(localeManager = get()) }
         single<UrlLauncher> { AndroidUrlLauncher(get<Context>()) }
+        single<ActivityViewModel> { ActivityViewModel( get(), get() ) }
     }

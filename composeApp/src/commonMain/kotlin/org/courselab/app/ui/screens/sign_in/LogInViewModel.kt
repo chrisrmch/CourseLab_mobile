@@ -5,24 +5,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.courselab.app.data.ApiResponse
-import org.courselab.app.data.AuthRepository
-import org.courselab.app.data.LogInResponse
-import org.courselab.app.data.LoginRequestDTO
+import org.courselab.app.data.repository.ApiResponse
+import org.courselab.app.data.repository.AuthRepository
+import org.courselab.app.data.repository.LogInResponse
+import org.courselab.app.data.repository.LoginRequestDTO
+import org.courselab.app.ui.screens.onboarding.dto.Validator
+import org.courselab.app.ui.screens.sign_in.dto.ForgotPasswordDTO
+import org.courselab.app.ui.screens.sign_in.dto.LogInFormStateDTO
 import org.courselab.app.viewmodel.BaseViewModel
-
-//DTO
-data class LoginFormState(
-    val email: String = "", val password: String = "", val isValid: Boolean = false,
-)
-
-data class ForgotPassword(val email: String)
 
 class LogInViewModel(
     private val repository: AuthRepository,
 ) : BaseViewModel() {
-    private val _loginState = MutableStateFlow(value = LoginFormState())
-    val loginState: StateFlow<LoginFormState> = _loginState
+    private val _loginState = MutableStateFlow(value = LogInFormStateDTO())
+    val loginState: StateFlow<LogInFormStateDTO> = _loginState
 
     private val _snackbarMsg = MutableSharedFlow<String>()
     val snackbarMsg: SharedFlow<String> = _snackbarMsg
@@ -31,16 +27,14 @@ class LogInViewModel(
     val isLoading: StateFlow<Boolean> = _isLoading
 
     fun onLoginInputChanged(email: String, password: String) {
-        _loginState.value =
-            LoginFormState(email, password, email.isNotBlank() && password.isNotBlank())
+        _loginState.value = LogInFormStateDTO(email, password, Validator.validateEmail(email) && Validator.validatePassword(password))
     }
 
     fun onLogInEvent(logInRequest: LoginRequestDTO, onResult: (success : Boolean, firstLogin : Boolean) -> Unit) {
         scope.launch {
             _isLoading.value = true
             try {
-                val response: ApiResponse<LogInResponse> =
-                    repository.logIn(logInRequest.email, logInRequest.password)
+                val response: ApiResponse<LogInResponse> = repository.logIn(logInRequest.email, logInRequest.password)
                 println(response)
                 if (response.success && response.data != null && !response.data.firstLogin) {
                     onResult(true, false)
@@ -64,7 +58,7 @@ class LogInViewModel(
         }
     }
 
-    fun onForgotPassword(password: ForgotPassword, onResult: ((Boolean) -> Unit), recoveryLinkSent: String) {
+    fun onForgotPassword(password: ForgotPasswordDTO, onResult: ((Boolean) -> Unit), recoveryLinkSent: String) {
         scope.launch {
             try {
                 _isLoading.value = true
